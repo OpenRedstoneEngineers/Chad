@@ -37,11 +37,14 @@ fun main(args: Array<String>) {
         .login()
         .join()
 
-    val commandManager = CommandManager(discordApi, config.commandChar)
-        .addCommand(ApplyCommand())
-        .addCommand(RollCommand())
-        .addCommand(ListCommand(config.statusChannelId, discordApi))
-        .addStaticCommands(config.commands)
+    val commandManager = CommandManager(discordApi, config.commandChar).apply {
+        addCommands(
+            ApplyCommand(),
+            RollCommand(),
+            ListCommand(config.statusChannelId, discordApi)
+        )
+        addStaticCommands(config.commands)
+    }
 
     val ircBot = PircBotX(Configuration.Builder()
         .setName(config.irc.name)

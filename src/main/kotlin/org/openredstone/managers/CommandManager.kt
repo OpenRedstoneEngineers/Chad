@@ -11,7 +11,7 @@ import org.openredstone.model.entity.CommandEntity
 import org.pircbotx.PircBotX
 
 class CommandManager(private val discordApi: DiscordApi, private val commandChar: Char) {
-    private val commands: MutableList<Command> = mutableListOf()
+    private val commands = mutableListOf<Command>()
 
     fun listenOnDiscord() {
         discordApi.addMessageCreateListener { event ->
@@ -35,14 +35,12 @@ class CommandManager(private val discordApi: DiscordApi, private val commandChar
         }
     }
 
-    fun addCommand(command: Command): CommandManager {
-        commands.add(command)
-        return this
+    fun addCommands(vararg commandsToAdd: Command) {
+        commands.addAll(commandsToAdd)
     }
 
-    fun addStaticCommands(commandEntities: List<CommandEntity>): CommandManager {
+    fun addStaticCommands(commandEntities: List<CommandEntity>) {
         commandEntities.forEach { commands.add(StaticCommand(it.context, it.name, it.reply)) }
-        return this
     }
 
     fun getAttemptedCommand(commandContext: CommandContext, message: String): Command? {
@@ -54,28 +52,17 @@ class CommandManager(private val discordApi: DiscordApi, private val commandChar
 
         val executedCommand = commands.asSequence()
             .filter { command ->
-                command.command == parseCommandName(args.toTypedArray())
-                    && (command.type == CommandContext.BOTH || command.type == commandContext)
+                command.command == parseCommandName(args)
+                        && (command.type == CommandContext.BOTH || command.type == commandContext)
             }.firstOrNull() ?: ErrorCommand()
 
-        if (args.toTypedArray().size - 1 < executedCommand.requireParameters) {
+        if (args.size - 1 < executedCommand.requireParameters) {
             executedCommand.reply = "Invalid number of arguments passed to command `" + executedCommand.command + "`"
         } else {
-            executedCommand.runCommand(dropFirstItem(args.toTypedArray()))
+            executedCommand.runCommand(args.drop(1))
         }
-
         return executedCommand
     }
 
-    private fun parseCommandName(array: Array<String>): String {
-        return array[0].substring(1)
-    }
-
-    private fun dropFirstItem(array: Array<String>): Array<String> {
-        return if (array.size < 2) {
-            arrayOf()
-        } else {
-            array.copyOfRange(1, array.size)
-        }
-    }
+    private fun parseCommandName(parts: List<String>) = parts[0].substring(1)
 }
