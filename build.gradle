@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.41'
+}
+
+apply plugin: 'application'
+
+mainClassName = 'org.openredstone.Chad'
+
+group 'org.openredstone'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile "org.slf4j:slf4j-nop:1.7.25"
+    compile group: "org.cfg4j", name:"cfg4j-core", version: "4.4.0"
+    compile group: "org.javacord", name: "javacord", version: "3.0.3"
+    compile group: "com.uchuhimo", name: "konf", version: "0.22.1"
+    compile group: "org.pircbotx", name: "pircbotx", version: "2.1"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+run {
+    args += "config.yml"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.openredstone.Chad'
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}

@@ -1,0 +1,46 @@
+chad:
+  botToken: ""
+  notificationChannelId: 701813343530254346
+  statusChannelId: 701115144842903615
+  commandChar: ','
+  disableSpoilers: true
+  irc:
+    name: "OREChad"
+    server: "irc.esper.net"
+    channel: "#orebotspam"
+    password: "lolno"
+  notifications:
+    - role: "Survival"
+      emoji: "🇸"
+      name: "🇸urvival"
+      description: "Survival updates"
+    - role: "Modded"
+      emoji: "🇲"
+      name: "🇲odded"
+      description: "Modded updates"
+    - role: "Updates"
+      emoji: "🇺"
+      name: "🇺pdates"
+      description: "Network updates"
+  commands:
+    - context: "DISCORD"
+      name: "archive"
+      reply: "<https://archive.openredstone.org/>"
+    - context: "IRC"
+      name: "archive"
+      reply: "https://archive.openredstone.org/"
+    - context: "DISCORD"
+      name: "invite"
+      reply: "<https://openredstone.org/discord>"
+    - context: "IRC"
+      name: "invite"
+      reply: "https://openredstone.org/discord"
+    - context: "DISCORD"
+      name: "schems"
+      reply: "<https://schems.openredstone.org/>"
+    - context: "IRC"
+      name: "schems"
+      reply: "https://schems.openredstone.org/"
+    - context: "DISCORD"
+      name: "llist"
+      reply: "Check <#701115144842903615> for current network status."
