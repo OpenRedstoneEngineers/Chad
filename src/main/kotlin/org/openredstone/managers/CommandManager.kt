@@ -7,26 +7,15 @@ import org.openredstone.commands.ErrorCommand
 import org.openredstone.commands.StaticCommand
 import org.openredstone.listeners.DiscordCommandListener
 import org.openredstone.listeners.IrcCommandListener
-import org.openredstone.listeners.Listener
 import org.openredstone.model.entity.CommandEntity
 import org.openredstone.model.entity.ConfigEntity
 
 class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntity) {
     private val commands = mutableListOf<Command>()
-    private val listeners = mutableListOf<Listener>()
-
-    init {
-        addDiscordListener()
-        addIrcListener()
-    }
-
-    private fun addDiscordListener() {
-        listeners.add(DiscordCommandListener(this, config))
-    }
-
-    private fun addIrcListener() {
-        listeners.add(IrcCommandListener(this, config))
-    }
+    private val listeners = listOf(
+        DiscordCommandListener(this, config),
+        IrcCommandListener(this, config)
+    )
 
     fun startListeners() {
         listeners.forEach { it.listen() }
