@@ -34,7 +34,10 @@ fun main(args: Array<String>) {
         .login()
         .join()
 
-    CommandManager(discordApi, config).apply {
+    CommandManager(
+        discordApi,
+        config
+    ).apply {
         addCommands(
             ApplyCommand(),
             RollCommand(),

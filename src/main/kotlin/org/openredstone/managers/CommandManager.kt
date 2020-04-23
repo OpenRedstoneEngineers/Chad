@@ -46,11 +46,13 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
         return executedCommand
     }
 
+
+    private fun CommandContext.appliesTo(other: CommandContext) = when (this) {
+        CommandContext.BOTH -> true
+        else -> other == this
+    }
+
     private fun parseCommandName(parts: List<String>) = parts[0].substring(1)
 }
 
-fun CommandContext.appliesTo(other: CommandContext) = when (this) {
-    CommandContext.BOTH -> true
-    else -> other == this
-}
 

@@ -22,9 +22,11 @@ class ListCommand(private var statusChannelId: Long, private var discordApi: Dis
             }
         reply = stringBuilder.toString()
     }
-}
 
-fun <T> Optional<T>.toNullable(): T? = when {
-    isPresent -> get()
-    else -> null
+
+    private fun <T> Optional<T>.toNullable(): T? = when {
+        isPresent -> get()
+        else -> null
+    }
+
 }
