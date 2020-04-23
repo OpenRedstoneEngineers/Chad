@@ -1,55 +1,54 @@
 package org.openredstone.managers
 
-import org.javacord.api.DiscordApi
-import org.javacord.api.entity.message.embed.EmbedBuilder
-import org.openredstone.model.entity.NotificationRoleEntity
 import java.awt.Color
 import java.util.*
 import kotlin.concurrent.schedule
 
-class NotificationManager(val discordApi: DiscordApi, val notificationChannel: Long, val notificationRoleEntities: List<NotificationRoleEntity>) {
+import org.javacord.api.DiscordApi
+import org.javacord.api.entity.channel.ServerTextChannel
+import org.javacord.api.entity.message.embed.EmbedBuilder
+import org.openredstone.model.entity.NotificationRoleEntity
+import kotlin.properties.Delegates
 
-    var notificationMessageId = Optional.empty<Long>()
+class NotificationManager(private val discordApi: DiscordApi, private val notificationChannel: Long, private val notificationRoleEntities: List<NotificationRoleEntity>) {
+    private var notificationMessageId: Long by Delegates.notNull()
 
     fun setupNotificationMessage() {
-        val channelOpt = discordApi.getServerTextChannelById(notificationChannel)
-        if (channelOpt.isPresent) {
-            val channel = channelOpt.get()
+        val channelOpt: ServerTextChannel? = discordApi.getServerTextChannelById(notificationChannel).orElse(null)
+        channelOpt?.let { channel ->
             channel.getMessages(10).get().forEach { if (!it.userAuthor.get().isYourself) it.delete() }
-            val message = channel.getMessages(10).get().stream().filter { it.userAuthor.get().isYourself } .findFirst()
-            if (message.isPresent) {
-                notificationMessageId = Optional.of(message.get().id)
-                message.get().edit(getEmbeddedMessage())
-                message.get().removeAllReactions()
+            val message = channel.getMessages(10).get().asSequence().filter { it.userAuthor.get().isYourself }.firstOrNull()
+
+            if (message != null) {
+                notificationMessageId = message.id
+                message.edit(getEmbeddedMessage())
+                message.removeAllReactions()
             } else {
-                notificationMessageId = Optional.of(channel.sendMessage(getEmbeddedMessage()).get().id)
+                notificationMessageId = channel.sendMessage(getEmbeddedMessage()).get().id
             }
-            val notificationMessage = channel.getMessageById(notificationMessageId.get()).get()
+            val notificationMessage = channel.getMessageById(notificationMessageId).get()
             notificationRoleEntities.forEach { notificationMessage.addReaction(it.emoji) }
-        } else {
-            println("Notification channel does not exist!")
-        }
+        } ?: println("Notification channel does not exist!")
     }
 
     fun monitorNotifications() {
-        discordApi.serverTextChannels.stream().filter { channel ->
+        discordApi.serverTextChannels.asSequence().filter { channel ->
             channel.id == notificationChannel
-        } .findFirst().ifPresent { channel ->
+        }.firstOrNull()?.let { channel ->
             channel.addReactionAddListener { event ->
-                if (!event.user.isBot && (event.message.get().id == notificationMessageId.get())) {
+                if (!event.user.isBot && (event.message.get().id == notificationMessageId)) {
                     event.emoji.asUnicodeEmoji().ifPresent { emoji ->
-                        if ( notificationRoleEntities.any { it.emoji == emoji } ) {
-                            val role = notificationRoleEntities.first { it.emoji == emoji } .role
+                        if (notificationRoleEntities.any { it.emoji == emoji }) {
+                            val role = notificationRoleEntities.first { it.emoji == emoji }.role
                             val user = event.user
                             val discordRole = discordApi.getRolesByName(role).first { it.server.id == event.server.get().id }
-                            val reply =
-                                    if (user.getRoles(event.server.get()).any { it.name == role }) {
-                                        event.user.removeRole(discordRole)
-                                        "<@${user.id}>, you are no longer subscribed to $role notifications."
-                                    } else {
-                                        event.user.addRole(discordRole)
-                                        "<@${user.id}>, you are now subscribed to $role notifications."
-                                    }
+                            val reply = if (user.getRoles(event.server.get()).any { it.name == role }) {
+                                event.user.removeRole(discordRole)
+                                "<@${user.id}>, you are no longer subscribed to $role notifications."
+                            } else {
+                                event.user.addRole(discordRole)
+                                "<@${user.id}>, you are now subscribed to $role notifications."
+                            }
 
                             val sent = event.channel.sendMessage(reply).get()
 

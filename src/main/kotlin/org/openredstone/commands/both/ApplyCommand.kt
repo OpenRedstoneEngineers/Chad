@@ -1,10 +1,9 @@
 package org.openredstone.commands.both
 
 import org.openredstone.commands.Command
-import org.openredstone.model.context.CommandContext
+import org.openredstone.commands.CommandContext
 
 class ApplyCommand : Command(CommandContext.BOTH, "apply", null, 1) {
-
     override fun runCommand(args: Array<String>) {
         reply = when (args[0]) {
             "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.15.2 and run `/apply`"
@@ -12,5 +11,4 @@ class ApplyCommand : Command(CommandContext.BOTH, "apply", null, 1) {
             else -> "Specify \"builder\" or \"student\"."
         }
     }
-
 }
