@@ -7,32 +7,31 @@ import org.openredstone.commands.Command
 import org.openredstone.commands.ErrorCommand
 import org.openredstone.commands.StaticCommand
 import org.openredstone.commands.CommandContext
+import org.openredstone.listeners.DiscordCommandListener
+import org.openredstone.listeners.IrcCommandListener
+import org.openredstone.listeners.Listener
 import org.openredstone.model.entity.CommandEntity
-import org.pircbotx.PircBotX
+import org.openredstone.model.entity.ConfigEntity
 
-class CommandManager(private val discordApi: DiscordApi, private val commandChar: Char) {
+class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntity) {
     private val commands: MutableList<Command> = mutableListOf()
+    private val listeners: MutableList<Listener> = mutableListOf()
 
-    fun listenOnDiscord() {
-        discordApi.addMessageCreateListener { event ->
-            if (!event.messageAuthor.asUser().get().isBot) {
-                getAttemptedCommand(CommandContext.DISCORD, event.messageContent)?.let { command ->
-                    if (command.isPrivateMessageResponse) {
-                        event.messageAuthor.asUser().ifPresent { user ->
-                            user.sendMessage(command.reply)
-                        }
-                    } else {
-                        event.channel.sendMessage(command.reply)
-                    }
-                }
-            }
-        }
+    init {
+        addDiscordListener()
+        addIrcListener()
     }
 
-    fun listenOnIrc(ircBot: PircBotX) {
-        thread {
-            ircBot.startBot()
-        }
+    private fun addDiscordListener() {
+        listeners.add(DiscordCommandListener(this, config))
+    }
+
+    private fun addIrcListener() {
+        listeners.add(IrcCommandListener(this, config))
+    }
+
+    fun startListeners() {
+        listeners.forEach { it.listen() }
     }
 
     fun addCommand(command: Command): CommandManager {
@@ -46,7 +45,7 @@ class CommandManager(private val discordApi: DiscordApi, private val commandChar
     }
 
     fun getAttemptedCommand(commandContext: CommandContext, message: String): Command? {
-        if (message.isEmpty() || message[0] != commandChar) {
+        if (message.isEmpty() || message[0] != config.commandChar) {
             return null
         }
 

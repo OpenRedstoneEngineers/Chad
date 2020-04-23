@@ -10,12 +10,9 @@ import org.openredstone.commands.both.ApplyCommand
 import org.openredstone.commands.discord.RollCommand
 import org.openredstone.commands.irc.ListCommand
 import org.openredstone.listeners.GeneralListener
-import org.openredstone.listeners.IrcCommandListener
 import org.openredstone.managers.CommandManager
 import org.openredstone.managers.NotificationManager
 import org.openredstone.model.entity.ConfigEntity
-import org.pircbotx.Configuration
-import org.pircbotx.PircBotX
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
@@ -37,24 +34,13 @@ fun main(args: Array<String>) {
         .login()
         .join()
 
-    val commandManager = CommandManager(discordApi, config.commandChar)
+    val commandManager = CommandManager(discordApi, config)
         .addCommand(ApplyCommand())
         .addCommand(RollCommand())
         .addCommand(ListCommand(config.statusChannelId, discordApi))
         .addStaticCommands(config.commands)
 
-    val ircBot = PircBotX(Configuration.Builder()
-        .setName(config.irc.name)
-        .addServer(config.irc.server)
-        .addAutoJoinChannel(config.irc.channel)
-        .setNickservPassword(config.irc.password)
-        .addListener(IrcCommandListener(commandManager))
-        .setAutoReconnect(true)
-        .buildConfiguration()
-    )
-
-    commandManager.listenOnDiscord()
-    commandManager.listenOnIrc(ircBot)
+    commandManager.startListeners()
 
     val notificationManager = NotificationManager(
         discordApi,
