@@ -5,7 +5,7 @@ plugins {
 
 apply plugin: 'application'
 
-mainClassName = 'org.openredstone.Chad'
+mainClassName = 'org.openredstone.ChadKt'
 
 group 'org.openredstone'
 version '1.0'
@@ -39,7 +39,7 @@ run {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.openredstone.Chad'
+        attributes 'Main-Class': 'org.openredstone.ChadKt'
     }
     from {
         configurations.compile.collect {
