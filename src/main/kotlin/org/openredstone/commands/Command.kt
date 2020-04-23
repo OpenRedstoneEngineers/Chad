@@ -6,8 +6,8 @@ enum class CommandContext {
 
 abstract class Command(
     val type: CommandContext,
-    val command: String = "",
-    var reply: String,
+    val name: String = "",
+    var reply: String = "",
     val requireParameters: Int = 0,
     val isPrivateMessageResponse: Boolean = false
 ) {

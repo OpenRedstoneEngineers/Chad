@@ -11,15 +11,12 @@ import kotlin.concurrent.thread
 
 class IrcCommandListener(private var commandManager: CommandManager, private var config: ConfigEntity) : Listener() {
     class IrcListener(private var commandManager: CommandManager) : ListenerAdapter() {
-        override fun onMessage(event: MessageEvent?) {
-            event?.message?.let {
-                commandManager.getAttemptedCommand(CommandContext.IRC, it)?.let { command ->
-                    if (command.isPrivateMessageResponse) {
-                        event.user?.send()?.message(command.reply)
-                    } else {
-                        event.channel.send().message(command.reply)
-                    }
-                }
+        override fun onMessage(event: MessageEvent) {
+            val command = commandManager.getAttemptedCommand(CommandContext.IRC, event.message) ?: return
+            if (command.isPrivateMessageResponse) {
+                event.user?.send()?.message(command.reply)
+            } else {
+                event.channel.send().message(command.reply)
             }
         }
     }

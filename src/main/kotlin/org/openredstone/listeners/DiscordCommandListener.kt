@@ -1,21 +1,24 @@
 package org.openredstone.listeners
 
+import org.javacord.api.event.message.MessageCreateEvent
 import org.openredstone.commands.CommandContext
 import org.openredstone.managers.CommandManager
-import org.openredstone.model.entity.ConfigEntity
 
-class DiscordCommandListener(private var commandManager: CommandManager, private var config: ConfigEntity) : Listener() {
+class DiscordCommandListener(private var commandManager: CommandManager) : Listener() {
     override fun listen() {
-        commandManager.discordApi.addMessageCreateListener { event ->
-            if (!event.messageAuthor.asUser().get().isBot) {
-                commandManager.getAttemptedCommand(CommandContext.DISCORD, event.messageContent)?.let { command ->
-                    if (command.isPrivateMessageResponse) {
-                        event.messageAuthor.asUser().get().sendMessage(command.reply)
-                    } else {
-                        event.channel.sendMessage(command.reply)
-                    }
-                }
-            }
+        commandManager.discordApi.addMessageCreateListener(this::messageCreated)
+    }
+
+    private fun messageCreated(event: MessageCreateEvent) {
+        val user = event.messageAuthor.asUser().get()
+        if (user.isBot) {
+            return
+        }
+        val command = commandManager.getAttemptedCommand(CommandContext.DISCORD, event.messageContent) ?: return
+        if (command.isPrivateMessageResponse) {
+            user.sendMessage(command.reply)
+        } else {
+            event.channel.sendMessage(command.reply)
         }
     }
 }

@@ -1,10 +1,7 @@
 package org.openredstone.managers
 
 import org.javacord.api.DiscordApi
-import org.openredstone.commands.Command
-import org.openredstone.commands.CommandContext
-import org.openredstone.commands.ErrorCommand
-import org.openredstone.commands.StaticCommand
+import org.openredstone.commands.*
 import org.openredstone.listeners.DiscordCommandListener
 import org.openredstone.listeners.IrcCommandListener
 import org.openredstone.model.entity.CommandEntity
@@ -13,7 +10,7 @@ import org.openredstone.model.entity.ConfigEntity
 class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntity) {
     private val commands = mutableListOf<Command>()
     private val listeners = listOf(
-        DiscordCommandListener(this, config),
+        DiscordCommandListener(this),
         IrcCommandListener(this, config)
     )
 
@@ -38,12 +35,11 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
 
         val executedCommand = commands.asSequence()
             .filter { command ->
-                command.command == parseCommandName(args)
-                        && (command.type == CommandContext.BOTH || command.type == commandContext)
+                command.name == parseCommandName(args) && commandContext.appliesTo(command.type)
             }.firstOrNull() ?: ErrorCommand()
 
         if (args.size - 1 < executedCommand.requireParameters) {
-            executedCommand.reply = "Invalid number of arguments passed to command `" + executedCommand.command + "`"
+            executedCommand.reply = "Invalid number of arguments passed to command `${executedCommand.name}`"
         } else {
             executedCommand.runCommand(args.drop(1))
         }
@@ -52,3 +48,9 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
 
     private fun parseCommandName(parts: List<String>) = parts[0].substring(1)
 }
+
+fun CommandContext.appliesTo(other: CommandContext) = when (this) {
+    CommandContext.BOTH -> true
+    else -> other == this
+}
+
