@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
         .login()
         .join()
 
-    val commandManager = CommandManager(discordApi, config).apply {
+    CommandManager(discordApi, config).apply {
         addCommands(
             ApplyCommand(),
             RollCommand(),
@@ -44,7 +44,7 @@ fun main(args: Array<String>) {
         startListeners()
     }
 
-    val notificationManager = NotificationManager(
+    NotificationManager(
         discordApi,
         config.notificationChannelId,
         config.notifications
