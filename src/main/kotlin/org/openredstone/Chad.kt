@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
             RollCommand,
             ListCommand(config.statusChannelId, discordApi)
         )
-        addStaticCommands(config.commands)
+        addStaticCommands(*config.commands.toTypedArray())
         startListeners()
     }
 
