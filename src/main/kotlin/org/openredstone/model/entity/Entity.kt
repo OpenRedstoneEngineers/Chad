@@ -1,6 +1,8 @@
 package org.openredstone.model.entity
 
-data class CommandEntity(val name: String, val reply: String, val context: String)
+import org.openredstone.commands.CommandContext
+
+data class CommandEntity(val name: String, val reply: String, val context: CommandContext)
 
 data class ConfigEntity(
     val botToken: String,
