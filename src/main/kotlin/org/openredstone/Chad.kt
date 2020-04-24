@@ -1,18 +1,20 @@
 package org.openredstone
 
-import kotlin.system.exitProcess
-
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import com.uchuhimo.konf.toValue
 import org.javacord.api.DiscordApiBuilder
+import org.openredstone.commands.StaticCommand
 import org.openredstone.commands.both.ApplyCommand
 import org.openredstone.commands.discord.RollCommand
 import org.openredstone.commands.irc.ListCommand
+import org.openredstone.listeners.DiscordCommandListener
 import org.openredstone.listeners.GeneralListener
+import org.openredstone.listeners.IrcCommandListener
 import org.openredstone.managers.CommandManager
 import org.openredstone.managers.NotificationManager
 import org.openredstone.model.entity.ConfigEntity
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
@@ -34,18 +36,18 @@ fun main(args: Array<String>) {
         .login()
         .join()
 
-    CommandManager(
-        discordApi,
-        config
-    ).apply {
-        addCommands(
-            ApplyCommand,
-            RollCommand,
-            ListCommand(config.statusChannelId, discordApi)
-        )
-        addStaticCommands(config.commands)
-        startListeners()
-    }
+    val commands = listOf(
+        ApplyCommand,
+        RollCommand,
+        ListCommand(config.statusChannelId, discordApi)
+    ) + config.commands.map { StaticCommand(it.context, it.name, it.reply) }
+
+    val commandManager = CommandManager(config, commands)
+
+    listOf(
+        DiscordCommandListener(commandManager, discordApi),
+        IrcCommandListener(commandManager, config)
+    ).forEach { it.listen() }
 
     NotificationManager(
         discordApi,

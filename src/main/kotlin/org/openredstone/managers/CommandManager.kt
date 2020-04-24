@@ -1,32 +1,13 @@
 package org.openredstone.managers
 
-import org.javacord.api.DiscordApi
-import org.openredstone.commands.*
-import org.openredstone.listeners.DiscordCommandListener
-import org.openredstone.listeners.IrcCommandListener
-import org.openredstone.model.entity.CommandEntity
+import org.openredstone.commands.Command
+import org.openredstone.commands.CommandContext
+import org.openredstone.commands.ErrorCommand
 import org.openredstone.model.entity.ConfigEntity
 
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
-class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntity) {
-    private val commands = mutableListOf<Command>()
-    private val listeners = listOf(
-        DiscordCommandListener(this),
-        IrcCommandListener(this, config)
-    )
-
-    fun startListeners() {
-        listeners.forEach { it.listen() }
-    }
-
-    fun addCommands(vararg commandsToAdd: Command) {
-        commands.addAll(commandsToAdd)
-    }
-
-    fun addStaticCommands(commandEntities: List<CommandEntity>) {
-        commandEntities.forEach { commands.add(StaticCommand(it.context, it.name, it.reply)) }
-    }
+class CommandManager(private val config: ConfigEntity, val commands: List<Command>) {
 
     fun getAttemptedCommand(commandContext: CommandContext, message: String): AttemptedCommand? {
         if (message.isEmpty() || message[0] != config.commandChar) {
@@ -61,5 +42,3 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
 
     private fun parseCommandName(parts: List<String>) = parts[0].substring(1)
 }
-
-

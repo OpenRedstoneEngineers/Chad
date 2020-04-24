@@ -1,12 +1,13 @@
 package org.openredstone.listeners
 
+import org.javacord.api.DiscordApi
 import org.javacord.api.event.message.MessageCreateEvent
 import org.openredstone.commands.CommandContext
 import org.openredstone.managers.CommandManager
 
-class DiscordCommandListener(private var commandManager: CommandManager) : Listener {
+class DiscordCommandListener(private val commandManager: CommandManager, private val discordApi: DiscordApi) : Listener {
     override fun listen() {
-        commandManager.discordApi.addMessageCreateListener(this::messageCreated)
+        discordApi.addMessageCreateListener(this::messageCreated)
     }
 
     private fun messageCreated(event: MessageCreateEvent) {

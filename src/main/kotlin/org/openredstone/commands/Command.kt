@@ -17,6 +17,6 @@ class ErrorCommand : Command(CommandContext.BOTH, "") {
     override fun runCommand(args: List<String>) = "Invalid command."
 }
 
-class StaticCommand(context: CommandContext, command: String, private val reply: String) : Command(context, command) {
+class StaticCommand(context: CommandContext, name: String, private val reply: String) : Command(context, name) {
     override fun runCommand(args: List<String>) = reply
 }

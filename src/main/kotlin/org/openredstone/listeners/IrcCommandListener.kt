@@ -9,8 +9,8 @@ import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.MessageEvent
 import kotlin.concurrent.thread
 
-class IrcCommandListener(private var commandManager: CommandManager, private var config: ConfigEntity) : Listener {
-    class IrcListener(private var commandManager: CommandManager) : ListenerAdapter() {
+class IrcCommandListener(private val commandManager: CommandManager, private val config: ConfigEntity) : Listener {
+    class IrcListener(private val commandManager: CommandManager) : ListenerAdapter() {
         override fun onMessage(event: MessageEvent) {
             val command = commandManager.getAttemptedCommand(CommandContext.IRC, event.message) ?: return
             if (command.privateReply) {
