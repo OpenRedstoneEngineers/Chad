@@ -37,7 +37,7 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
 
         val executedCommand = commands.asSequence()
             .firstOrNull { command ->
-                command.name == parseCommandName(args) && commandContext.appliesTo(command.type)
+                command.name == parseCommandName(args) && command.type.appliesTo(commandContext)
             } ?: ErrorCommand()
 
         return if (args.size - 1 < executedCommand.requireParameters) {
