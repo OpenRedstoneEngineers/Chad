@@ -13,7 +13,7 @@ abstract class Command(
     abstract fun runCommand(args: List<String>): String
 }
 
-class ErrorCommand : Command(CommandContext.BOTH, "") {
+object ErrorCommand : Command(CommandContext.BOTH, "") {
     override fun runCommand(args: List<String>) = "Invalid command."
 }
 
