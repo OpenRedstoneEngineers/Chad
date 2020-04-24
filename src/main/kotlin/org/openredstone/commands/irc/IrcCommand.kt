@@ -15,8 +15,8 @@ class ListCommand(private var statusChannelId: Long, private var discordApi: Dis
         val stringBuilder = StringBuilder()
         val channel = discordApi.getServerTextChannelById(statusChannelId).toNullable() ?: return ""
         channel.getMessages(1).get().first()
-            .embeds[0].fields.asSequence()
-            .filter { it.isInline }
+            .embeds[0].fields.drop(1).asSequence()
+            .filter { !it.isInline }
             .forEach {
                 val name = it.name.replace("*", "")
                 val value = it.value.replace("`", "")
