@@ -3,21 +3,23 @@ package org.openredstone.managers
 import java.awt.Color
 import java.util.*
 import kotlin.concurrent.schedule
+import kotlin.properties.Delegates
 
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.channel.ServerTextChannel
 import org.javacord.api.entity.message.embed.EmbedBuilder
+
 import org.openredstone.model.entity.NotificationRoleEntity
-import kotlin.properties.Delegates
+import org.openredstone.toNullable
 
 class NotificationManager(private val discordApi: DiscordApi, private val notificationChannel: Long, private val notificationRoleEntities: List<NotificationRoleEntity>) {
     private var notificationMessageId: Long by Delegates.notNull()
 
     fun setupNotificationMessage() {
-        val channelOpt: ServerTextChannel? = discordApi.getServerTextChannelById(notificationChannel).orElse(null)
+        val channelOpt: ServerTextChannel? = discordApi.getServerTextChannelById(notificationChannel).toNullable()
         channelOpt?.let { channel ->
             channel.getMessages(10).get().forEach { if (!it.userAuthor.get().isYourself) it.delete() }
-            val message = channel.getMessages(10).get().asSequence().filter { it.userAuthor.get().isYourself }.firstOrNull()
+            val message = channel.getMessages(10).get().asSequence().firstOrNull { it.userAuthor.get().isYourself }
 
             if (message != null) {
                 notificationMessageId = message.id
@@ -32,9 +34,9 @@ class NotificationManager(private val discordApi: DiscordApi, private val notifi
     }
 
     fun monitorNotifications() {
-        discordApi.serverTextChannels.asSequence().filter { channel ->
+        discordApi.serverTextChannels.asSequence().firstOrNull { channel ->
             channel.id == notificationChannel
-        }.firstOrNull()?.let { channel ->
+        }?.let { channel ->
             channel.addReactionAddListener { event ->
                 if (!event.user.isBot && (event.message.get().id == notificationMessageId)) {
                     event.emoji.asUnicodeEmoji().ifPresent { emoji ->

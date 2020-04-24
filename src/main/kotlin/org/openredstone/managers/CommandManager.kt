@@ -7,6 +7,8 @@ import org.openredstone.listeners.IrcCommandListener
 import org.openredstone.model.entity.CommandEntity
 import org.openredstone.model.entity.ConfigEntity
 
+data class AttemptedCommand(val reply: String, val privateReply: Boolean)
+
 class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntity) {
     private val commands = mutableListOf<Command>()
     private val listeners = listOf(
@@ -26,7 +28,7 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
         commandEntities.forEach { commands.add(StaticCommand(it.context, it.name, it.reply)) }
     }
 
-    fun getAttemptedCommand(commandContext: CommandContext, message: String): Command? {
+    fun getAttemptedCommand(commandContext: CommandContext, message: String): AttemptedCommand? {
         if (message.isEmpty() || message[0] != config.commandChar) {
             return null
         }
@@ -34,16 +36,21 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
         val args = message.split(" ")
 
         val executedCommand = commands.asSequence()
-            .filter { command ->
+            .firstOrNull { command ->
                 command.name == parseCommandName(args) && commandContext.appliesTo(command.type)
-            }.firstOrNull() ?: ErrorCommand()
+            } ?: ErrorCommand()
 
-        if (args.size - 1 < executedCommand.requireParameters) {
-            executedCommand.reply = "Invalid number of arguments passed to command `${executedCommand.name}`"
+        return if (args.size - 1 < executedCommand.requireParameters) {
+            AttemptedCommand(
+                "Invalid number of arguments passed to command `${executedCommand.name}`",
+                executedCommand.privateReply
+            )
         } else {
-            executedCommand.runCommand(args.drop(1))
+            AttemptedCommand(
+                executedCommand.runCommand(args.drop(1)),
+                executedCommand.privateReply
+            )
         }
-        return executedCommand
     }
 
 
