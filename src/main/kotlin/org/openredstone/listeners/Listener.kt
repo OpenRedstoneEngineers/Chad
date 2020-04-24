@@ -1,5 +1,5 @@
 package org.openredstone.listeners
 
-abstract class Listener {
-    abstract fun listen()
+interface Listener {
+    fun listen()
 }

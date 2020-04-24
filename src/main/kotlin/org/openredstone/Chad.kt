@@ -39,8 +39,8 @@ fun main(args: Array<String>) {
         config
     ).apply {
         addCommands(
-            ApplyCommand(),
-            RollCommand(),
+            ApplyCommand,
+            RollCommand,
             ListCommand(config.statusChannelId, discordApi)
         )
         addStaticCommands(config.commands)

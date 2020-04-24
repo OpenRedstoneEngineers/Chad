@@ -7,17 +7,16 @@ enum class CommandContext {
 abstract class Command(
     val type: CommandContext,
     val name: String = "",
-    var reply: String = "",
     val requireParameters: Int = 0,
-    val isPrivateMessageResponse: Boolean = false
+    val privateReply: Boolean = false
 ) {
-    abstract fun runCommand(args: List<String>)
+    abstract fun runCommand(args: List<String>): String
 }
 
-class ErrorCommand : Command(CommandContext.BOTH, "", "Invalid command.") {
-    override fun runCommand(args: List<String>) {}
+class ErrorCommand : Command(CommandContext.BOTH, "") {
+    override fun runCommand(args: List<String>) = "Invalid command."
 }
 
-class StaticCommand(context: String, command: String, reply: String) : Command(CommandContext.valueOf(context), command, reply) {
-    override fun runCommand(args: List<String>) {}
+class StaticCommand(context: String, command: String, private val reply: String) : Command(CommandContext.valueOf(context), command) {
+    override fun runCommand(args: List<String>) = reply
 }
