@@ -35,6 +35,9 @@ fun main(args: Array<String>) {
         .setToken(config.botToken)
         .login()
         .join()
+        .apply {
+            updateActivity(config.playingMessage)
+        }
 
     val commands = listOf(
         ApplyCommand,

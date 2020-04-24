@@ -2,6 +2,7 @@ chad:
   botToken: ""
   notificationChannelId: 701813343530254346
   statusChannelId: 701115144842903615
+  playingMessage: "with Kotlin"
   commandChar: ','
   disableSpoilers: true
   irc:

@@ -8,6 +8,7 @@ data class ConfigEntity(
     val botToken: String,
     val notificationChannelId: Long,
     val statusChannelId: Long,
+    var playingMessage: String,
     val commandChar: Char,
     val disableSpoilers: Boolean,
     val irc: IrcBotEntity,
