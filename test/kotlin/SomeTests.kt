@@ -20,13 +20,13 @@ val fakeConfig = ConfigEntity(
     emptyList()
 )
 
-fun fakeCommands(vararg commands: Command) =
+fun fakeCommands(commands: Map<String, Command>) =
     CommandManager(
         fakeConfig,
-        commands.toList()
+        commands
     )
 
-val commandManager = fakeCommands(ApplyCommand)
+val commandManager = fakeCommands(mapOf("apply" to ApplyCommand))
 
 fun execute(ctx: CommandContext, cmd: String, fn: AttemptedCommand.() -> Unit) =
     commandManager.getAttemptedCommand(ctx, cmd)!!.fn()
