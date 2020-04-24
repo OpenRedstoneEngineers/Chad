@@ -10,7 +10,7 @@ import org.openredstone.model.entity.ConfigEntity
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
 class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntity) {
-    private val commands = mutableListOf<Command>()
+    private val commands = mutableMapOf<String, Command>()
     private val listeners = listOf(
         DiscordCommandListener(this),
         IrcCommandListener(this, config)
@@ -21,11 +21,14 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
     }
 
     fun addCommands(vararg commandsToAdd: Command) {
-        commands.addAll(commandsToAdd)
+        commandsToAdd.forEach { commands[it.name] = it }
     }
 
-    fun addStaticCommands(commandEntities: List<CommandEntity>) {
-        commandEntities.forEach { commands.add(StaticCommand(it.context, it.name, it.reply)) }
+    fun addStaticCommands(vararg commandEntities: CommandEntity) {
+        commandEntities.forEach {
+            val staticCommand = StaticCommand(it.context, it.name, it.reply)
+            commands[staticCommand.name] = staticCommand
+        }
     }
 
     fun getAttemptedCommand(commandContext: CommandContext, message: String): AttemptedCommand? {
@@ -35,10 +38,9 @@ class CommandManager(val discordApi: DiscordApi, private val config: ConfigEntit
 
         val args = message.split(" ")
 
-        val executedCommand = commands.asSequence()
-            .firstOrNull { command ->
-                command.name == parseCommandName(args) && command.type.appliesTo(commandContext)
-            } ?: ErrorCommand()
+        val executedCommand = commands[parseCommandName(args)]?.let {
+            if (it.type.appliesTo(commandContext)) it else null
+        } ?: ErrorCommand
 
         return if (args.size - 1 < executedCommand.requireParameters) {
             AttemptedCommand(
