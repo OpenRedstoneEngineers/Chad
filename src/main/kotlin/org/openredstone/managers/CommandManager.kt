@@ -7,9 +7,7 @@ import org.openredstone.model.entity.ConfigEntity
 
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
-class CommandManager(private val config: ConfigEntity, commandList: List<Command>) {
-    private val commands = commandList.associateBy { it.name }
-
+class CommandManager(private val config: ConfigEntity, private val commands: Map<String, Command>) {
     fun getAttemptedCommand(commandContext: CommandContext, message: String): AttemptedCommand? {
         if (message.isEmpty() || message[0] != config.commandChar) {
             return null
@@ -17,13 +15,14 @@ class CommandManager(private val config: ConfigEntity, commandList: List<Command
 
         val args = message.split(" ")
 
-        val executedCommand = commands[parseCommandName(args)]?.let {
+        val name = parseCommandName(args)
+        val executedCommand = commands[name]?.let {
             if (it.type.appliesTo(commandContext)) it else null
         } ?: ErrorCommand
 
         return if (args.size - 1 < executedCommand.requireParameters) {
             AttemptedCommand(
-                "Invalid number of arguments passed to command `${executedCommand.name}`",
+                "Invalid number of arguments passed to command `$name`",
                 executedCommand.privateReply
             )
         } else {

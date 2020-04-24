@@ -6,11 +6,11 @@ import org.openredstone.commands.Command
 import org.openredstone.commands.CommandContext
 import org.openredstone.toNullable
 
-abstract class IrcCommand(command: String, requireParameters: Int, privateReply: Boolean)
-    : Command(CommandContext.IRC, command, requireParameters, privateReply)
+abstract class IrcCommand(requireParameters: Int, privateReply: Boolean)
+    : Command(CommandContext.IRC, requireParameters, privateReply)
 
-class ListCommand(private var statusChannelId: Long, private var discordApi: DiscordApi)
-    : IrcCommand("list", 0, true) {
+class ListCommand(private val statusChannelId: Long, private val discordApi: DiscordApi)
+    : IrcCommand(0, true) {
     override fun runCommand(args: List<String>): String {
         val stringBuilder = StringBuilder()
         val channel = discordApi.getServerTextChannelById(statusChannelId).toNullable() ?: return ""
