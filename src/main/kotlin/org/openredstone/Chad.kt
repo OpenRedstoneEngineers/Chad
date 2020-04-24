@@ -36,11 +36,11 @@ fun main(args: Array<String>) {
         .login()
         .join()
 
-    val commands = listOf(
-        ApplyCommand,
-        RollCommand,
-        ListCommand(config.statusChannelId, discordApi)
-    ) + config.commands.map { StaticCommand(it.context, it.name, it.reply) }
+    val commands = mapOf(
+        "apply" to ApplyCommand,
+        "roll" to RollCommand,
+        "list" to ListCommand(config.statusChannelId, discordApi)
+    ) + config.commands.map { it.name to StaticCommand(it.context, it.reply) }
 
     val commandManager = CommandManager(config, commands)
 
