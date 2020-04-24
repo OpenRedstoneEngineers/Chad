@@ -12,6 +12,7 @@ val fakeConfig = ConfigEntity(
     "",
     0L,
     0L,
+    "",
     ',',
     false,
     IrcBotEntity("", "", "", ""),
