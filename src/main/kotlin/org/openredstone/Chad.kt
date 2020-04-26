@@ -13,8 +13,8 @@ import org.openredstone.commands.ErrorCommand
 import org.openredstone.commands.RollCommand
 import org.openredstone.commands.ListCommand
 import org.openredstone.entity.ChadSpec
-import org.openredstone.managers.NotificationManager
 import org.openredstone.listeners.*
+import org.openredstone.managers.monitorNotifications
 
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
@@ -82,12 +82,5 @@ fun main(args: Array<String>) {
         startSpoilerListener(discordApi)
     }
 
-    NotificationManager(
-        discordApi,
-        chadConfig.notificationChannelId,
-        chadConfig.notifications
-    ).apply {
-        setupNotificationMessage()
-        monitorNotifications()
-    }
+    monitorNotifications(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
 }
