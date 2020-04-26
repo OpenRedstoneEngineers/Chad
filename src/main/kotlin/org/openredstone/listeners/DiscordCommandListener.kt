@@ -5,7 +5,7 @@ import org.javacord.api.event.message.MessageCreateEvent
 
 import org.openredstone.commands.Commands
 import org.openredstone.getAttemptedCommand
-import org.openredstone.model.entity.ConfigEntity
+import org.openredstone.entity.ConfigEntity
 
 class DiscordCommandListener(
     private val commands: Commands,

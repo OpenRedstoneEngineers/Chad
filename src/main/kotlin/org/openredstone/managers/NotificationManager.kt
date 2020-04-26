@@ -9,10 +9,10 @@ import org.javacord.api.DiscordApi
 import org.javacord.api.entity.channel.ServerTextChannel
 import org.javacord.api.entity.message.embed.EmbedBuilder
 
-import org.openredstone.model.entity.NotificationRoleEntity
+import org.openredstone.entity.NotificationRoleConfig
 import org.openredstone.toNullable
 
-class NotificationManager(private val discordApi: DiscordApi, private val notificationChannel: Long, private val notificationRoleEntities: List<NotificationRoleEntity>) {
+class NotificationManager(private val discordApi: DiscordApi, private val notificationChannel: Long, private val notificationRoleEntities: List<NotificationRoleConfig>) {
     private var notificationMessageId: Long by Delegates.notNull()
 
     fun setupNotificationMessage() {

@@ -1,13 +1,12 @@
 import org.junit.Test
 
-import org.openredstone.commands.Command
 import org.openredstone.commands.Commands
 import org.openredstone.commands.StaticCommand
 import org.openredstone.commands.ApplyCommand
 import org.openredstone.AttemptedCommand
 import org.openredstone.getAttemptedCommand
-import org.openredstone.model.entity.ConfigEntity
-import org.openredstone.model.entity.IrcBotEntity
+import org.openredstone.entity.ConfigEntity
+import org.openredstone.entity.IrcBotConfig
 
 val fakeConfig = ConfigEntity(
     "",
@@ -16,7 +15,7 @@ val fakeConfig = ConfigEntity(
     "",
     ',',
     false,
-    IrcBotEntity("", "", "", ""),
+    IrcBotConfig("", "", "", ""),
     emptyList(),
     mapOf(),
     mapOf()

@@ -16,7 +16,7 @@ import org.openredstone.listeners.DiscordCommandListener
 import org.openredstone.listeners.GeneralListener
 import org.openredstone.listeners.IrcCommandListener
 import org.openredstone.managers.NotificationManager
-import org.openredstone.model.entity.ConfigEntity
+import org.openredstone.entity.ConfigEntity
 
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
