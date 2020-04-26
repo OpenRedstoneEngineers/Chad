@@ -12,11 +12,9 @@ import org.openredstone.commands.ApplyCommand
 import org.openredstone.commands.ErrorCommand
 import org.openredstone.commands.RollCommand
 import org.openredstone.commands.ListCommand
-import org.openredstone.listeners.DiscordCommandListener
-import org.openredstone.listeners.GeneralListener
-import org.openredstone.listeners.IrcCommandListener
 import org.openredstone.managers.NotificationManager
 import org.openredstone.entity.ConfigEntity
+import org.openredstone.listeners.*
 
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
@@ -77,10 +75,12 @@ fun main(args: Array<String>) {
         "list" to ListCommand(config.statusChannelId, discordApi)
     ) + config.ircCommands.mapValues { StaticCommand(it.value) }
 
-    listOf(
-        DiscordCommandListener(discordCommands, discordApi, config),
-        IrcCommandListener(ircCommands, config)
-    ).forEach { it.listen() }
+    startDiscordCommandListener(discordCommands, discordApi, config)
+    startIRCCommandListener(ircCommands, config)
+
+    if (config.disableSpoilers) {
+        startSpoilerListener(discordApi)
+    }
 
     NotificationManager(
         discordApi,
@@ -89,9 +89,5 @@ fun main(args: Array<String>) {
     ).apply {
         setupNotificationMessage()
         monitorNotifications()
-    }
-
-    if (config.disableSpoilers) {
-        GeneralListener.startSpoilerListener(discordApi)
     }
 }
