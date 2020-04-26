@@ -1,10 +1,8 @@
 import org.junit.Test
-
-import org.openredstone.commands.Command
+import org.openredstone.AttemptedCommand
+import org.openredstone.commands.ApplyCommand
 import org.openredstone.commands.Commands
 import org.openredstone.commands.StaticCommand
-import org.openredstone.commands.ApplyCommand
-import org.openredstone.AttemptedCommand
 import org.openredstone.getAttemptedCommand
 import org.openredstone.model.entity.ConfigEntity
 import org.openredstone.model.entity.IrcBotEntity
