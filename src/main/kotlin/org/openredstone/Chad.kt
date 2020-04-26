@@ -12,7 +12,6 @@ import org.openredstone.commands.ErrorCommand
 import org.openredstone.commands.RollCommand
 import org.openredstone.commands.ListCommand
 import org.openredstone.entity.ChadSpec
-//import org.openredstone.entity.CharlieConfig
 import org.openredstone.managers.NotificationManager
 import org.openredstone.listeners.*
 
