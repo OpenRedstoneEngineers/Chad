@@ -11,7 +11,8 @@ import org.openredstone.commands.ApplyCommand
 import org.openredstone.commands.ErrorCommand
 import org.openredstone.commands.RollCommand
 import org.openredstone.commands.ListCommand
-import org.openredstone.entity.ChadConfig
+import org.openredstone.entity.ChadSpec
+//import org.openredstone.entity.CharlieConfig
 import org.openredstone.managers.NotificationManager
 import org.openredstone.listeners.*
 
@@ -48,41 +49,43 @@ fun main(args: Array<String>) {
         exitProcess(1)
     }
 
-    val config = Config { addSpec(ChadConfig) }
+    val config = Config { addSpec(ChadSpec) }
         .from.yaml.file(args[0])
 
+    val chadConfig = config[ChadSpec.chad]
+
     println("Loading OREBot...")
-    println("Notification channel ID: ${config[ChadConfig.notificationChannelId]}")
-    println("Command character: \'${config[ChadConfig.commandChar]}\'")
+    println("Notification channel ID: ${chadConfig.notificationChannelId}")
+    println("Command character: \'${chadConfig.commandChar}\'")
 
     val discordApi = DiscordApiBuilder()
-        .setToken(config[ChadConfig.botToken])
+        .setToken(chadConfig.botToken)
         .login()
         .join()
         .apply {
-            updateActivity(config[ChadConfig.playingMessage])
+            updateActivity(chadConfig.playingMessage)
         }
 
     val discordCommands = mapOf(
         "apply" to ApplyCommand,
         "roll" to RollCommand
-    ) + config[ChadConfig.discordCommands].mapValues { StaticCommand(it.value) }
+    ) + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
-        "list" to ListCommand(config[ChadConfig.statusChannelId], discordApi)
-    ) + config[ChadConfig.ircCommands].mapValues { StaticCommand(it.value) }
+        "list" to ListCommand(chadConfig.statusChannelId, discordApi)
+    ) + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
 
-    startDiscordCommandListener(discordCommands, discordApi, config[ChadConfig.commandChar])
-    startIRCCommandListener(ircCommands, config[ChadConfig.irc], config[ChadConfig.commandChar])
+    startDiscordCommandListener(discordCommands, discordApi, chadConfig.commandChar)
+    startIRCCommandListener(ircCommands, chadConfig.irc, chadConfig.commandChar)
 
-    if (config[ChadConfig.disableSpoilers]) {
+    if (chadConfig.disableSpoilers) {
         startSpoilerListener(discordApi)
     }
 
     NotificationManager(
         discordApi,
-        config[ChadConfig.notificationChannelId],
-        config[ChadConfig.notifications]
+        chadConfig.notificationChannelId,
+        chadConfig.notifications
     ).apply {
         setupNotificationMessage()
         monitorNotifications()
