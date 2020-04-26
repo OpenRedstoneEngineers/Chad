@@ -1,18 +1,23 @@
 package org.openredstone.listeners
 
-import org.openredstone.commands.CommandContext
-import org.openredstone.managers.CommandManager
-import org.openredstone.model.entity.ConfigEntity
+import kotlin.concurrent.thread
+
 import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.MessageEvent
-import kotlin.concurrent.thread
 
-class IrcCommandListener(private val commandManager: CommandManager, private val config: ConfigEntity) : Listener {
-    class IrcListener(private val commandManager: CommandManager) : ListenerAdapter() {
+import org.openredstone.commands.Commands
+import org.openredstone.getAttemptedCommand
+import org.openredstone.model.entity.ConfigEntity
+
+class IrcCommandListener(
+    private val commands: Commands,
+    private val config: ConfigEntity
+) : Listener {
+    class IrcListener(private val commands: Commands, private val config: ConfigEntity) : ListenerAdapter() {
         override fun onMessage(event: MessageEvent) {
-            val command = commandManager.getAttemptedCommand(CommandContext.IRC, event.message) ?: return
+            val command = getAttemptedCommand(config, event.message, commands) ?: return
             if (command.privateReply) {
                 event.user?.send()?.message(command.reply)
             } else {
@@ -28,7 +33,7 @@ class IrcCommandListener(private val commandManager: CommandManager, private val
                 .addServer(config.irc.server)
                 .addAutoJoinChannel(config.irc.channel)
                 .setNickservPassword(config.irc.password)
-                .addListener(IrcListener(commandManager))
+                .addListener(IrcListener(commands, config))
                 .setAutoReconnect(true)
                 .buildConfiguration()
         )

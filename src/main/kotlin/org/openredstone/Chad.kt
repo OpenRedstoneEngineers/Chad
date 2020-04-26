@@ -1,20 +1,49 @@
 package org.openredstone
 
+import kotlin.system.exitProcess
+
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import com.uchuhimo.konf.toValue
 import org.javacord.api.DiscordApiBuilder
+import org.openredstone.commands.Commands
 import org.openredstone.commands.StaticCommand
-import org.openredstone.commands.both.ApplyCommand
-import org.openredstone.commands.discord.RollCommand
-import org.openredstone.commands.irc.ListCommand
+import org.openredstone.commands.ApplyCommand
+import org.openredstone.commands.ErrorCommand
+import org.openredstone.commands.RollCommand
+import org.openredstone.commands.ListCommand
 import org.openredstone.listeners.DiscordCommandListener
 import org.openredstone.listeners.GeneralListener
 import org.openredstone.listeners.IrcCommandListener
-import org.openredstone.managers.CommandManager
 import org.openredstone.managers.NotificationManager
 import org.openredstone.model.entity.ConfigEntity
-import kotlin.system.exitProcess
+
+data class AttemptedCommand(val reply: String, val privateReply: Boolean)
+
+fun getAttemptedCommand(config: ConfigEntity, message: String, commands: Commands): AttemptedCommand? {
+    if (message.isEmpty() || message[0] != config.commandChar) {
+        return null
+    }
+
+    val args = message.split(" ")
+
+    val name = parseCommandName(args)
+    val executedCommand = commands[name] ?: ErrorCommand
+
+    return if (args.size - 1 < executedCommand.requireParameters) {
+        AttemptedCommand(
+            "Invalid number of arguments passed to command `$name`",
+            executedCommand.privateReply
+        )
+    } else {
+        AttemptedCommand(
+            executedCommand.runCommand(args.drop(1)),
+            executedCommand.privateReply
+        )
+    }
+}
+
+private fun parseCommandName(parts: List<String>) = parts[0].substring(1)
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
@@ -39,17 +68,18 @@ fun main(args: Array<String>) {
             updateActivity(config.playingMessage)
         }
 
-    val commands = mapOf(
+    val discordCommands = mapOf(
         "apply" to ApplyCommand,
-        "roll" to RollCommand,
+        "roll" to RollCommand
+    ) + config.discordCommands.mapValues { StaticCommand(it.value) }
+    val ircCommands = mapOf(
+        "apply" to ApplyCommand,
         "list" to ListCommand(config.statusChannelId, discordApi)
-    ) + config.commands.map { it.name to StaticCommand(it.context, it.reply) }
-
-    val commandManager = CommandManager(config, commands)
+    ) + config.ircCommands.mapValues { StaticCommand(it.value) }
 
     listOf(
-        DiscordCommandListener(commandManager, discordApi),
-        IrcCommandListener(commandManager, config)
+        DiscordCommandListener(discordCommands, discordApi, config),
+        IrcCommandListener(ircCommands, config)
     ).forEach { it.listen() }
 
     NotificationManager(
