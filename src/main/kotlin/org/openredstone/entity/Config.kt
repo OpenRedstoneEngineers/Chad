@@ -1,6 +1,8 @@
 package org.openredstone.entity
 
-data class ConfigEntity(
+import com.uchuhimo.konf.ConfigSpec
+
+data class ChadConfig (
     val botToken: String,
     val notificationChannelId: Long,
     val statusChannelId: Long,
@@ -12,6 +14,10 @@ data class ConfigEntity(
     val discordCommands: Map<String, String>,
     val ircCommands: Map<String, String>
 )
+
+object ChadSpec : ConfigSpec("") {
+    val chad by required<ChadConfig>()
+}
 
 data class IrcBotConfig(val name: String, val server: String, val channel: String, val password: String)
 

@@ -4,7 +4,6 @@ import kotlin.system.exitProcess
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
-import com.uchuhimo.konf.toValue
 import org.javacord.api.DiscordApiBuilder
 import org.openredstone.commands.Commands
 import org.openredstone.commands.StaticCommand
@@ -12,14 +11,14 @@ import org.openredstone.commands.ApplyCommand
 import org.openredstone.commands.ErrorCommand
 import org.openredstone.commands.RollCommand
 import org.openredstone.commands.ListCommand
+import org.openredstone.entity.ChadSpec
 import org.openredstone.managers.NotificationManager
-import org.openredstone.entity.ConfigEntity
 import org.openredstone.listeners.*
 
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
-fun getAttemptedCommand(config: ConfigEntity, message: String, commands: Commands): AttemptedCommand? {
-    if (message.isEmpty() || message[0] != config.commandChar) {
+fun getAttemptedCommand(commandChar: Char, message: String, commands: Commands): AttemptedCommand? {
+    if (message.isEmpty() || message[0] != commandChar) {
         return null
     }
 
@@ -49,43 +48,43 @@ fun main(args: Array<String>) {
         exitProcess(1)
     }
 
-    val config = Config()
+    val config = Config { addSpec(ChadSpec) }
         .from.yaml.file(args[0])
-        .at("chad")
-        .toValue<ConfigEntity>()
+
+    val chadConfig = config[ChadSpec.chad]
 
     println("Loading OREBot...")
-    println("Notification channel ID: ${config.notificationChannelId}")
-    println("Command character: \'${config.commandChar}\'")
+    println("Notification channel ID: ${chadConfig.notificationChannelId}")
+    println("Command character: \'${chadConfig.commandChar}\'")
 
     val discordApi = DiscordApiBuilder()
-        .setToken(config.botToken)
+        .setToken(chadConfig.botToken)
         .login()
         .join()
         .apply {
-            updateActivity(config.playingMessage)
+            updateActivity(chadConfig.playingMessage)
         }
 
     val discordCommands = mapOf(
         "apply" to ApplyCommand,
         "roll" to RollCommand
-    ) + config.discordCommands.mapValues { StaticCommand(it.value) }
+    ) + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
-        "list" to ListCommand(config.statusChannelId, discordApi)
-    ) + config.ircCommands.mapValues { StaticCommand(it.value) }
+        "list" to ListCommand(chadConfig.statusChannelId, discordApi)
+    ) + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
 
-    startDiscordCommandListener(discordCommands, discordApi, config)
-    startIRCCommandListener(ircCommands, config)
+    startDiscordCommandListener(discordCommands, discordApi, chadConfig.commandChar)
+    startIRCCommandListener(ircCommands, chadConfig.irc, chadConfig.commandChar)
 
-    if (config.disableSpoilers) {
+    if (chadConfig.disableSpoilers) {
         startSpoilerListener(discordApi)
     }
 
     NotificationManager(
         discordApi,
-        config.notificationChannelId,
-        config.notifications
+        chadConfig.notificationChannelId,
+        chadConfig.notifications
     ).apply {
         setupNotificationMessage()
         monitorNotifications()
