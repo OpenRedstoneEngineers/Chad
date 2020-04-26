@@ -7,7 +7,7 @@ import kotlin.concurrent.schedule
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.embed.EmbedBuilder
 import org.javacord.api.event.message.reaction.ReactionAddEvent
-import org.openredstone.model.entity.NotificationRoleEntity
+import org.openredstone.entity.NotificationRoleConfig
 import org.openredstone.toNullable
 import java.lang.RuntimeException
 import kotlin.properties.Delegates
@@ -15,7 +15,7 @@ import kotlin.properties.Delegates
 class NotificationManager(
     private val discordApi: DiscordApi,
     private val notificationChannelId: Long,
-    private val notificationRoleEntities: List<NotificationRoleEntity>
+    private val notificationRoleEntities: List<NotificationRoleConfig>
 ) {
     private var notificationMessageId: Long by Delegates.notNull()
 

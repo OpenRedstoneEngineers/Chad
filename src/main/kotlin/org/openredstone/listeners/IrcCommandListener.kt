@@ -9,7 +9,7 @@ import org.pircbotx.hooks.events.MessageEvent
 
 import org.openredstone.commands.Commands
 import org.openredstone.getAttemptedCommand
-import org.openredstone.model.entity.ConfigEntity
+import org.openredstone.entity.ConfigEntity
 
 class IrcCommandListener(
     private val commands: Commands,
