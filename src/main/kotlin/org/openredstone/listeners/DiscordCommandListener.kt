@@ -21,3 +21,11 @@ fun startDiscordCommandListener(commands: Commands, discordApi: DiscordApi, comm
     }
     discordApi.addMessageCreateListener(::messageCreated)
 }
+
+fun startSpoilerListener(discordApi: DiscordApi) {
+    discordApi.addMessageCreateListener { event ->
+        if (event.message.content.contains(Regex("\\|\\|"))) {
+            event.message.delete()
+        }
+    }
+}
