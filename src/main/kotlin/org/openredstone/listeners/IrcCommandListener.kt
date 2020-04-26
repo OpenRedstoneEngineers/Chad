@@ -1,16 +1,13 @@
 package org.openredstone.listeners
 
-import kotlin.concurrent.thread
-
+import org.openredstone.commands.Commands
+import org.openredstone.entity.ConfigEntity
+import org.openredstone.getAttemptedCommand
 import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.MessageEvent
-
-import org.openredstone.commands.Commands
-import org.openredstone.getAttemptedCommand
-import org.openredstone.entity.ConfigEntity
-import org.openredstone.entity.IrcBotConfig
+import kotlin.concurrent.thread
 
 private class IrcListener(private val commands: Commands, private val config: ConfigEntity) : ListenerAdapter() {
     override fun onMessage(event: MessageEvent) {

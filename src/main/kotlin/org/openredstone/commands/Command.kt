@@ -23,8 +23,8 @@ class StaticCommand(private val reply: String) : Command() {
 
 class ListCommand(private val statusChannelId: Long, private val discordApi: DiscordApi)
     : Command(requireParameters = 0, privateReply = true) {
-    override fun runCommand(args: List<String>): String {
-        val stringBuilder = StringBuilder()
+
+    override fun runCommand(args: List<String>) = buildString {
         val channel = discordApi.getServerTextChannelById(statusChannelId).toNullable() ?: return ""
         channel.getMessages(1).get().first()
             .embeds[0].fields.drop(1).asSequence()
@@ -32,13 +32,12 @@ class ListCommand(private val statusChannelId: Long, private val discordApi: Dis
             .forEach {
                 val name = it.name.replace("*", "")
                 val value = it.value.replace("`", "")
-                stringBuilder.append(name)
+                append(name)
                 if (!name.contains("offline") && !name.contains("(0)")) {
-                    stringBuilder.append(": ").append(value)
+                    append(": $value")
                 }
-                stringBuilder.append("\n")
+                append("\n")
             }
-        return stringBuilder.toString()
     }
 }
 
