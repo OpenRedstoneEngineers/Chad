@@ -1,16 +1,17 @@
 package org.openredstone.managers
 
 import java.awt.Color
-import java.util.*
+import java.util.Timer
 import kotlin.concurrent.schedule
+import kotlin.properties.Delegates
+import kotlin.RuntimeException
 
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.embed.EmbedBuilder
 import org.javacord.api.event.message.reaction.ReactionAddEvent
+
 import org.openredstone.entity.NotificationRoleConfig
 import org.openredstone.toNullable
-import java.lang.RuntimeException
-import kotlin.properties.Delegates
 
 class NotificationManager(
     private val discordApi: DiscordApi,
@@ -23,11 +24,12 @@ class NotificationManager(
         get() =
             discordApi.getServerTextChannelById(notificationChannelId).toNullable()
                 ?: throw RuntimeException("Notification channel does not exist!")
-    // idk
 
     fun setupNotificationMessage() {
         val channel = notificationChannel
-        channel.getMessages(10).get().forEach { if (!it.userAuthor.get().isYourself) it.delete() }
+        channel.getMessages(10).get().forEach {
+            if (!it.userAuthor.get().isYourself) it.delete()
+        }
         val message = channel.getMessages(10).get().asSequence().firstOrNull { it.userAuthor.get().isYourself }
 
         if (message != null) {
@@ -43,6 +45,11 @@ class NotificationManager(
 
     fun monitorNotifications() {
         notificationChannel.addReactionAddListener(this::reactionAdded)
+        notificationChannel.addMessageCreateListener { event ->
+            if (!event.message.author.isYourself) {
+                event.message.delete()
+            }
+        }
     }
 
     private fun reactionAdded(event: ReactionAddEvent) {
@@ -70,12 +77,6 @@ class NotificationManager(
             }
         }
         event.removeReaction()
-
-        notificationChannel.addMessageCreateListener { event ->
-            if (!event.message.author.isYourself) {
-                event.message.delete()
-            }
-        }
     }
 
     private fun getEmbeddedMessage(): EmbedBuilder {

@@ -5,6 +5,7 @@ import kotlin.system.exitProcess
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import org.javacord.api.DiscordApiBuilder
+
 import org.openredstone.commands.Commands
 import org.openredstone.commands.StaticCommand
 import org.openredstone.commands.ApplyCommand
