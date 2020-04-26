@@ -71,11 +71,11 @@ fun main(args: Array<String>) {
     val discordCommands = mapOf(
         "apply" to ApplyCommand,
         "roll" to RollCommand
-    ) + config.discordCommands.map { it.name to StaticCommand(it.reply) }
+    ) + config.discordCommands.mapValues { StaticCommand(it.value) }
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
         "list" to ListCommand(config.statusChannelId, discordApi)
-    ) + config.ircCommands.map { it.name to StaticCommand(it.reply) }
+    ) + config.ircCommands.mapValues { StaticCommand(it.value) }
 
     listOf(
         DiscordCommandListener(discordCommands, discordApi, config),

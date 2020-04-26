@@ -18,8 +18,8 @@ val fakeConfig = ConfigEntity(
     false,
     IrcBotEntity("", "", "", ""),
     emptyList(),
-    emptyList(),
-    emptyList()
+    mapOf(),
+    mapOf()
 )
 
 fun Commands.execute(cmd: String, fn: AttemptedCommand.() -> Unit) = getAttemptedCommand(fakeConfig, cmd, this)!!.fn()
