@@ -11,32 +11,27 @@ import org.openredstone.entity.ChadSpec
 import org.openredstone.listeners.*
 import org.openredstone.managers.NotificationManager
 
-data class AttemptedCommand(val reply: String, val privateReply: Boolean)
+data class CommandResponse(val reply: String, val privateReply: Boolean)
 
-fun getAttemptedCommand(sender:Sender, commandChar: Char, message: String, commands: Commands): AttemptedCommand? {
-    if (message.isEmpty() || message[0] != commandChar) {
-        return null
-    }
+class CommandExecutor(private val commandChar: Char, private val commands: Commands) {
+    fun tryExecute(sender: Sender, message: String): CommandResponse? {
+        if (message.isEmpty() || message[0] != commandChar) {
+            return null
+        }
 
-    val args = message.split(" ")
+        val parts = message.split(" ")
+        val args = parts.drop(1)
+        val name = parts[0].substring(1)
+        val command = commands[name] ?: ErrorCommand
 
-    val name = parseCommandName(args)
-    val executedCommand = commands[name] ?: ErrorCommand
-
-    return if (args.size - 1 < executedCommand.requireParameters) {
-        AttemptedCommand(
-            "Invalid number of arguments passed to command `$name`",
-            executedCommand.privateReply
-        )
-    } else {
-        AttemptedCommand(
-            executedCommand.runCommand(sender, args.drop(1)),
-            executedCommand.privateReply
-        )
+        val reply = if (args.size < command.requireParameters) {
+            "Invalid number of arguments passed to command `$name`"
+        } else {
+            command.runCommand(sender, args)
+        }
+        return CommandResponse(reply, command.privateReply)
     }
 }
-
-private fun parseCommandName(parts: List<String>) = parts[0].substring(1)
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
@@ -74,8 +69,8 @@ fun main(args: Array<String>) {
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
     ) + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
 
-    startDiscordCommandListener(discordCommands, discordApi, chadConfig.commandChar)
-    startIRCCommandListener(ircCommands, chadConfig.irc, chadConfig.commandChar)
+    startDiscordCommandListener(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands))
+    startIRCCommandListener(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands))
 
     if (chadConfig.disableSpoilers) {
         startSpoilerListener(discordApi)

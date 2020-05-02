@@ -1,50 +1,29 @@
 import org.junit.Test
+import org.openredstone.CommandExecutor
 
-import org.openredstone.AttemptedCommand
-import org.openredstone.commands.ApplyCommand
-import org.openredstone.commands.Commands
-import org.openredstone.commands.StaticCommand
-import org.openredstone.getAttemptedCommand
+import org.openredstone.CommandResponse
+import org.openredstone.commands.*
 
-inline fun Commands.execute(cmd: String, fn: AttemptedCommand.() -> Unit) = getAttemptedCommand(',', cmd, this)!!.fn()
+fun CommandExecutor.testIRC(cmd: String, fn: CommandResponse.() -> Unit) =
+    tryExecute(Sender(Service.IRC, "tester", emptyList()), cmd)!!.fn()
 
-// This might seem somewhat pointless, but it also exercises the CommandManager
 class `apply command` {
-    private val commands = mapOf(
+    private val executor = CommandExecutor(',', mapOf(
         "apply" to ApplyCommand
-    )
+    ))
 
     @Test
-    fun `requires an argument`() = commands.execute(",apply") {
+    fun `requires an argument`() = executor.testIRC(",apply") {
         assert(reply.contains("number of arguments"))
     }
 
     @Test
-    fun student() = commands.execute(",apply student") {
+    fun student() = executor.testIRC(",apply student") {
         assert(reply.contains("apply for student"))
     }
 
     @Test
-    fun builder() = commands.execute(",apply builder") {
+    fun builder() = executor.testIRC(",apply builder") {
         assert(reply.contains("apply for builder"))
-    }
-}
-
-class `can have different commands with the same name for irc and discord` {
-    private val discordCommands = mapOf(
-        "test" to StaticCommand("success discord")
-    )
-    private val ircCommands = mapOf(
-        "test" to StaticCommand("success irc")
-    )
-
-    @Test
-    fun `for discord`() = discordCommands.execute(",test") {
-        assert(reply.contains("success discord"))
-    }
-
-    @Test
-    fun `for irc`() = ircCommands.execute(",test") {
-        assert(reply.contains("success irc"))
     }
 }

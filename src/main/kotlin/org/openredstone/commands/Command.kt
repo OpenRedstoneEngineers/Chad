@@ -67,11 +67,10 @@ object RollCommand : Command() {
     }
 }
 
-class InsultCommand(val insults: List<String>) : Command(requireParameters = 1) {
-    override fun runCommand(sender: Sender, args: List<String>) = if (args[0] == "me") {
-        insults.random().replace("%USER%", sender.username)
-    } else {
-        insults.random().replace("%USER%", args[0])
+class InsultCommand(private val insults: List<String>) : Command(requireParameters = 1) {
+    override fun runCommand(sender: Sender, args: List<String>): String {
+        val targetName = if (args[0] == "me") sender.username else args[0]
+        return insults.random().replace("%USER%", targetName)
     }
 }
 
@@ -104,4 +103,14 @@ object ApplyCommand : Command(requireParameters = 1) {
             else -> "Specify \"builder\" or \"student\"."
         }
     }
+}
+
+fun Service.formatLink(link: String) = when (this) {
+    Service.DISCORD -> "<$link>"
+    Service.IRC -> link
+}
+
+fun Service.formatThing(thing: String) = when (this) {
+    Service.DISCORD -> "`$thing`"
+    Service.IRC -> "'$thing'"
 }
