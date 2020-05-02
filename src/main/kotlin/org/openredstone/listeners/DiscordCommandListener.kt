@@ -15,8 +15,7 @@ fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecuto
         }
         val server = event.server.get()
         val roles = user.getRoles(server).map(Role::getName)
-        val name = user.getNickname(server).orElse(user.name)
-        val sender = Sender(Service.DISCORD, name, roles)
+        val sender = Sender(Service.DISCORD, user.getDisplayName(server), roles)
         val response = executor.tryExecute(sender, event.messageContent) ?: return
         if (response.privateReply) {
             user.sendMessage(response.reply)

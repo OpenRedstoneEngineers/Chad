@@ -25,6 +25,16 @@ chad:
       description: "Network updates"
   insults:
     - "once in the 4th grade %USER% got a 2% on their math quiz so everyone called them milk for the rest of the year"
+    - "%USER% may look like an idiot and talk like an idiot but don't let that fool you. %USER% really is an idiot."
+    - "%USER%, you warthog-faced buffoon."
+    - "%USER%, I fart in your general direction. Your mother was a hamster and your father smelt of elderberries."
+    - "%USER% has no enemies, but is intensely disliked by their friends."
+    - "%USER% is a cockalorum."
+    - "%USER% ........ pillock."
+    - "%USER% is more disappointing than an unsalted pretzel."
+    - "%USER% is the reason God created the middle finger."
+    - "I’ll never forget the first time I met %USER%. But I’ll keep trying."
+    - "Hold still. I’m trying to imagine %USER% with a personality."
   discordCommands:
     archive: "<https://archive.openredstone.org/>"
     invite: "<https://openredstone.org/discord>"
