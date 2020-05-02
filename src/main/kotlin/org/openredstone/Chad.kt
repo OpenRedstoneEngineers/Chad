@@ -5,20 +5,15 @@ import kotlin.system.exitProcess
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import org.javacord.api.DiscordApiBuilder
+import org.openredstone.commands.*
 
-import org.openredstone.commands.Commands
-import org.openredstone.commands.StaticCommand
-import org.openredstone.commands.ApplyCommand
-import org.openredstone.commands.ErrorCommand
-import org.openredstone.commands.RollCommand
-import org.openredstone.commands.ListCommand
 import org.openredstone.entity.ChadSpec
 import org.openredstone.listeners.*
 import org.openredstone.managers.NotificationManager
 
 data class AttemptedCommand(val reply: String, val privateReply: Boolean)
 
-fun getAttemptedCommand(commandChar: Char, message: String, commands: Commands): AttemptedCommand? {
+fun getAttemptedCommand(sender:Sender, commandChar: Char, message: String, commands: Commands): AttemptedCommand? {
     if (message.isEmpty() || message[0] != commandChar) {
         return null
     }
@@ -35,7 +30,7 @@ fun getAttemptedCommand(commandChar: Char, message: String, commands: Commands):
         )
     } else {
         AttemptedCommand(
-            executedCommand.runCommand(args.drop(1)),
+            executedCommand.runCommand(sender, args.drop(1)),
             executedCommand.privateReply
         )
     }
@@ -68,10 +63,12 @@ fun main(args: Array<String>) {
 
     val discordCommands = mapOf(
         "apply" to ApplyCommand,
-        "roll" to RollCommand
+        "roll" to RollCommand,
+        "authorized" to AuthorizedCommand(listOf("Staff"))
     ) + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
+        "authorized" to AuthorizedCommand(listOf("op")),
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
     ) + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
 

@@ -1,9 +1,12 @@
 package org.openredstone.listeners
 
 import org.javacord.api.DiscordApi
+import org.javacord.api.entity.permission.Role
 import org.javacord.api.event.message.MessageCreateEvent
 
 import org.openredstone.commands.Commands
+import org.openredstone.commands.Sender
+import org.openredstone.commands.Service
 import org.openredstone.getAttemptedCommand
 
 fun startDiscordCommandListener(commands: Commands, discordApi: DiscordApi, commandChar: Char) {
@@ -12,7 +15,9 @@ fun startDiscordCommandListener(commands: Commands, discordApi: DiscordApi, comm
         if (user.isBot) {
             return
         }
-        val command = getAttemptedCommand(commandChar, event.messageContent, commands) ?: return
+        val roles = user.getRoles(event.server.get()).map(Role::getName)
+        val sender = Sender(Service.DISCORD, user.name, roles)
+        val command = getAttemptedCommand(sender, commandChar, event.messageContent, commands) ?: return
         if (command.privateReply) {
             user.sendMessage(command.reply)
         } else {
