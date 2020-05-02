@@ -16,7 +16,7 @@ fun startDiscordCommandListener(commands: Commands, discordApi: DiscordApi, comm
             return
         }
         val roles = user.getRoles(event.server.get()).map(Role::getName)
-        val sender = Sender(Service.DISCORD, user.name, roles)
+        val sender = Sender(Service.DISCORD, user.getNickname(event.server.get()).get(), roles)
         val command = getAttemptedCommand(sender, commandChar, event.messageContent, commands) ?: return
         if (command.privateReply) {
             user.sendMessage(command.reply)

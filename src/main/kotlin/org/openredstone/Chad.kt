@@ -64,10 +64,12 @@ fun main(args: Array<String>) {
     val discordCommands = mapOf(
         "apply" to ApplyCommand,
         "roll" to RollCommand,
+        "insult" to InsultCommand(chadConfig.insults),
         "authorized" to AuthorizedCommand(listOf("Staff"))
     ) + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
+        "insult" to InsultCommand(chadConfig.insults),
         "authorized" to AuthorizedCommand(listOf("op")),
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
     ) + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }

@@ -23,6 +23,8 @@ chad:
       emoji: "🇺"
       name: "🇺pdates"
       description: "Network updates"
+  insults:
+    - "once in the 4th grade %USER% got a 2% on their math quiz so everyone called them milk for the rest of the year"
   discordCommands:
     archive: "<https://archive.openredstone.org/>"
     invite: "<https://openredstone.org/discord>"

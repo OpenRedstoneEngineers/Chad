@@ -11,6 +11,7 @@ data class ChadConfig (
     val disableSpoilers: Boolean,
     val irc: IrcBotConfig,
     val notifications: List<NotificationRoleConfig>,
+    val insults: List<String>,
     val discordCommands: Map<String, String>,
     val ircCommands: Map<String, String>
 )

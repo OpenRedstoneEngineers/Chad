@@ -67,6 +67,14 @@ object RollCommand : Command() {
     }
 }
 
+class InsultCommand(val insults: List<String>) : Command(requireParameters = 1) {
+    override fun runCommand(sender: Sender, args: List<String>) = if (args[0] == "me") {
+        insults.random().replace("%USER%", sender.username)
+    } else {
+        insults.random().replace("%USER%", args[0])
+    }
+}
+
 class AddCommand(roles: List<String>) : Command(authorizedRoles = roles) {
     override fun runCommand(sender: Sender, args: List<String>) = if (!isAuthorized(sender)) {
         notAuthorized
