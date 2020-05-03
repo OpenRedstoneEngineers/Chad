@@ -19,6 +19,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "org.slf4j:slf4j-nop:1.7.25"
+    compile 'org.jsoup:jsoup:1.13.1'
     compile group: "org.cfg4j", name:"cfg4j-core", version: "4.4.0"
     compile group: "org.javacord", name: "javacord", version: "3.0.3"
     compile group: "com.uchuhimo", name: "konf", version: "0.22.1"

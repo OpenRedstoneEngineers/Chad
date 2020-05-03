@@ -33,3 +33,8 @@ fun startSpoilerListener(discordApi: DiscordApi) {
         }
     }
 }
+
+fun startDiscordListeners(discordApi: DiscordApi, executor: CommandExecutor, disableSpoilers: Boolean) {
+    startDiscordCommandListener(discordApi, executor)
+    if (disableSpoilers) startSpoilerListener(discordApi)
+}

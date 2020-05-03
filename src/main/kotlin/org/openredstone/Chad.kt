@@ -60,21 +60,17 @@ fun main(args: Array<String>) {
         "apply" to ApplyCommand,
         "roll" to RollCommand,
         "insult" to InsultCommand(chadConfig.insults),
-        "authorized" to AuthorizedCommand(listOf("Staff"))
+        "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles)
     ) + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
         "insult" to InsultCommand(chadConfig.insults),
-        "authorized" to AuthorizedCommand(listOf("op")),
+        "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
     ) + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
 
-    startDiscordCommandListener(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands))
-    startIRCCommandListener(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands))
-
-    if (chadConfig.disableSpoilers) {
-        startSpoilerListener(discordApi)
-    }
+    startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
+    startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
 
     NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
 }

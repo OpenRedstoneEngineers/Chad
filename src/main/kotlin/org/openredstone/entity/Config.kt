@@ -9,8 +9,11 @@ data class ChadConfig (
     val playingMessage: String,
     val commandChar: Char,
     val disableSpoilers: Boolean,
+    val enableLinkPreview: Boolean,
     val irc: IrcBotConfig,
     val notifications: List<NotificationRoleConfig>,
+    val authorizedIrcRoles: List<String>,
+    val authorizedDiscordRoles: List<String>,
     val insults: List<String>,
     val discordCommands: Map<String, String>,
     val ircCommands: Map<String, String>
