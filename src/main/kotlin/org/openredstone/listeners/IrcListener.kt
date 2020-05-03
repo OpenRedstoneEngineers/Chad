@@ -17,19 +17,18 @@ class IrcCommandListener(private val ircConfig: IrcBotConfig, private val execut
         val role = if (event.user?.channelsOpIn!!.any { ircConfig.channel == it.name })
             "op" else ""
         val sender = Sender(Service.IRC, event.user?.nick.toString(), listOf(role))
-        val command = executor.tryExecute(sender, event.message) ?: return
-        if (command.privateReply) {
-            event.user?.send()?.message(command.reply)
+        val response = executor.tryExecute(sender, event.message) ?: return
+        if (response.privateReply) {
+            event.user?.send()?.message(response.reply)
         } else {
-            event.channel.send().message(command.reply)
+            event.channel.send().message(response.reply)
         }
     }
 }
 
 class IrcLinkListener : ListenerAdapter() {
     private val linkRegex =
-        "[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
-    private val protocolRegex = "https?://".toRegex()
+        "(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
 
     override fun onMessage(event: MessageEvent) {
         val url = extractLink(event.message) ?: return
@@ -51,11 +50,9 @@ class IrcLinkListener : ListenerAdapter() {
     }
 
     private fun extractLink(message: String): String? {
-        val url = linkRegex.find(message)?.value ?: return null
-        if (protocolRegex in url) {
-            return url
-        }
-        return "http://$url"
+        val (matchedProto, url) = linkRegex.find(message)?.destructured ?: return null
+        val proto = if (matchedProto.isEmpty()) "http://" else matchedProto
+        return "$proto$url"
     }
 }
 
