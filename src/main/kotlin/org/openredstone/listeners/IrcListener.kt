@@ -27,31 +27,35 @@ class IrcCommandListener(private val ircConfig: IrcBotConfig, private val execut
 }
 
 class IrcLinkListener : ListenerAdapter() {
+    private val linkRegex =
+        "[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
+    private val protocolRegex = "https?://".toRegex()
+
     override fun onMessage(event: MessageEvent) {
-        val regex = "[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
-        if (event.message.contains(regex)) {
-            val providedUrl = regex.find(event.message)?.value
-            val url = if (!providedUrl?.contains("https?://".toRegex())!!) {
-                "http://$providedUrl"
-            } else {
-                providedUrl
-            }
-            thread {
-                try {
-                    val connection = Jsoup.connect(url).followRedirects(true).execute()
-                    val title = if (connection.url().host == "www.youtube.com") {
-                        connection.parse().getElementsByTag("meta").first {
-                            it.attr("property") == "og:title"
-                        }.attr("content")
-                    } else {
-                        connection.parse().title()
-                    }
-                    event.channel.send().message(connection.url().host + " | " + title)
-                } catch (e: UnknownHostException) {
-                    // thank you javae . net !
+        val url = extractLink(event.message) ?: return
+        thread {
+            try {
+                val connection = Jsoup.connect(url).followRedirects(true).execute()
+                val title = if (connection.url().host == "www.youtube.com") {
+                    connection.parse().getElementsByTag("meta").first {
+                        it.attr("property") == "og:title"
+                    }.attr("content")
+                } else {
+                    connection.parse().title()
                 }
+                event.channel.send().message("${connection.url().host} | $title")
+            } catch (e: UnknownHostException) {
+                // thank you javae . net !
             }
         }
+    }
+
+    private fun extractLink(message: String): String? {
+        val url = linkRegex.find(message)?.value ?: return null
+        if (protocolRegex in url) {
+            return url
+        }
+        return "http://$url"
     }
 }
 
