@@ -4,4 +4,8 @@ ORE's new bot because maintaining the NodeJS variant just took too much effort. 
 
 If you're seeing this repository early on, take note that Nickster wrote most of it as his own introduction to Kotlin. So, if it looks ugly, go complain to Capo.
 
-Run this by doing a good ol' `java -jar Chad-1.0.jar config.yml` with your own configuration (because duh).
+Run this by doing a good ol' `java -jar Chad-1.0-all.jar config.yml` with your own configuration (because duh).
+
+## Creating the jar
+
+Create the jar by running the `shadowJar` gradle task. This will create `Chad-1.0-all.jar` in the `build/libs` directory.
