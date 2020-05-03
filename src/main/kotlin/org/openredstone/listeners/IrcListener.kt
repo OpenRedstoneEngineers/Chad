@@ -9,6 +9,7 @@ import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.MessageEvent
+import java.net.UnknownHostException
 import kotlin.concurrent.thread
 
 class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
@@ -25,9 +26,9 @@ class IrcCommandListener(private val ircConfig: IrcBotConfig, private val execut
     }
 }
 
-class IrcLinkListener() : ListenerAdapter() {
+class IrcLinkListener : ListenerAdapter() {
     override fun onMessage(event: MessageEvent) {
-        val regex = "[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)".toRegex()
+        val regex = "[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
         if (event.message.contains(regex)) {
             val providedUrl = regex.find(event.message)?.value
             val url = if (!providedUrl?.contains("https?://".toRegex())!!) {
@@ -36,15 +37,19 @@ class IrcLinkListener() : ListenerAdapter() {
                 providedUrl
             }
             thread {
-                val connection = Jsoup.connect(url).followRedirects(true).execute()
-                val title = if (connection.url().host == "www.youtube.com") {
-                    connection.parse().getElementsByTag("meta").first {
-                        it.attr("property") == "og:title"
-                    }.attr("content")
-                } else {
-                    connection.parse().title()
+                try {
+                    val connection = Jsoup.connect(url).followRedirects(true).execute()
+                    val title = if (connection.url().host == "www.youtube.com") {
+                        connection.parse().getElementsByTag("meta").first {
+                            it.attr("property") == "og:title"
+                        }.attr("content")
+                    } else {
+                        connection.parse().title()
+                    }
+                    event.channel.send().message(connection.url().host + " | " + title)
+                } catch (e: UnknownHostException) {
+                    // thank you javae . net !
                 }
-                event.channel.send().message(connection.url().host + " | " + title)
             }
         }
     }
