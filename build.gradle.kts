@@ -30,7 +30,14 @@ dependencies {
     implementation(group = "com.uchuhimo", name = "konf", version = "0.22.1")
     implementation(group = "org.pircbotx", name = "pircbotx", version = "2.1")
 
-    testImplementation(group = "junit", name = "junit", version = "4.12")
+    testImplementation(kotlin("test-junit5"))
+    testRuntime(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.6.2")
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+    }
 }
 
 tasks.withType<KotlinCompile> {
