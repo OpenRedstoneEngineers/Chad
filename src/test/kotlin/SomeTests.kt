@@ -1,6 +1,6 @@
 import org.junit.Test
-import org.openredstone.CommandExecutor
 
+import org.openredstone.CommandExecutor
 import org.openredstone.CommandResponse
 import org.openredstone.commands.*
 
