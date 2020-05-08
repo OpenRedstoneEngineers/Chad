@@ -44,8 +44,12 @@ chad:
     archive: "<https://archive.openredstone.org/>"
     invite: "<https://openredstone.org/discord>"
     schems: "<https://schems.openredstone.org/>"
+    rules: "<https://openredstone.org/rules/>"
+    owner: "<https://openredstone.org/owner/>"
     llist: "Check <#701115144842903615> for current network status."
   ircCommands:
     archive: "https://archive.openredstone.org/"
     invite: "https://openredstone.org/discord"
     schems: "https://schems.openredstone.org/"
+    rules: "https://openredstone.org/rules/"
+    owner: "https://openredstone.org/owner/"
