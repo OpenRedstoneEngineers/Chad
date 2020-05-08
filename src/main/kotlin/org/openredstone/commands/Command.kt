@@ -31,9 +31,9 @@ class StaticCommand(private val reply: String) : Command() {
     override fun runCommand(sender: Sender, args: List<String>) = reply
 }
 
-class ListCommand(private val statusChannelId: Long, private val discordApi: DiscordApi)
-    : Command(requireParameters = 0, privateReply = true) {
-
+class ListCommand(private val statusChannelId: Long, private val discordApi: DiscordApi) :
+    Command(requireParameters = 0, privateReply = true)
+{
     override fun runCommand(sender: Sender, args: List<String>) = buildString {
         val channel = discordApi.getServerTextChannelById(statusChannelId).toNullable() ?: return ""
         channel.getMessages(1).get().first()
