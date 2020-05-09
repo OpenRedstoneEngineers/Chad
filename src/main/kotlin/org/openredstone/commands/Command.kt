@@ -105,10 +105,16 @@ class AuthorizedCommand(roles: List<String>) : Command(authorizedRoles = roles) 
 }
 
 object ApplyCommand : Command() {
-    override fun runCommand(sender: Sender, args: List<String>) = when (args[0]) {
-        "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.15.2 and run `/apply`"
-        "builder" -> "To apply for builder, follow the steps outlined here: ${sender.service.formatLink("https://openredstone.org/guides/apply-build-server/")}."
-        else -> "Specify \"builder\" or \"student\"."
+    private const val errorMessage = "Specify \"builder\" or \"student\"."
+
+    override fun runCommand(sender: Sender, args: List<String>) = if (args.isEmpty()) {
+        errorMessage
+    } else {
+        when (args[0]) {
+            "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.15.2 and run `/apply`"
+            "builder" -> "To apply for builder, follow the steps outlined here: ${sender.service.formatLink("https://openredstone.org/guides/apply-build-server/")}."
+            else -> errorMessage
+        }
     }
 }
 
