@@ -31,6 +31,19 @@ class StaticCommand(private val reply: String) : Command() {
     override fun runCommand(sender: Sender, args: List<String>) = reply
 }
 
+// TODO
+object HelpCommand : Command() {
+    private const val helpMessage = "no u"
+
+    override fun runCommand(sender: Sender, args: List<String>) = if (args.isEmpty()) {
+        helpMessage
+    } else {
+        when (args[0]) {
+            else -> helpMessage
+        }
+    }
+}
+
 class ListCommand(private val statusChannelId: Long, private val discordApi: DiscordApi) :
     Command(requireParameters = 0, privateReply = true)
 {
@@ -62,6 +75,7 @@ object RollCommand : Command() {
             "d10" -> Random.nextInt(1, 10).toString()
             "d12" -> Random.nextInt(1, 12).toString()
             "d20" -> Random.nextInt(1, 20).toString()
+            "rick" -> sender.service.formatLink("https://youtu.be/dQw4w9WgXcQ")
             else -> d6.random()
         }
     }
@@ -90,27 +104,15 @@ class AuthorizedCommand(roles: List<String>) : Command(authorizedRoles = roles) 
     }
 }
 
-object ApplyCommand : Command(requireParameters = 1) {
-    override fun runCommand(sender: Sender, args: List<String>) = when (sender.service) {
-        Service.DISCORD -> when (args[0]) {
-            "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.15.2 and run `/apply`"
-            "builder" -> "To apply for builder, follow the steps outlined here: <https://openredstone.org/guides/apply-build-server/>."
-            else -> "Specify \"builder\" or \"student\"."
-        }
-        Service.IRC -> when (args[0]) {
-            "student" -> "To apply for student, hop onto 'mc.openredstone.org' on 1.15.2 and run '/apply'"
-            "builder" -> "To apply for builder, follow the steps outlined here: https://openredstone.org/guides/apply-build-server/."
-            else -> "Specify \"builder\" or \"student\"."
-        }
+object ApplyCommand : Command() {
+    override fun runCommand(sender: Sender, args: List<String>) = when (args[0]) {
+        "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.15.2 and run `/apply`"
+        "builder" -> "To apply for builder, follow the steps outlined here: ${sender.service.formatLink("https://openredstone.org/guides/apply-build-server/")}."
+        else -> "Specify \"builder\" or \"student\"."
     }
 }
 
 fun Service.formatLink(link: String) = when (this) {
     Service.DISCORD -> "<$link>"
     Service.IRC -> link
-}
-
-fun Service.formatThing(thing: String) = when (this) {
-    Service.DISCORD -> "`$thing`"
-    Service.IRC -> "'$thing'"
 }

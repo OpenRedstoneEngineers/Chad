@@ -40,16 +40,18 @@ chad:
     - "%USER% is the reason God created the middle finger."
     - "I’ll never forget the first time I met %USER%. But I’ll keep trying."
     - "Hold still. I’m trying to imagine %USER% with a personality."
+  commonCommands:
+    ping: "pong"
   discordCommands:
     archive: "<https://archive.openredstone.org/>"
     invite: "<https://openredstone.org/discord>"
-    schems: "<https://schems.openredstone.org/>"
-    rules: "<https://openredstone.org/rules/>"
     owner: "<https://openredstone.org/owner/>"
+    rules: "<https://openredstone.org/rules/>"
+    schems: "<https://schems.openredstone.org/>"
     llist: "Check <#701115144842903615> for current network status."
   ircCommands:
     archive: "https://archive.openredstone.org/"
     invite: "https://openredstone.org/discord"
-    schems: "https://schems.openredstone.org/"
-    rules: "https://openredstone.org/rules/"
     owner: "https://openredstone.org/owner/"
+    rules: "https://openredstone.org/rules/"
+    schems: "https://schems.openredstone.org/"

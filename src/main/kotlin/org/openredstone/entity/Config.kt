@@ -15,6 +15,7 @@ data class ChadConfig (
     val authorizedIrcRoles: List<String>,
     val authorizedDiscordRoles: List<String>,
     val insults: List<String>,
+    val commonCommands: Map<String, String>,
     val discordCommands: Map<String, String>,
     val ircCommands: Map<String, String>
 )
