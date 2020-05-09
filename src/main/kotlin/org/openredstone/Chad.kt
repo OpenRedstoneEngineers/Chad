@@ -25,7 +25,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val command = commands[name] ?: ErrorCommand
 
         val reply = if (args.size < command.requireParameters) {
-            "Invalid number of arguments passed to command `$name`"
+            "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
         } else {
             command.runCommand(sender, args)
         }
@@ -56,18 +56,21 @@ fun main(args: Array<String>) {
             updateActivity(chadConfig.playingMessage)
         }
 
+    val commonCommands = chadConfig.commonCommands.mapValues { StaticCommand(it.value) }
     val discordCommands = mapOf(
         "apply" to ApplyCommand,
-        "roll" to RollCommand,
+        "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles),
+        "help" to HelpCommand,
         "insult" to InsultCommand(chadConfig.insults),
-        "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles)
-    ) + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
+        "roll" to RollCommand
+    ) + commonCommands + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
-        "insult" to InsultCommand(chadConfig.insults),
         "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
+        "help" to HelpCommand,
+        "insult" to InsultCommand(chadConfig.insults),
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
-    ) + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
+    ) + commonCommands + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
 
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
