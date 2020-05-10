@@ -45,5 +45,5 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<JavaExec> {
-    args("config.yml")
+    args("config.yaml")
 }

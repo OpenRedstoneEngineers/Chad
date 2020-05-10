@@ -19,9 +19,9 @@ class IrcCommandListener(private val ircConfig: IrcBotConfig, private val execut
         val sender = Sender(Service.IRC, event.user?.nick.toString(), listOf(role))
         val response = executor.tryExecute(sender, event.message) ?: return
         if (response.privateReply) {
-            event.user?.send()?.message(response.reply)
+            response.reply.split("\n").forEach{event.user?.send()?.message(it)}
         } else {
-            event.channel.send().message(response.reply)
+            response.reply.split("\n").forEach{event.channel.send().message(it)}
         }
     }
 }
