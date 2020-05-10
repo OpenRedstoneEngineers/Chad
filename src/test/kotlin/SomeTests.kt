@@ -1,11 +1,23 @@
 import kotlin.test.Test
 
+import com.uchuhimo.konf.Config
+import com.uchuhimo.konf.source.yaml
+
 import org.openredstone.CommandExecutor
 import org.openredstone.CommandResponse
 import org.openredstone.commands.*
+import org.openredstone.entity.ChadSpec
 
 fun CommandExecutor.testIRC(cmd: String, fn: CommandResponse.() -> Unit) =
     tryExecute(Sender(Service.IRC, "tester", emptyList()), cmd)!!.fn()
+
+class `config file` {
+    @Test
+    fun load() {
+        val config = Config { addSpec(ChadSpec) }.from.yaml.file("config.example.yaml")
+        val chadConfig = config[ChadSpec.chad]
+    }
+}
 
 class `apply command` {
     private val executor = CommandExecutor(',', mapOf(
@@ -13,17 +25,17 @@ class `apply command` {
     ))
 
     @Test
-    fun `requires an argument`() = executor.testIRC(",apply") {
-        assert(reply.contains("number of arguments"))
+    fun `no arguments`() = executor.testIRC(",apply") {
+        assert("Specify" in reply)
     }
 
     @Test
     fun student() = executor.testIRC(",apply student") {
-        assert(reply.contains("apply for student"))
+        assert("apply for student" in reply)
     }
 
     @Test
     fun builder() = executor.testIRC(",apply builder") {
-        assert(reply.contains("apply for builder"))
+        assert("apply for builder" in reply)
     }
 }
