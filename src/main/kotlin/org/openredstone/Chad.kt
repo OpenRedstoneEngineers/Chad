@@ -63,14 +63,14 @@ fun main(args: Array<String>) {
         "help" to HelpCommand,
         "insult" to InsultCommand(chadConfig.insults),
         "roll" to RollCommand
-    ) + commonCommands + chadConfig.discordCommands.mapValues { StaticCommand(it.value) }
+    ) + commonCommands + chadConfig.discordCommands.mapValues { StaticCommand(it.value) } + dslCommands
     val ircCommands = mapOf(
         "apply" to ApplyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
         "help" to HelpCommand,
         "insult" to InsultCommand(chadConfig.insults),
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
-    ) + commonCommands + chadConfig.ircCommands.mapValues { StaticCommand(it.value) }
+    ) + commonCommands + chadConfig.ircCommands.mapValues { StaticCommand(it.value) } + dslCommands
 
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)

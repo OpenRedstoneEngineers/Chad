@@ -4,6 +4,7 @@ import org.javacord.api.DiscordApi
 
 import org.openredstone.toNullable
 import kotlin.random.Random
+import kotlin.reflect.KProperty
 
 typealias Commands = Map<String, Command>
 
@@ -121,4 +122,60 @@ object ApplyCommand : Command() {
 fun Service.formatLink(link: String) = when (this) {
     Service.DISCORD -> "<$link>"
     Service.IRC -> link
+}
+
+val dslCommands = mapOf(
+    "test" to command {
+        val arg by required("this argument is required")
+        reply { "Test $arg successful ${sender.username}" }
+    }
+)
+
+fun command(configure: DSLCommand.() -> Unit): Command = DSLCommand().apply(configure).makeCommand()
+
+class ReplyScope(val sender: Sender, args: List<String>)
+
+class DSLCommand {
+    // TODO: figure out a better solution than lazy
+    val helpMessage by lazy {
+        buildString {
+            append("This command requires ${args.size} arguments: ")
+            args.joinToString(", ") { it.message }
+        }
+    }
+
+    // TODO: should we make replies optional?
+    private var reply: (ReplyScope.() -> String)? = null
+
+    fun reply(message: ReplyScope.() -> String) {
+        reply = message
+    }
+
+    private val args = mutableListOf<Argument>()
+
+    fun required(message: String): Argument = Argument(message).also { args.add(it) }
+
+    // TODO: figure out optional arguments
+    class Argument(val message: String) {
+        lateinit var value: String
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+            return value
+        }
+    }
+
+    fun makeCommand() = object : Command(args.size) {
+        override fun runCommand(sender: Sender, suppliedArgs: List<String>): String {
+            if (suppliedArgs.size != args.size) {
+                return helpMessage
+            }
+            for ((a, b) in args zip suppliedArgs) {
+                a.value = b
+            }
+            // fix this
+            reply?.let { reply ->
+                return ReplyScope(sender, suppliedArgs).reply()
+            }
+            return "ok"
+        }
+    }
 }
