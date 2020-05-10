@@ -3,16 +3,15 @@ package org.openredstone.listeners
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.permission.Role
 import org.javacord.api.event.message.MessageCreateEvent
+
 import org.openredstone.CommandExecutor
 import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
+import org.openredstone.toNullable
 
 fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
     fun messageCreated(event: MessageCreateEvent) {
-        if (!event.messageAuthor.asUser().isPresent) {
-            return
-        }
-        val user = event.messageAuthor.asUser().get()
+        val user = event.messageAuthor.asUser().toNullable() ?: return
         if (user.isBot) {
             return
         }

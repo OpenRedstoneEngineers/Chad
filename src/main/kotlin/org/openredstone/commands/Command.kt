@@ -1,10 +1,12 @@
 package org.openredstone.commands
 
+import kotlin.IllegalStateException
+import kotlin.random.Random
+import kotlin.reflect.KProperty
+
 import org.javacord.api.DiscordApi
 
 import org.openredstone.toNullable
-import kotlin.random.Random
-import kotlin.reflect.KProperty
 
 typealias Commands = Map<String, Command>
 
@@ -124,6 +126,8 @@ fun Service.formatLink(link: String) = when (this) {
     Service.IRC -> link
 }
 
+// Command DSL
+
 val dslCommands = mapOf(
     "test" to command {
         val arg by required("this argument is required")
@@ -131,51 +135,78 @@ val dslCommands = mapOf(
     }
 )
 
-fun command(configure: DSLCommand.() -> Unit): Command = DSLCommand().apply(configure).makeCommand()
+fun command(configure: CommandScope.() -> Unit): Command = CommandScope().apply(configure).buildCommand()
 
-class ReplyScope(val sender: Sender, args: List<String>)
+@DslMarker
+annotation class CommandMarker
 
-class DSLCommand {
-    // TODO: figure out a better solution than lazy
-    val helpMessage by lazy {
-        buildString {
-            append("This command requires ${args.size} arguments: ")
-            args.joinToString(", ") { it.message }
-        }
+@CommandMarker
+class ReplyScope(val sender: Sender, private val args: List<String>) {
+    fun link(link: String) = when (sender.service) {
+        Service.DISCORD -> "<$link>"
+        Service.IRC -> link
     }
+}
 
+sealed class Argument(val description: String)
+
+class Required(description: String) : Argument(description) {
+    internal lateinit var value: String
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+        return value
+    }
+}
+
+class Optional(description: String) : Argument(description) {
+    internal var value: String? = null
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String? {
+        return value
+    }
+}
+
+@CommandMarker
+class CommandScope {
+    private var requiredParameters = 0
+    private val parameters = mutableListOf<Argument>()
     // TODO: should we make replies optional?
-    private var reply: (ReplyScope.() -> String)? = null
+    private var command: Command? = null
 
-    fun reply(message: ReplyScope.() -> String) {
-        reply = message
-    }
+    fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String) {
+        // requireParameters = 0, so that we can return the custom help message
+        command = object : Command(requireParameters = 0, privateReply = isPrivate) {
+            private val helpMessage = buildString {
+                // TODO: improve help message
+                append("This command requires $requiredParameters arguments: ")
+                parameters.joinToString(", ") { it.description }
+            }
 
-    private val args = mutableListOf<Argument>()
-
-    fun required(message: String): Argument = Argument(message).also { args.add(it) }
-
-    // TODO: figure out optional arguments
-    class Argument(val message: String) {
-        lateinit var value: String
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
-            return value
+            override fun runCommand(sender: Sender, args: List<String>): String {
+                if (args.size != parameters.size) {
+                    return helpMessage
+                }
+                for ((a, b) in parameters zip args) {
+                    when (a) {
+                        is Required -> a.value = b
+                        is Optional -> a.value = b
+                    }
+                }
+                return ReplyScope(sender, args).message()
+            }
         }
     }
 
-    fun makeCommand() = object : Command(args.size) {
-        override fun runCommand(sender: Sender, suppliedArgs: List<String>): String {
-            if (suppliedArgs.size != args.size) {
-                return helpMessage
-            }
-            for ((a, b) in args zip suppliedArgs) {
-                a.value = b
-            }
-            // fix this
-            reply?.let { reply ->
-                return ReplyScope(sender, suppliedArgs).reply()
-            }
-            return "ok"
+    fun required(message: String): Required = Required(message).also {
+        val last = parameters.lastOrNull()
+        if (last is Optional) {
+            throw IllegalStateException("a required parameter after an optional parameter is not allowed")
         }
+        requiredParameters += 1
+        parameters.add(it)
     }
+
+    fun optional(message: String): Optional = Optional(message).also { parameters.add(it) }
+
+    fun buildCommand() = command ?: throw IllegalStateException("no reply supplied")
 }
