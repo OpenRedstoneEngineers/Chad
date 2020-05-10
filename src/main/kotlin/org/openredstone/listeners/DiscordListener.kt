@@ -9,6 +9,9 @@ import org.openredstone.commands.Service
 
 fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
     fun messageCreated(event: MessageCreateEvent) {
+        if (!event.messageAuthor.asUser().isPresent) {
+            return
+        }
         val user = event.messageAuthor.asUser().get()
         if (user.isBot) {
             return

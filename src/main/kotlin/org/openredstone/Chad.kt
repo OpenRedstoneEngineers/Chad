@@ -44,7 +44,7 @@ fun main(args: Array<String>) {
 
     val chadConfig = config[ChadSpec.chad]
 
-    println("Loading OREBot...")
+    println("Loading Chad...")
     println("Notification channel ID: ${chadConfig.notificationChannelId}")
     println("Command character: \'${chadConfig.commandChar}\'")
 
