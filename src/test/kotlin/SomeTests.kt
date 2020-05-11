@@ -7,6 +7,7 @@ import org.openredstone.CommandExecutor
 import org.openredstone.CommandResponse
 import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
+import kotlin.test.assertEquals
 
 fun CommandExecutor.testIRC(cmd: String, fn: CommandResponse.() -> Unit) =
     tryExecute(Sender(Service.IRC, "tester", emptyList()), cmd)!!.fn()
@@ -21,11 +22,11 @@ class `config file` {
 
 class `apply command` {
     private val executor = CommandExecutor(',', mapOf(
-        "apply" to ApplyCommand
+        "apply" to applyCommand
     ))
 
     @Test
-    fun `no arguments`() = executor.testIRC(",apply") {
+    fun fish() = executor.testIRC(",apply fish") {
         assert("Specify" in reply)
     }
 
@@ -37,5 +38,48 @@ class `apply command` {
     @Test
     fun builder() = executor.testIRC(",apply builder") {
         assert("apply for builder" in reply)
+    }
+}
+
+class DSL {
+    private val executor = CommandExecutor(',', mapOf(
+        "required" to command {
+            val arg by required("required")
+            reply { arg }
+        },
+        "optional" to command {
+            val arg by optional("optional")
+            reply { arg ?: "42" }
+        },
+        "vararg" to command {
+            val first by required("first")
+            val rest by vararg("rest")
+            reply { rest.joinToString() }
+        }
+    ))
+
+    @Test
+    fun required() = executor.testIRC(",required lol") {
+        assertEquals("lol", reply)
+    }
+
+    @Test
+    fun optional() {
+        executor.testIRC(",optional lol") {
+            assertEquals("lol", reply)
+        }
+        executor.testIRC(",optional") {
+            assertEquals("42", reply)
+        }
+    }
+
+    @Test
+    fun vararg() {
+        executor.testIRC(",vararg lol 1 2 3") {
+            assertEquals("1, 2, 3", reply)
+        }
+        executor.testIRC(",vararg lol") {
+            assertEquals("", reply)
+        }
     }
 }

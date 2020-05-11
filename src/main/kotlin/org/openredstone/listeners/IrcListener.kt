@@ -12,7 +12,7 @@ import org.pircbotx.hooks.events.MessageEvent
 import java.net.UnknownHostException
 import kotlin.concurrent.thread
 
-class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
+private class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
     override fun onMessage(event: MessageEvent) {
         val role = if (event.user?.channelsOpIn!!.any { ircConfig.channel == it.name })
             "op" else ""
@@ -26,7 +26,7 @@ class IrcCommandListener(private val ircConfig: IrcBotConfig, private val execut
     }
 }
 
-class IrcLinkListener : ListenerAdapter() {
+private class IrcLinkListener : ListenerAdapter() {
     private val linkRegex =
         "(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
 

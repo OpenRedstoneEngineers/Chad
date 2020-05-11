@@ -5,11 +5,14 @@ import kotlin.system.exitProcess
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import org.javacord.api.DiscordApiBuilder
-import org.openredstone.commands.*
 
+import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
-import org.openredstone.listeners.*
+import org.openredstone.listeners.startDiscordListeners
+import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
+
+typealias Commands = Map<String, Command>
 
 data class CommandResponse(val reply: String, val privateReply: Boolean)
 
@@ -56,21 +59,21 @@ fun main(args: Array<String>) {
             updateActivity(chadConfig.playingMessage)
         }
 
-    val commonCommands = chadConfig.commonCommands.mapValues { StaticCommand(it.value) }
+    val commonCommands = chadConfig.commonCommands.mapValues { staticCommand(it.value) }
     val discordCommands = mapOf(
-        "apply" to ApplyCommand,
+        "apply" to applyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles),
-        "help" to HelpCommand,
-        "insult" to InsultCommand(chadConfig.insults),
-        "roll" to RollCommand
-    ) + commonCommands + chadConfig.discordCommands.mapValues { StaticCommand(it.value) } + dslCommands
+        "help" to helpCommand,
+        "insult" to insultCommand(chadConfig.insults),
+        "roll" to rollCommand
+    ) + commonCommands + chadConfig.discordCommands.mapValues { staticCommand(it.value) }
     val ircCommands = mapOf(
-        "apply" to ApplyCommand,
+        "apply" to applyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
-        "help" to HelpCommand,
-        "insult" to InsultCommand(chadConfig.insults),
-        "list" to ListCommand(chadConfig.statusChannelId, discordApi)
-    ) + commonCommands + chadConfig.ircCommands.mapValues { StaticCommand(it.value) } + dslCommands
+        "help" to helpCommand,
+        "insult" to insultCommand(chadConfig.insults),
+        "list" to listCommand(chadConfig.statusChannelId, discordApi)
+    ) + commonCommands + chadConfig.ircCommands.mapValues { staticCommand(it.value) }
 
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
