@@ -75,5 +75,5 @@ fun main(args: Array<String>) {
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
 
-    NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
+    if (chadConfig.enableNotificationRoles) NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
 }

@@ -9,7 +9,7 @@ import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.MessageEvent
-import java.net.UnknownHostException
+import kotlin.Exception
 import kotlin.concurrent.thread
 
 class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
@@ -43,8 +43,8 @@ class IrcLinkListener : ListenerAdapter() {
                     connection.parse().title()
                 }
                 event.channel.send().message("${connection.url().host} | $title")
-            } catch (e: UnknownHostException) {
-                // thank you javae . net !
+            } catch (e: Exception) {
+                // thank you javae . net ! and tank u jay soop !
             }
         }
     }

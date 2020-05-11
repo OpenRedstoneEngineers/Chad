@@ -4,6 +4,7 @@ import com.uchuhimo.konf.ConfigSpec
 
 data class ChadConfig (
     val botToken: String,
+    val enableNotificationRoles: Boolean,
     val notificationChannelId: Long,
     val statusChannelId: Long,
     val playingMessage: String,

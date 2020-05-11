@@ -1,5 +1,6 @@
 chad:
   botToken: ""
+  enableNotificationRoles: true
   notificationChannelId: 701813343530254346
   statusChannelId: 701115144842903615
   playingMessage: "with Kotlin"
