@@ -1,8 +1,8 @@
 chad:
   botToken: ""
   enableNotificationRoles: true
-  notificationChannelId: 701813343530254346
-  statusChannelId: 701115144842903615
+  notificationChannelId: 701824005954600960
+  statusChannelId: 701102820409212968
   playingMessage: "with Kotlin"
   commandChar: ','
   disableSpoilers: true
@@ -49,7 +49,7 @@ chad:
     owner: "<https://openredstone.org/owner/>"
     rules: "<https://openredstone.org/rules/>"
     schems: "<https://schems.openredstone.org/>"
-    llist: "Check <#701115144842903615> for current network status."
+    list: "Check <#701102820409212968> for current network status."
   ircCommands:
     archive: "https://archive.openredstone.org/"
     invite: "https://openredstone.org/discord"
