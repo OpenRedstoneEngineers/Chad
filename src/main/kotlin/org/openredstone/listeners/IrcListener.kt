@@ -2,6 +2,7 @@ package org.openredstone.listeners
 
 import kotlin.concurrent.thread
 
+import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
@@ -12,12 +13,10 @@ import org.openredstone.CommandExecutor
 import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.entity.IrcBotConfig
-import org.openredstone.logger
 
 class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
     override fun onMessage(event: MessageEvent) {
-        val role = if (event.user?.channelsOpIn!!.any { ircConfig.channel == it.name })
-            "op" else ""
+        val role = if (event.user?.channelsOpIn!!.any { ircConfig.channel == it.name }) "op" else ""
         val sender = Sender(Service.IRC, event.user?.nick.toString(), listOf(role))
         val response = executor.tryExecute(sender, event.message) ?: return
         if (response.privateReply) {
@@ -29,6 +28,7 @@ class IrcCommandListener(private val ircConfig: IrcBotConfig, private val execut
 }
 
 class IrcLinkListener : ListenerAdapter() {
+    private val logger = KotlinLogging.logger("IRC link listener")
     private val linkRegex =
         "(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
 
@@ -36,6 +36,8 @@ class IrcLinkListener : ListenerAdapter() {
         val url = extractLink(event.message) ?: return
         thread {
             try {
+                logger.debug("${event.user}: ${event.message}$")
+
                 val connection = Jsoup.connect(url).followRedirects(true).execute()
                 val title = if (connection.url().host == "www.youtube.com") {
                     connection.parse().getElementsByTag("meta").first {

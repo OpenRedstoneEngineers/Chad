@@ -13,6 +13,9 @@ import org.openredstone.listeners.startDiscordListeners
 import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
 
+/**
+ * The global logger for Chad.
+ */
 val logger = KotlinLogging.logger("Chad")
 
 data class CommandResponse(val reply: String, val privateReply: Boolean)
@@ -35,6 +38,9 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         } else {
             command.runCommand(sender, args)
         }
+
+        logger.debug("Reply to ${sender.username} [${sender.service}]: $reply")
+
         return CommandResponse(reply, command.privateReply)
     }
 }
@@ -53,6 +59,8 @@ fun main(args: Array<String>) {
     logger.info("Loading Chad...")
     logger.info("Notification channel ID: ${chadConfig.notificationChannelId}")
     logger.info("Command character: '${chadConfig.commandChar}'")
+    logger.info("Disable spoilers: ${chadConfig.disableSpoilers}")
+    logger.info("Link preview: ${chadConfig.enableLinkPreview}")
 
     val discordApi = DiscordApiBuilder()
         .setToken(chadConfig.botToken)
@@ -78,14 +86,14 @@ fun main(args: Array<String>) {
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
     ) + commonCommands + chadConfig.ircCommands.mapValues { StaticCommand(it.value) } + dslCommands
 
-    logger.info("loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
-    logger.info("loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
-    logger.info("starting listeners...")
+    logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
+    logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
+    logger.info("Starting listeners...")
 
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
 
     if (chadConfig.enableNotificationRoles) NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
 
-    logger.info("started listeners")
+    logger.info("Started listeners")
 }
