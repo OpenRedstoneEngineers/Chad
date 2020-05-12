@@ -22,15 +22,11 @@ abstract class Command(
     abstract fun runCommand(sender: Sender, args: List<String>): String
 }
 
-object ErrorCommand : Command() {
-    override fun runCommand(sender: Sender, args: List<String>) = "Invalid command."
-}
-
 class AddCommand(roles: List<String>) : Command(authorizedRoles = roles) {
     override fun runCommand(sender: Sender, args: List<String>) = if (!isAuthorized(sender)) {
         notAuthorized
     } else {
-        "authorized !" // TODO()
+        "authorized !"  // TODO
     }
 }
 
@@ -69,6 +65,11 @@ fun insultCommand(insults: List<String>) = command {
         val targetName = if (target == "me") sender.username else target
         insults.random().replace("%USER%", targetName)
     }
+}
+
+val invalidCommand = command {
+    @Suppress("UNUSED_VARIABLE") val args by vararg("")
+    reply { "Invalid command." }
 }
 
 fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {

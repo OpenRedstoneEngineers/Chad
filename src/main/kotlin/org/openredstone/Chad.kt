@@ -25,7 +25,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val parts = message.split(" ")
         val args = parts.drop(1)
         val name = parts[0].substring(1)
-        val command = commands[name] ?: ErrorCommand
+        val command = commands[name] ?: invalidCommand
 
         val reply = if (args.size < command.requireParameters) {
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."

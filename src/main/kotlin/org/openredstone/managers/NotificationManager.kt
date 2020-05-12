@@ -1,16 +1,18 @@
 package org.openredstone.managers
 
+import java.awt.Color
+import java.util.Timer
+import kotlin.concurrent.schedule
+
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.channel.ServerTextChannel
 import org.javacord.api.entity.message.embed.EmbedBuilder
 import org.javacord.api.event.message.MessageCreateEvent
 import org.javacord.api.event.message.reaction.ReactionAddEvent
 import org.javacord.api.util.event.ListenerManager
+
 import org.openredstone.entity.NotificationRoleConfig
 import org.openredstone.toNullable
-import java.awt.Color
-import java.util.*
-import kotlin.concurrent.schedule
 
 class NotificationManager(
     discordApi: DiscordApi,
