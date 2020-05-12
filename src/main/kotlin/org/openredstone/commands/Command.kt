@@ -1,10 +1,11 @@
 package org.openredstone.commands
 
+import kotlin.random.Random
+import kotlin.reflect.KProperty
+
 import org.javacord.api.DiscordApi
 
 import org.openredstone.toNullable
-import kotlin.random.Random
-import kotlin.reflect.KProperty
 
 typealias Commands = Map<String, Command>
 

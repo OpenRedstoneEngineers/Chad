@@ -1,16 +1,18 @@
 package org.openredstone.listeners
 
+import kotlin.concurrent.thread
+
 import org.jsoup.Jsoup
-import org.openredstone.CommandExecutor
-import org.openredstone.commands.Sender
-import org.openredstone.commands.Service
-import org.openredstone.entity.IrcBotConfig
 import org.pircbotx.Configuration
 import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.MessageEvent
-import kotlin.Exception
-import kotlin.concurrent.thread
+
+import org.openredstone.CommandExecutor
+import org.openredstone.commands.Sender
+import org.openredstone.commands.Service
+import org.openredstone.entity.IrcBotConfig
+import org.openredstone.logger
 
 class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
     override fun onMessage(event: MessageEvent) {
@@ -45,6 +47,7 @@ class IrcLinkListener : ListenerAdapter() {
                 event.channel.send().message("${connection.url().host} | $title")
             } catch (e: Exception) {
                 // thank you javae . net ! and tank u jay soop !
+                logger.warn(e) { "caught exception in IRC link listener" }
             }
         }
     }

@@ -4,12 +4,16 @@ import kotlin.system.exitProcess
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
+import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
-import org.openredstone.commands.*
 
+import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
-import org.openredstone.listeners.*
+import org.openredstone.listeners.startDiscordListeners
+import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
+
+val logger = KotlinLogging.logger("Chad")
 
 data class CommandResponse(val reply: String, val privateReply: Boolean)
 
@@ -18,6 +22,8 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         if (message.isEmpty() || message[0] != commandChar) {
             return null
         }
+
+        logger.info("${sender.username} [${sender.service}]: $message")
 
         val parts = message.split(" ")
         val args = parts.drop(1)
@@ -44,9 +50,9 @@ fun main(args: Array<String>) {
 
     val chadConfig = config[ChadSpec.chad]
 
-    println("Loading Chad...")
-    println("Notification channel ID: ${chadConfig.notificationChannelId}")
-    println("Command character: \'${chadConfig.commandChar}\'")
+    logger.info("Loading Chad...")
+    logger.info("Notification channel ID: ${chadConfig.notificationChannelId}")
+    logger.info("Command character: '${chadConfig.commandChar}'")
 
     val discordApi = DiscordApiBuilder()
         .setToken(chadConfig.botToken)
@@ -72,8 +78,14 @@ fun main(args: Array<String>) {
         "list" to ListCommand(chadConfig.statusChannelId, discordApi)
     ) + commonCommands + chadConfig.ircCommands.mapValues { StaticCommand(it.value) } + dslCommands
 
+    logger.info("loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
+    logger.info("loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
+    logger.info("starting listeners...")
+
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
 
     if (chadConfig.enableNotificationRoles) NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
+
+    logger.info("started listeners")
 }
