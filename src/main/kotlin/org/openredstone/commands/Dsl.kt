@@ -12,6 +12,8 @@ annotation class CommandMarker
 
 @CommandMarker
 class ReplyScope(val sender: Sender, private val args: List<String>) {
+    operator fun Subcommand.invoke(vararg args: String) = command.runCommand(sender, args.toList())
+
     fun link(link: String) = when (sender.service) {
         Service.DISCORD -> "<$link>"
         Service.IRC -> link
@@ -48,7 +50,7 @@ class CommandScope {
                     when (parameter) {
                         is Required -> parameter.value = args[i]
                         is Optional -> parameter.value = args.getOrNull(i)
-                        is VarArg -> parameter.values = args.subList(i, args.size)
+                        is Vararg -> parameter.values = args.subList(i, args.size)
                     }
                 }
                 return ReplyScope(sender, args).message()
@@ -56,7 +58,7 @@ class CommandScope {
         }
     }
 
-    fun required(message: String): Required = Required(message).also {
+    fun required(message: String) = Required(message).also {
         if (vararg) {
             throw IllegalStateException("a required parameter after a vararg parameter is not allowed")
         }
@@ -68,7 +70,7 @@ class CommandScope {
         parameters.add(it)
     }
 
-    fun optional(message: String): Optional = Optional(message).also {
+    fun optional(message: String) = Optional(message).also {
         if (vararg) {
             throw IllegalStateException("an optional parameter after a vararg parameter is not allowed")
         }
@@ -76,7 +78,7 @@ class CommandScope {
         parameters.add(it)
     }
 
-    fun vararg(message: String): VarArg = VarArg(message).also {
+    fun vararg(message: String) = Vararg(message).also {
         if (vararg) {
             throw IllegalStateException("a vararg parameter after a vararg parameter is not allowed")
         }
@@ -86,6 +88,8 @@ class CommandScope {
 
     fun buildCommand() = command ?: throw IllegalStateException("no reply supplied")
 }
+
+class Subcommand(internal val command: Command)
 
 // Arguments
 
@@ -103,7 +107,7 @@ class Optional(description: String) : Argument(description) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
 }
 
-class VarArg(description: String) : Argument(description) {
+class Vararg(description: String) : Argument(description) {
     internal lateinit var values: List<String>
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>) = values

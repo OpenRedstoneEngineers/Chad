@@ -9,7 +9,7 @@ import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
 import kotlin.test.assertEquals
 
-fun CommandExecutor.testIRC(cmd: String, fn: CommandResponse.() -> Unit) =
+fun CommandExecutor.testIrc(cmd: String, fn: CommandResponse.() -> Unit) =
     tryExecute(Sender(Service.IRC, "tester", emptyList()), cmd)!!.fn()
 
 class `config file` {
@@ -27,17 +27,17 @@ class `apply command` {
     ))
 
     @Test
-    fun fish() = executor.testIRC(",apply fish") {
+    fun fish() = executor.testIrc(",apply fish") {
         assert("Specify" in reply)
     }
 
     @Test
-    fun student() = executor.testIRC(",apply student") {
+    fun student() = executor.testIrc(",apply student") {
         assert("apply for student" in reply)
     }
 
     @Test
-    fun builder() = executor.testIRC(",apply builder") {
+    fun builder() = executor.testIrc(",apply builder") {
         assert("apply for builder" in reply)
     }
 }
@@ -53,34 +53,48 @@ class DSL {
             reply { arg ?: "42" }
         },
         "vararg" to command {
-            @Suppress("UNUSED_VARIABLE") val first by required("first")
+            @Suppress("UNUSED_VARIABLE")
+            val first by required("first")
             val rest by vararg("rest")
             reply { rest.joinToString() }
+        },
+        "subcommand" to command {
+            val sub = Subcommand(command {
+                reply { "git commit sudoku" }
+            })
+            reply { sub() }
         }
     ))
 
     @Test
-    fun required() = executor.testIRC(",required lol") {
+    fun required() = executor.testIrc(",required lol") {
         assertEquals("lol", reply)
     }
 
     @Test
     fun optional() {
-        executor.testIRC(",optional lol") {
+        executor.testIrc(",optional lol") {
             assertEquals("lol", reply)
         }
-        executor.testIRC(",optional") {
+        executor.testIrc(",optional") {
             assertEquals("42", reply)
         }
     }
 
     @Test
     fun vararg() {
-        executor.testIRC(",vararg lol 1 2 3") {
+        executor.testIrc(",vararg lol 1 2 3") {
             assertEquals("1, 2, 3", reply)
         }
-        executor.testIRC(",vararg lol") {
+        executor.testIrc(",vararg lol") {
             assertEquals("", reply)
+        }
+    }
+
+    @Test
+    fun subcommand() {
+        executor.testIrc(",subcommand") {
+            assertEquals("git commit sudoku", reply)
         }
     }
 }
