@@ -60,20 +60,25 @@ fun main(args: Array<String>) {
         }
 
     val commonCommands = chadConfig.commonCommands.mapValues { staticCommand(it.value) }
-    val discordCommands = mapOf(
+    val discordCommands = mutableMapOf(
         "apply" to applyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles),
-        "help" to helpCommand,
         "insult" to insultCommand(chadConfig.insults),
         "roll" to rollCommand
-    ) + commonCommands + chadConfig.discordCommands.mapValues { staticCommand(it.value) }
-    val ircCommands = mapOf(
+    )
+    discordCommands.putAll(commonCommands)
+    discordCommands.putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
+    discordCommands["help"] = helpCommand(discordCommands)
+
+    val ircCommands = mutableMapOf(
         "apply" to applyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
-        "help" to helpCommand,
         "insult" to insultCommand(chadConfig.insults),
         "list" to listCommand(chadConfig.statusChannelId, discordApi)
-    ) + commonCommands + chadConfig.ircCommands.mapValues { staticCommand(it.value) }
+    )
+    ircCommands.putAll(commonCommands)
+    ircCommands.putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
+    ircCommands["help"] = helpCommand(ircCommands)
 
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)

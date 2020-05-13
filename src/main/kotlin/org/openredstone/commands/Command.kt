@@ -4,6 +4,7 @@ import kotlin.random.Random
 
 import org.javacord.api.DiscordApi
 
+import org.openredstone.Commands
 import org.openredstone.toNullable
 
 enum class Service { DISCORD, IRC }
@@ -18,6 +19,8 @@ abstract class Command(
 ) {
     fun isAuthorized(sender: Sender): Boolean =
         "@" in authorizedRoles || sender.roles.intersect(authorizedRoles).isNotEmpty()
+
+    open fun help(name: String) = "No help available for this command."
 
     abstract fun runCommand(sender: Sender, args: List<String>): String
 }
@@ -40,8 +43,8 @@ class AuthorizedCommand(roles: List<String>) : Command(authorizedRoles = roles) 
 
 
 val applyCommand = command {
-    help = "instructions to apply"
-    val arg by required("what to apply for")
+    help = "Instructions to apply."
+    val arg by required()
     reply {
         when (arg) {
             "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.15.2 and run `/apply`"
@@ -51,16 +54,19 @@ val applyCommand = command {
     }
 }
 
-val helpCommand = command {
-   val helpMessage = "no u"
-
+fun helpCommand(commands: Commands) = command {
+    val command by optional()
+    val messages = commands.mapValues { (name, cmd) -> cmd.help(name) }
+    val available = commands.keys.joinToString()
     reply {
-        helpMessage
+        command?.let {
+            messages[it] ?: "No such command available"
+        } ?: "Available commands: $available"
     }
 }
 
 fun insultCommand(insults: List<String>) = command {
-    val target by required("target")
+    val target by required()
     reply {
         val targetName = if (target == "me") sender.username else target
         insults.random().replace("%USER%", targetName)
@@ -68,7 +74,7 @@ fun insultCommand(insults: List<String>) = command {
 }
 
 val invalidCommand = command {
-    @Suppress("UNUSED_VARIABLE") val args by vararg("")
+    @Suppress("UNUSED_VARIABLE") val args by vararg()
     reply { "Invalid command." }
 }
 
@@ -95,7 +101,7 @@ fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
 val rollCommand =  command {
     val d6 = arrayOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
 
-    val dice by optional("the kind of dice")
+    val dice by optional()
     reply {
         // apparently the unicode symbols don't work on IRC
         fun d6() = if (sender.service == Service.DISCORD) {
@@ -104,18 +110,16 @@ val rollCommand =  command {
             Random.nextInt(1, 6).toString()
         }
 
-        dice?.let {
-            when (it) {
-                "d4" -> Random.nextInt(1, 4).toString()
-                "d6" -> d6()
-                "d8" -> Random.nextInt(1, 8).toString()
-                "d10" -> Random.nextInt(1, 10).toString()
-                "d12" -> Random.nextInt(1, 12).toString()
-                "d20" -> Random.nextInt(1, 20).toString()
-                "rick" -> link("https://youtu.be/dQw4w9WgXcQ")
-                else -> d6.random()
-            }
-        } ?: d6()
+        when (dice ?: "d6") {
+            "d4" -> Random.nextInt(1, 4).toString()
+            "d6" -> d6()
+            "d8" -> Random.nextInt(1, 8).toString()
+            "d10" -> Random.nextInt(1, 10).toString()
+            "d12" -> Random.nextInt(1, 12).toString()
+            "d20" -> Random.nextInt(1, 20).toString()
+            "rick" -> link("https://youtu.be/dQw4w9WgXcQ")
+            else -> "unexpected argument"
+        }
     }
 }
 

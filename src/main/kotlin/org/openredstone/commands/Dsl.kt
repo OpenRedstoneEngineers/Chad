@@ -1,9 +1,10 @@
 package org.openredstone.commands
 
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
- * TODO
+ * The command function can be used to build a command.
  */
 fun command(configure: CommandScope.() -> Unit) = CommandScope().apply(configure).buildCommand()
 
@@ -14,6 +15,9 @@ annotation class CommandMarker
 class ReplyScope(val sender: Sender, private val args: List<String>) {
     operator fun Subcommand.invoke(vararg args: String) = command.runCommand(sender, args.toList())
 
+    /**
+     * Formats a link, depending on the service.
+     */
     fun link(link: String) = when (sender.service) {
         Service.DISCORD -> "<$link>"
         Service.IRC -> link
@@ -22,6 +26,9 @@ class ReplyScope(val sender: Sender, private val args: List<String>) {
 
 @CommandMarker
 class CommandScope {
+    /**
+     * The help message. If it is null, a help message is automatically generated.
+     */
     var help: String? = null
 
     private var requiredParameters = 0
@@ -31,26 +38,72 @@ class CommandScope {
     // TODO: should we make replies optional?
     private var command: Command? = null
 
+    sealed class Argument {
+        internal abstract val name: String
+
+        class Required : Argument() {
+            internal lateinit var value: String
+            override lateinit var name: String
+
+            operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
+                name = property.name
+                return object : ReadOnlyProperty<Any?, String> {
+                    override fun getValue(thisRef: Any?, property: KProperty<*>) = value
+                }
+            }
+        }
+
+        class Optional : Argument() {
+            internal var value: String? = null
+            override lateinit var name: String
+
+            operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String?> {
+                name = "[${property.name}]"
+                return object : ReadOnlyProperty<Any?, String?> {
+                    override operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
+                }
+            }
+        }
+
+        class Vararg : Argument() {
+            internal lateinit var values: List<String>
+            override lateinit var name: String
+
+            operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, List<String>> {
+                name = "[${property.name}...]"
+                return object : ReadOnlyProperty<Any?, List<String>> {
+                    override operator fun getValue(thisRef: Any?, property: KProperty<*>) = values
+                }
+            }
+        }
+    }
+
+    /**
+     * The reply of the command.
+     */
     fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String) {
-        // requireParameters = 0, so that we can return the custom help message
+        // requireParameters = 0, so that we can return custom error messages
         command = object : Command(requireParameters = 0, privateReply = isPrivate) {
-            // TODO: improve help message
+            val params = parameters.joinToString(" ") { it.name }
+
+            override fun help(name: String): String {
+                val usage = "Usage: ,$name $params"
+                return if (help === null) usage else "$help $usage"
+            }
 
             override fun runCommand(sender: Sender, args: List<String>): String {
-                if (!vararg) {
-                    if (args.size < requiredParameters) {
-                        return "expected at least $requiredParameters arguments, got ${args.size}"
-                    }
-                    val maxParameters = requiredParameters + optionalParameters
-                    if (args.size > maxParameters) {
-                        return "expected at most $maxParameters arguments, got ${args.size}"
-                    }
+                if (args.size < requiredParameters) {
+                    return "expected at least $requiredParameters arguments, got ${args.size}"
+                }
+                val maxParameters = requiredParameters + optionalParameters
+                if (!vararg && args.size > maxParameters) {
+                    return "expected at most $maxParameters arguments, got ${args.size}"
                 }
                 for ((i, parameter) in parameters.withIndex()) {
                     when (parameter) {
-                        is Required -> parameter.value = args[i]
-                        is Optional -> parameter.value = args.getOrNull(i)
-                        is Vararg -> parameter.values = args.subList(i, args.size)
+                        is Argument.Required -> parameter.value = args[i]
+                        is Argument.Optional -> parameter.value = args.getOrNull(i)
+                        is Argument.Vararg -> parameter.values = args.subList(i, args.size)
                     }
                 }
                 return ReplyScope(sender, args).message()
@@ -58,19 +111,25 @@ class CommandScope {
         }
     }
 
-    fun required(message: String) = Required(message).also {
+    /**
+     * A required argument. This is supposed to be used as a delegate.
+     */
+    fun required() = Argument.Required().also {
         if (vararg) {
             throw IllegalStateException("a required parameter after a vararg parameter is not allowed")
         }
         val last = parameters.lastOrNull()
-        if (last is Optional) {
+        if (last is Argument.Optional) {
             throw IllegalStateException("a required parameter after an optional parameter is not allowed")
         }
         requiredParameters += 1
         parameters.add(it)
     }
 
-    fun optional(message: String) = Optional(message).also {
+    /**
+     * An optional argument. This is supposed to be used as a delegate.
+     */
+    fun optional() = Argument.Optional().also {
         if (vararg) {
             throw IllegalStateException("an optional parameter after a vararg parameter is not allowed")
         }
@@ -78,7 +137,10 @@ class CommandScope {
         parameters.add(it)
     }
 
-    fun vararg(message: String) = Vararg(message).also {
+    /**
+     * Variable arguments. This is supposed to be used as a delegate.
+     */
+    fun vararg() = Argument.Vararg().also {
         if (vararg) {
             throw IllegalStateException("a vararg parameter after a vararg parameter is not allowed")
         }
@@ -86,29 +148,7 @@ class CommandScope {
         parameters.add(it)
     }
 
-    fun buildCommand() = command ?: throw IllegalStateException("no reply supplied")
+    internal fun buildCommand() = command ?: throw IllegalStateException("no reply supplied")
 }
 
 class Subcommand(internal val command: Command)
-
-// Arguments
-
-sealed class Argument(val description: String)
-
-class Required(description: String) : Argument(description) {
-    internal lateinit var value: String
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-}
-
-class Optional(description: String) : Argument(description) {
-    internal var value: String? = null
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-}
-
-class Vararg(description: String) : Argument(description) {
-    internal lateinit var values: List<String>
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>) = values
-}

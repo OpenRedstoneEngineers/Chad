@@ -45,17 +45,17 @@ class `apply command` {
 class DSL {
     private val executor = CommandExecutor(',', mapOf(
         "required" to command {
-            val arg by required("required")
+            val arg by required()
             reply { arg }
         },
         "optional" to command {
-            val arg by optional("optional")
+            val arg by optional()
             reply { arg ?: "42" }
         },
         "vararg" to command {
             @Suppress("UNUSED_VARIABLE")
-            val first by required("first")
-            val rest by vararg("rest")
+            val first by required()
+            val rest by vararg()
             reply { rest.joinToString() }
         },
         "subcommand" to command {
