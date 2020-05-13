@@ -15,6 +15,7 @@ class `config file` {
     @Test
     fun load() {
         val config = Config { addSpec(ChadSpec) }.from.yaml.file("config.example.yaml")
+        @Suppress("UNUSED_VARIABLE")
         val chadConfig = config[ChadSpec.chad]
     }
 }

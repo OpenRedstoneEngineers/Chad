@@ -24,11 +24,12 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation(group = "org.slf4j", name = "slf4j-nop", version = "1.7.25")
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
     implementation(group = "org.javacord", name = "javacord", version = "3.0.3")
     implementation(group = "com.uchuhimo", name = "konf", version = "0.22.1")
     implementation(group = "org.pircbotx", name = "pircbotx", version = "2.1")
+    implementation(group = "io.github.microutils", name = "kotlin-logging", version = "1.7.9")
+    runtime(group = "org.slf4j", name = "slf4j-simple", version = "1.7.29")
 
     testImplementation(kotlin("test-junit5"))
     testRuntime(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.6.2")
