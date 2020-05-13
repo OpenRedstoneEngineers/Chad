@@ -36,7 +36,13 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val reply = if (args.size < command.requireParameters) {
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
         } else {
-            command.runCommand(sender, args)
+            try {
+                command.runCommand(sender, args)
+            } catch (e: Exception) {
+                logger.error(e) { "caught exception while running command" }
+
+                "An error occurred while running the command."
+            }
         }
 
         logger.debug("Reply to ${sender.username} [${sender.service}]: $reply")

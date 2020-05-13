@@ -49,7 +49,7 @@ class IrcLinkListener : ListenerAdapter() {
                 event.channel.send().message("${connection.url().host} | $title")
             } catch (e: Exception) {
                 // thank you javae . net ! and tank u jay soop !
-                logger.warn(e) { "caught exception in IRC link listener" }
+                logger.warn(e) { "caught exception" }
             }
         }
     }
