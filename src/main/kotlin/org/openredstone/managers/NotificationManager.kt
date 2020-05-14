@@ -37,8 +37,7 @@ class NotificationManager(
 
     private fun reactionAdded(event: ReactionAddEvent) {
         val user = event.user
-        val message = event.message.toNullable() ?: return
-        if (user.isBot || message.id != notificationMessageId) {
+        if (user.isBot || event.messageId != notificationMessageId) {
             return
         }
         event.removeReaction().get()
@@ -66,8 +65,6 @@ class NotificationManager(
             event.deleteMessage("").get()
         }
     }
-
-    fun remove() = listeners.forEach { it.remove() }
 }
 
 private val ServerTextChannel.recentMessages

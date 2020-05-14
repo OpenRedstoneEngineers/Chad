@@ -1,5 +1,6 @@
 package org.openredstone.listeners
 
+import mu.KotlinLogging
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.permission.Role
 import org.javacord.api.event.message.MessageCreateEvent
@@ -28,10 +29,15 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, executor: Comman
     discordApi.addMessageCreateListener(::messageCreated)
 }
 
+val spoilerLogger = KotlinLogging.logger("Spoiler listener")
+
 private fun startSpoilerListener(discordApi: DiscordApi) {
     discordApi.addMessageCreateListener { event ->
-        if (event.message.content.contains(Regex("\\|\\|"))) {
-            event.message.delete()
+        val message = event.message
+        if (message.content.contains(Regex("\\|\\|"))) {
+            spoilerLogger.debug("${message.author} [${message.channel}]: ${message.content}")
+
+            message.delete()
         }
     }
 }

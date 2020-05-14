@@ -4,6 +4,7 @@ import kotlin.system.exitProcess
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
+import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
 
 import org.openredstone.commands.*
@@ -11,6 +12,11 @@ import org.openredstone.entity.ChadSpec
 import org.openredstone.listeners.startDiscordListeners
 import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
+
+/**
+ * The global logger for Chad.
+ */
+val logger = KotlinLogging.logger("Chad")
 
 typealias Commands = Map<String, Command>
 
@@ -22,6 +28,8 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
             return null
         }
 
+        logger.info("${sender.username} [${sender.service}]: $message")
+
         val parts = message.split(" ")
         val args = parts.drop(1)
         val name = parts[0].substring(1)
@@ -30,8 +38,17 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val reply = if (args.size < command.requireParameters) {
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
         } else {
-            command.runCommand(sender, args)
+            try {
+                command.runCommand(sender, args)
+            } catch (e: Exception) {
+                logger.error(e) { "caught exception while running command" }
+
+                "An error occurred while running the command."
+            }
         }
+
+        logger.debug("Reply to ${sender.username} [${sender.service}]: $reply")
+
         return CommandResponse(reply, command.privateReply)
     }
 }
@@ -47,9 +64,11 @@ fun main(args: Array<String>) {
 
     val chadConfig = config[ChadSpec.chad]
 
-    println("Loading Chad...")
-    println("Notification channel ID: ${chadConfig.notificationChannelId}")
-    println("Command character: \'${chadConfig.commandChar}\'")
+    logger.info("Loading Chad...")
+    logger.info("Notification channel ID: ${chadConfig.notificationChannelId}")
+    logger.info("Command character: '${chadConfig.commandChar}'")
+    logger.info("Disable spoilers: ${chadConfig.disableSpoilers}")
+    logger.info("Link preview: ${chadConfig.enableLinkPreview}")
 
     val discordApi = DiscordApiBuilder()
         .setToken(chadConfig.botToken)
@@ -80,8 +99,14 @@ fun main(args: Array<String>) {
     ircCommands.putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
     ircCommands["help"] = helpCommand(ircCommands)
 
+    logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
+    logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
+    logger.info("Starting listeners...")
+
     startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
 
-    NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
+    if (chadConfig.enableNotificationRoles) NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
+
+    logger.info("Started listeners")
 }
