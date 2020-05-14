@@ -56,8 +56,8 @@ val applyCommand = command {
 
 fun helpCommand(commands: Commands) = command {
     val command by optional()
-    val messages = commands.mapValues { (name, cmd) -> cmd.help(name) }
-    val available = commands.keys.joinToString()
+    val messages by lazy { commands.mapValues { (name, cmd) -> cmd.help(name) } }
+    val available by lazy { commands.keys.joinToString() }
     reply {
         command?.let {
             messages[it] ?: "No such command available"

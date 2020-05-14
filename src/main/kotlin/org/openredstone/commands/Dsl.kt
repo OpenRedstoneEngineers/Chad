@@ -12,7 +12,7 @@ fun command(configure: CommandScope.() -> Unit) = CommandScope().apply(configure
 annotation class CommandMarker
 
 @CommandMarker
-class ReplyScope(val sender: Sender, private val args: List<String>) {
+class ReplyScope(val sender: Sender) {
     operator fun Subcommand.invoke(vararg args: String) = command.runCommand(sender, args.toList())
 
     /**
@@ -27,7 +27,7 @@ class ReplyScope(val sender: Sender, private val args: List<String>) {
 @CommandMarker
 class CommandScope {
     /**
-     * The help message. If it is null, a help message is automatically generated.
+     * The help message. It is used to generate the help message.
      */
     var help: String? = null
 
@@ -38,57 +38,17 @@ class CommandScope {
     // TODO: should we make replies optional?
     private var command: Command? = null
 
-    sealed class Argument {
-        internal abstract val name: String
-
-        class Required : Argument() {
-            internal lateinit var value: String
-            override lateinit var name: String
-
-            operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
-                name = property.name
-                return object : ReadOnlyProperty<Any?, String> {
-                    override fun getValue(thisRef: Any?, property: KProperty<*>) = value
-                }
-            }
-        }
-
-        class Optional : Argument() {
-            internal var value: String? = null
-            override lateinit var name: String
-
-            operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String?> {
-                name = "[${property.name}]"
-                return object : ReadOnlyProperty<Any?, String?> {
-                    override operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-                }
-            }
-        }
-
-        class Vararg : Argument() {
-            internal lateinit var values: List<String>
-            override lateinit var name: String
-
-            operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, List<String>> {
-                name = "[${property.name}...]"
-                return object : ReadOnlyProperty<Any?, List<String>> {
-                    override operator fun getValue(thisRef: Any?, property: KProperty<*>) = values
-                }
-            }
-        }
-    }
-
     /**
      * The reply of the command.
      */
     fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String) {
         // requireParameters = 0, so that we can return custom error messages
         command = object : Command(requireParameters = 0, privateReply = isPrivate) {
-            val params = parameters.joinToString(" ") { it.name }
+            val params = parameters.joinToString(" ")
 
             override fun help(name: String): String {
                 val usage = "Usage: ,$name $params"
-                return if (help === null) usage else "$help $usage"
+                return help?.let { "$it $usage" } ?: usage
             }
 
             override fun runCommand(sender: Sender, args: List<String>): String {
@@ -106,7 +66,7 @@ class CommandScope {
                         is Argument.Vararg -> parameter.values = args.subList(i, args.size)
                     }
                 }
-                return ReplyScope(sender, args).message()
+                return ReplyScope(sender).message()
             }
         }
     }
@@ -152,3 +112,51 @@ class CommandScope {
 }
 
 class Subcommand(internal val command: Command)
+
+// Arguments
+
+sealed class Argument {
+    internal abstract val name: String
+
+    class Required : Argument() {
+        internal lateinit var value: String
+        override lateinit var name: String
+
+        operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
+            name = property.name
+            return object : ReadOnlyProperty<Any?, String> {
+                override fun getValue(thisRef: Any?, property: KProperty<*>) = value
+            }
+        }
+
+        override fun toString() = name
+    }
+
+    class Optional : Argument() {
+        internal var value: String? = null
+        override lateinit var name: String
+
+        operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String?> {
+            name = property.name
+            return object : ReadOnlyProperty<Any?, String?> {
+                override operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
+            }
+        }
+
+        override fun toString() = "[$name]"
+    }
+
+    class Vararg : Argument() {
+        internal lateinit var values: List<String>
+        override lateinit var name: String
+
+        operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, List<String>> {
+            name = property.name
+            return object : ReadOnlyProperty<Any?, List<String>> {
+                override operator fun getValue(thisRef: Any?, property: KProperty<*>) = values
+            }
+        }
+
+        override fun toString() = "[$name...]"
+    }
+}
