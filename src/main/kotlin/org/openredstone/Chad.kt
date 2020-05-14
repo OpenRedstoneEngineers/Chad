@@ -18,6 +18,8 @@ import org.openredstone.managers.NotificationManager
  */
 val logger = KotlinLogging.logger("Chad")
 
+typealias Commands = Map<String, Command>
+
 data class CommandResponse(val reply: String, val privateReply: Boolean)
 
 class CommandExecutor(private val commandChar: Char, private val commands: Commands) {
@@ -31,7 +33,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val parts = message.split(" ")
         val args = parts.drop(1)
         val name = parts[0].substring(1)
-        val command = commands[name] ?: ErrorCommand
+        val command = commands[name] ?: invalidCommand
 
         val reply = if (args.size < command.requireParameters) {
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
@@ -76,21 +78,26 @@ fun main(args: Array<String>) {
             updateActivity(chadConfig.playingMessage)
         }
 
-    val commonCommands = chadConfig.commonCommands.mapValues { StaticCommand(it.value) }
-    val discordCommands = mapOf(
-        "apply" to ApplyCommand,
+    val commonCommands = chadConfig.commonCommands.mapValues { staticCommand(it.value) }
+    val discordCommands = mutableMapOf(
+        "apply" to applyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles),
-        "help" to HelpCommand,
-        "insult" to InsultCommand(chadConfig.insults),
-        "roll" to RollCommand
-    ) + commonCommands + chadConfig.discordCommands.mapValues { StaticCommand(it.value) } + dslCommands
-    val ircCommands = mapOf(
-        "apply" to ApplyCommand,
+        "insult" to insultCommand(chadConfig.insults),
+        "roll" to rollCommand
+    )
+    discordCommands.putAll(commonCommands)
+    discordCommands.putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
+    discordCommands["help"] = helpCommand(discordCommands)
+
+    val ircCommands = mutableMapOf(
+        "apply" to applyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
-        "help" to HelpCommand,
-        "insult" to InsultCommand(chadConfig.insults),
-        "list" to ListCommand(chadConfig.statusChannelId, discordApi)
-    ) + commonCommands + chadConfig.ircCommands.mapValues { StaticCommand(it.value) } + dslCommands
+        "insult" to insultCommand(chadConfig.insults),
+        "list" to listCommand(chadConfig.statusChannelId, discordApi)
+    )
+    ircCommands.putAll(commonCommands)
+    ircCommands.putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
+    ircCommands["help"] = helpCommand(ircCommands)
 
     logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
     logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")

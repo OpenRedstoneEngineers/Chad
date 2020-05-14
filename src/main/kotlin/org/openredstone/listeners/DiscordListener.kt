@@ -10,7 +10,7 @@ import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.toNullable
 
-fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
+private fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
     fun messageCreated(event: MessageCreateEvent) {
         val user = event.messageAuthor.asUser().toNullable() ?: return
         if (user.isBot) {
@@ -31,7 +31,7 @@ fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecuto
 
 val spoilerLogger = KotlinLogging.logger("Spoiler listener")
 
-fun startSpoilerListener(discordApi: DiscordApi) {
+private fun startSpoilerListener(discordApi: DiscordApi) {
     discordApi.addMessageCreateListener { event ->
         val message = event.message
         if (message.content.contains(Regex("\\|\\|"))) {
