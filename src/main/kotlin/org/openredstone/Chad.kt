@@ -39,7 +39,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
         } else {
             try {
-                command.runCommand(sender, args)
+                "${sender.username}: " + command.runCommand(sender, args)
             } catch (e: Exception) {
                 logger.error(e) { "caught exception while running command" }
 
@@ -84,20 +84,22 @@ fun main(args: Array<String>) {
         "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles),
         "insult" to insultCommand(chadConfig.insults),
         "roll" to rollCommand
-    )
-    discordCommands.putAll(commonCommands)
-    discordCommands.putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
-    discordCommands["help"] = helpCommand(discordCommands)
+    ).apply {
+        putAll(commonCommands)
+        putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
+        put("help", helpCommand(this))
+    }
 
     val ircCommands = mutableMapOf(
         "apply" to applyCommand,
         "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
         "insult" to insultCommand(chadConfig.insults),
         "list" to listCommand(chadConfig.statusChannelId, discordApi)
-    )
-    ircCommands.putAll(commonCommands)
-    ircCommands.putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
-    ircCommands["help"] = helpCommand(ircCommands)
+    ).apply {
+        putAll(commonCommands)
+        putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
+        put("help", helpCommand(this))
+    }
 
     logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
     logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
