@@ -30,7 +30,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
 
         logger.info("${sender.username} [${sender.service}]: $message")
 
-        val parts = message.split(" ")
+        val parts = message.split(Regex("""\s+"""))
         val args = parts.drop(1)
         val name = parts[0].substring(1)
         val command = commands[name] ?: invalidCommand
