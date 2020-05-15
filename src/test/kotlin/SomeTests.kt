@@ -7,7 +7,6 @@ import org.openredstone.CommandExecutor
 import org.openredstone.CommandResponse
 import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
-import kotlin.test.assertEquals
 
 val sender = Sender(Service.IRC, "tester", emptyList())
 
@@ -27,6 +26,11 @@ class `apply command` {
     private val executor = CommandExecutor(',', mapOf(
         "apply" to applyCommand
     ))
+
+    @Test
+    fun `name in reply`() = executor.testIrc(",apply") {
+        assert(sender.username in reply)
+    }
 
     @Test
     fun fish() = executor.testIrc(",apply fish") {
@@ -70,33 +74,33 @@ class DSL {
 
     @Test
     fun required() = executor.testIrc(",required lol") {
-        assertEquals("${sender.username}: lol", reply)
+        assert("lol" in reply)
     }
 
     @Test
     fun optional() {
         executor.testIrc(",optional lol") {
-            assertEquals("${sender.username}: lol", reply)
+            assert("lol" in reply)
         }
         executor.testIrc(",optional") {
-            assertEquals("${sender.username}: 42", reply)
+            assert("42" in reply)
         }
     }
 
     @Test
     fun vararg() {
         executor.testIrc(",vararg lol 1 2 3") {
-            assertEquals("${sender.username}: 1, 2, 3", reply)
+            assert("1, 2, 3" in reply)
         }
         executor.testIrc(",vararg lol") {
-            assertEquals("${sender.username}: ", reply)
+            assert("" in reply)
         }
     }
 
     @Test
     fun subcommand() {
         executor.testIrc(",subcommand") {
-            assertEquals("${sender.username}: git commit sudoku", reply)
+            assert("git commit sudoku" in reply)
         }
     }
 }

@@ -53,11 +53,11 @@ class CommandScope {
 
             override fun runCommand(sender: Sender, args: List<String>): String {
                 if (args.size < requiredParameters) {
-                    return "expected at least $requiredParameters arguments, got ${args.size}"
+                    return "expected at least $requiredParameters argument(s), got ${args.size}"
                 }
                 val maxParameters = requiredParameters + optionalParameters
                 if (!vararg && args.size > maxParameters) {
-                    return "expected at most $maxParameters arguments, got ${args.size}"
+                    return "expected at most $maxParameters argument(s), got ${args.size}"
                 }
                 for ((i, parameter) in parameters.withIndex()) {
                     when (parameter) {
