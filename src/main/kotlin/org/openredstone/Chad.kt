@@ -35,7 +35,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val name = parts[0].substring(1)
         val command = commands[name] ?: invalidCommand
 
-        var reply = if (args.size < command.requireParameters) {
+        val reply = if (args.size < command.requireParameters) {
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
         } else {
             try {
@@ -46,11 +46,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
                 "An error occurred while running the command."
             }
         }
-        reply = "${sender.username}: $reply"
-
-        logger.debug("Reply [${sender.service}]: $reply")
-
-        return CommandResponse(reply, command.privateReply)
+        return CommandResponse("${sender.username}: $reply", command.privateReply)
     }
 }
 
@@ -64,6 +60,16 @@ fun main(args: Array<String>) {
         .from.yaml.file(args[0])
 
     val chadConfig = config[ChadSpec.chad]
+
+    // Logging properties
+    val loggingConfig = chadConfig.logging
+    System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", loggingConfig.defaultLevel)
+    System.setProperty("org.slf4j.simpleLogger.log.Chad", loggingConfig.chadLevel)
+    System.setProperty("org.slf4j.simpleLogger.log.IRC link listener", loggingConfig.chadLevel)
+    System.setProperty("org.slf4j.simpleLogger.log.Spoiler listener", loggingConfig.chadLevel)
+    System.setProperty("org.slf4j.simpleLogger.showDateTime", "true")
+    System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", chadConfig.logging.dateTimeFormat)
+    System.setProperty("org.slf4j.simpleLogger.showThreadName", "false")
 
     logger.info("Loading Chad...")
     logger.info("Notification channel ID: ${chadConfig.notificationChannelId}")

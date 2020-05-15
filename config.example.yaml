@@ -29,6 +29,10 @@ chad:
     - "op"
   authorizedDiscordRoles:
     - "Staff"
+  logging:
+    defaultLevel: "warn"
+    chadLevel: "debug"
+    dateTimeFormat: "[yyyy-MM-dd HH:mm:ss]"
   insults:
     - "once in the 4th grade %USER% got a 2% on their math quiz so everyone called them milk for the rest of the year"
     - "%USER% may look like an idiot and talk like an idiot but don't let that fool you. %USER% really is an idiot."
