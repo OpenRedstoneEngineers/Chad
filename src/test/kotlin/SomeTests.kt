@@ -9,8 +9,10 @@ import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
 import kotlin.test.assertEquals
 
+val sender = Sender(Service.IRC, "tester", emptyList())
+
 fun CommandExecutor.testIrc(cmd: String, fn: CommandResponse.() -> Unit) =
-    tryExecute(Sender(Service.IRC, "tester", emptyList()), cmd)!!.fn()
+    tryExecute(sender, cmd)!!.fn()
 
 class `config file` {
     @Test
@@ -68,33 +70,33 @@ class DSL {
 
     @Test
     fun required() = executor.testIrc(",required lol") {
-        assertEquals("lol", reply)
+        assertEquals("${sender.username}: lol", reply)
     }
 
     @Test
     fun optional() {
         executor.testIrc(",optional lol") {
-            assertEquals("lol", reply)
+            assertEquals("${sender.username}: lol", reply)
         }
         executor.testIrc(",optional") {
-            assertEquals("42", reply)
+            assertEquals("${sender.username}: 42", reply)
         }
     }
 
     @Test
     fun vararg() {
         executor.testIrc(",vararg lol 1 2 3") {
-            assertEquals("1, 2, 3", reply)
+            assertEquals("${sender.username}: 1, 2, 3", reply)
         }
         executor.testIrc(",vararg lol") {
-            assertEquals("", reply)
+            assertEquals("${sender.username}: ", reply)
         }
     }
 
     @Test
     fun subcommand() {
         executor.testIrc(",subcommand") {
-            assertEquals("git commit sudoku", reply)
+            assertEquals("${sender.username}: git commit sudoku", reply)
         }
     }
 }

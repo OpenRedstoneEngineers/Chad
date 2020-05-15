@@ -39,11 +39,11 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
         } else {
             try {
-                "${sender.username}: " + command.runCommand(sender, args)
+                "${sender.username}: ${command.runCommand(sender, args)}"
             } catch (e: Exception) {
                 logger.error(e) { "caught exception while running command" }
 
-                "An error occurred while running the command."
+                "${sender.username}: An error occurred while running the command."
             }
         }
 
