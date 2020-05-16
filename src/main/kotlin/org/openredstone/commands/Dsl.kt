@@ -63,6 +63,7 @@ class CommandScope {
                     when (parameter) {
                         is Argument.Required -> parameter.value = args[i]
                         is Argument.Optional -> parameter.value = args.getOrNull(i)
+                        is Argument.Default -> parameter.value = args.getOrNull(i) ?: parameter.default
                         is Argument.Vararg -> parameter.values = args.subList(i, args.size)
                     }
                 }
@@ -82,6 +83,9 @@ class CommandScope {
         if (last is Argument.Optional) {
             throw IllegalStateException("a required parameter after an optional parameter is not allowed")
         }
+        if (last is Argument.Default) {
+            throw IllegalStateException("a required parameter after a default parameter is not allowed")
+        }
         requiredParameters += 1
         parameters.add(it)
     }
@@ -92,6 +96,17 @@ class CommandScope {
     fun optional() = Argument.Optional().also {
         if (vararg) {
             throw IllegalStateException("an optional parameter after a vararg parameter is not allowed")
+        }
+        optionalParameters += 1
+        parameters.add(it)
+    }
+
+    /**
+     * A default argument. This is supposed to be used as a delegate.
+     */
+    fun default(value: String) = Argument.Default(value).also {
+        if (vararg) {
+            throw IllegalStateException("a default parameter after a vararg parameter is not allowed")
         }
         optionalParameters += 1
         parameters.add(it)
@@ -144,6 +159,20 @@ sealed class Argument {
         }
 
         override fun toString() = "[$name]"
+    }
+
+    class Default(internal val default: String) : Argument() {
+        internal lateinit var value: String
+        override lateinit var name: String
+
+        operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
+            name = property.name
+            return object : ReadOnlyProperty<Any?, String> {
+                override operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
+            }
+        }
+
+        override fun toString() = "[$name=$default]"
     }
 
     class Vararg : Argument() {

@@ -101,7 +101,7 @@ fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
 val rollCommand =  command {
     val d6 = arrayOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
 
-    val dice by optional()
+    val dice by default("d6")
     reply {
         // apparently the unicode symbols don't work on IRC
         fun d6() = if (sender.service == Service.DISCORD) {
@@ -110,7 +110,7 @@ val rollCommand =  command {
             Random.nextInt(1, 6).toString()
         }
 
-        when (dice ?: "d6") {
+        when (dice) {
             "d4" -> Random.nextInt(1, 4).toString()
             "d6" -> d6()
             "d8" -> Random.nextInt(1, 8).toString()

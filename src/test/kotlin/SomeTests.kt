@@ -58,6 +58,10 @@ class DSL {
             val arg by optional()
             reply { arg ?: "42" }
         },
+        "default" to command {
+            val arg by default("42")
+            reply { arg }
+        },
         "vararg" to command {
             @Suppress("UNUSED_VARIABLE")
             val first by required()
@@ -83,6 +87,16 @@ class DSL {
             assert("lol" in reply)
         }
         executor.testIrc(",optional") {
+            assert("42" in reply)
+        }
+    }
+
+    @Test
+    fun default() {
+        executor.testIrc(",default lol") {
+            assert("lol" in reply)
+        }
+        executor.testIrc(",default") {
             assert("42" in reply)
         }
     }
