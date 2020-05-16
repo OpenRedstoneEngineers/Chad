@@ -27,7 +27,7 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, gameChatChannelI
         if (response.privateReply) {
             user.sendMessage(response.reply)
         } else {
-            event.channel.sendMessage("$username ${response.reply}")
+            event.channel.sendMessage("$username: ${response.reply}")
         }
     }
     discordApi.addMessageCreateListener(::messageCreated)

@@ -28,16 +28,16 @@ private class IrcCommandListener(private val ircConfig: IrcBotConfig, private va
             val send: (String) -> Unit = if (response.privateReply) {
                 { event.user?.send()!!.message("$parsedSender $it") }
             } else {
-                event.channel.send()::message
+                { event.channel.send().message("$parsedSender: $it") }
             }
             response.sendResponse(send)
         } else {
             val commandSender = Sender(Service.IRC, sender, listOf(role))
             val response = executor.tryExecute(commandSender, event.message) ?: return
-            val send = if (response.privateReply) {
-                event.user?.send()!!::message
+            val send: (String) -> Unit = if (response.privateReply) {
+                { event.user?.send()!!.message(it) }
             } else {
-                event.channel.send()::message
+                { event.channel.send().message("$sender: $it") }
             }
             response.sendResponse(send)
         }
