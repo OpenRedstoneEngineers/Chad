@@ -4,12 +4,47 @@ import kotlin.random.Random
 
 import org.javacord.api.DiscordApi
 
-import org.openredstone.Commands
+import org.openredstone.logger
 import org.openredstone.toNullable
 
 enum class Service { DISCORD, IRC }
 
 data class Sender(val service: Service, val username: String, val roles: List<String>)
+
+typealias Commands = Map<String, Command>
+
+data class CommandResponse(val reply: String, val privateReply: Boolean)
+
+class CommandExecutor(private val commandChar: Char, private val commands: Commands) {
+    fun tryExecute(sender: Sender, message: String): CommandResponse? {
+        if (message.isEmpty() || message[0] != commandChar) {
+            return null
+        }
+
+        logger.info("${sender.username} [${sender.service}]: $message")
+
+        val parts = message.split(Regex("""\s+"""))
+        val args = parts.drop(1)
+        val name = parts[0].substring(1)
+        val command = commands[name] ?: return CommandResponse(
+            "Invalid command.",
+            false
+        )
+
+        val reply = if (args.size < command.requireParameters) {
+            "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
+        } else {
+            try {
+                command.runCommand(sender, args)
+            } catch (e: Exception) {
+                logger.error(e) { "caught exception while running command" }
+
+                "An error occurred while running the command."
+            }
+        }
+        return CommandResponse(reply, command.privateReply)
+    }
+}
 
 abstract class Command(
     val requireParameters: Int = 0,
@@ -58,7 +93,7 @@ fun helpCommand(commands: Commands) = command {
     val command by optional()
     val messages by lazy { commands.mapValues { (name, cmd) -> cmd.help(name) } }
     val available by lazy { commands.keys.joinToString() }
-    reply {
+    reply(isPrivate = true) {
         command?.let {
             messages[it] ?: "No such command available"
         } ?: "Available commands: $available"
@@ -73,13 +108,9 @@ fun insultCommand(insults: List<String>) = command {
     }
 }
 
-val invalidCommand = command {
-    @Suppress("UNUSED_VARIABLE") val args by vararg()
-    reply { "Invalid command." }
-}
 
 fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
-    reply {
+    reply(isPrivate = true) {
         buildString {
             val channel = discordApi.getServerTextChannelById(statusChannelId).toNullable() ?: return@reply ""
             channel.getMessages(1).get().first()
@@ -103,10 +134,10 @@ val rollCommand = command {
     val dice by default("d6")
     help = "NdT where N is the number and T is the type of die.\nSample: ,roll 2d6+10d12\n"
     reply {
-        if (dice == "rick") return@reply "https://youtu.be/dQw4w9WgXcQ"
+        if (dice == "rick") return@reply link("https://youtu.be/dQw4w9WgXcQ>")
         if (dice == "d6") return@reply d6.random()
         val split = dice.split("+")
-        split.joinToString("\n") {
+        "\n" + split.joinToString("\n") {
             val multiplier: Int
             val type: Int
             if (it.indexOf('d') == 0) {
@@ -118,7 +149,7 @@ val rollCommand = command {
             }
             val values = (1..multiplier).map { Random.nextInt(1, type + 1) }
             val result = values.joinToString(", ")
-            "*d$type* rolled *$multiplier* time(s): `$result` (*${values.sum()}*)"
+            "**d$type** rolled **$multiplier** time(s): `$result` (**${values.sum()}**)"
         }
     }
 }

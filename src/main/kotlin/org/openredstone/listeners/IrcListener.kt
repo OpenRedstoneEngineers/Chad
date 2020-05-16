@@ -9,7 +9,8 @@ import org.pircbotx.PircBotX
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.MessageEvent
 
-import org.openredstone.CommandExecutor
+import org.openredstone.commands.CommandExecutor
+import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.entity.IrcBotConfig
@@ -17,13 +18,33 @@ import org.openredstone.entity.IrcBotConfig
 private class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
     override fun onMessage(event: MessageEvent) {
         val role = if (event.user?.channelsOpIn!!.any { ircConfig.channel == it.name }) "op" else ""
-        val sender = Sender(Service.IRC, event.user?.nick.toString(), listOf(role))
-        val response = executor.tryExecute(sender, event.message) ?: return
-        if (response.privateReply) {
-            response.reply.split("\n").forEach{event.user?.send()?.message(it)}
+        val sender = event.user?.nick.toString()
+        if (sender == "ORENetwork" || sender == "OREDiscord") {
+            val parsed = event.message.replace(Regex("\\x03..(.*)\\x0f")) { it.groupValues[1] }
+            val parsedSender = parsed.substring(0, parsed.indexOf(':'))
+            val parsedMessage = parsed.substring(parsed.indexOf(':') + 2)
+            val commandSender = Sender(Service.IRC, parsedSender, emptyList())
+            val response = executor.tryExecute(commandSender, parsedMessage) ?: return
+            val send: (String) -> Unit = if (response.privateReply) {
+                { event.user?.send()!!.message("$parsedSender $it") }
+            } else {
+                event.channel.send()::message
+            }
+            response.sendResponse(send)
         } else {
-            response.reply.split("\n").forEach{event.channel.send().message(it)}
+            val commandSender = Sender(Service.IRC, sender, listOf(role))
+            val response = executor.tryExecute(commandSender, event.message) ?: return
+            val send = if (response.privateReply) {
+                event.user?.send()!!::message
+            } else {
+                event.channel.send()::message
+            }
+            response.sendResponse(send)
         }
+    }
+
+    private fun CommandResponse.sendResponse(send: (String) -> Unit) {
+        reply.split("\n").forEach(send)
     }
 }
 

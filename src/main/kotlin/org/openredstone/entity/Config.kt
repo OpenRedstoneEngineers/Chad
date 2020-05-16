@@ -2,10 +2,11 @@ package org.openredstone.entity
 
 import com.uchuhimo.konf.ConfigSpec
 
-data class ChadConfig (
+data class ChadConfig(
     val botToken: String,
     val enableNotificationRoles: Boolean,
     val notificationChannelId: Long,
+    val gameChatChannelId: Long,
     val statusChannelId: Long,
     val playingMessage: String,
     val commandChar: Char,

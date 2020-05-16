@@ -18,38 +18,6 @@ import org.openredstone.managers.NotificationManager
  */
 val logger = KotlinLogging.logger("Chad")
 
-typealias Commands = Map<String, Command>
-
-data class CommandResponse(val reply: String, val privateReply: Boolean)
-
-class CommandExecutor(private val commandChar: Char, private val commands: Commands) {
-    fun tryExecute(sender: Sender, message: String): CommandResponse? {
-        if (message.isEmpty() || message[0] != commandChar) {
-            return null
-        }
-
-        logger.info("${sender.username} [${sender.service}]: $message")
-
-        val parts = message.split(Regex("""\s+"""))
-        val args = parts.drop(1)
-        val name = parts[0].substring(1)
-        val command = commands[name] ?: invalidCommand
-
-        val reply = if (args.size < command.requireParameters) {
-            "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
-        } else {
-            try {
-                command.runCommand(sender, args)
-            } catch (e: Exception) {
-                logger.error(e) { "caught exception while running command" }
-
-                "An error occurred while running the command."
-            }
-        }
-        return CommandResponse("${sender.username}: $reply", command.privateReply)
-    }
-}
-
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
         println("Please specify a config file")
@@ -112,7 +80,7 @@ fun main(args: Array<String>) {
     logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
     logger.info("Starting listeners...")
 
-    startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
+    startDiscordListeners(discordApi, chadConfig.gameChatChannelId, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
 
     if (chadConfig.enableNotificationRoles) NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)

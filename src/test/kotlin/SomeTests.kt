@@ -3,8 +3,8 @@ import kotlin.test.Test
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 
-import org.openredstone.CommandExecutor
-import org.openredstone.CommandResponse
+import org.openredstone.commands.CommandExecutor
+import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
 
