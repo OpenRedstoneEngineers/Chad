@@ -98,27 +98,27 @@ fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
     }
 }
 
-val rollCommand =  command {
+val rollCommand = command {
     val d6 = arrayOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
-
     val dice by default("d6")
+    help = "NdT where N is the number and T is the type of die.\nSample: ,roll 2d6+10d12\n"
     reply {
-        // apparently the unicode symbols don't work on IRC
-        fun d6() = if (sender.service == Service.DISCORD) {
-            d6.random()
-        } else {
-            Random.nextInt(1, 6).toString()
-        }
-
-        when (dice) {
-            "d4" -> Random.nextInt(1, 4).toString()
-            "d6" -> d6()
-            "d8" -> Random.nextInt(1, 8).toString()
-            "d10" -> Random.nextInt(1, 10).toString()
-            "d12" -> Random.nextInt(1, 12).toString()
-            "d20" -> Random.nextInt(1, 20).toString()
-            "rick" -> link("https://youtu.be/dQw4w9WgXcQ")
-            else -> "unexpected argument"
+        if (dice == "rick") return@reply "https://youtu.be/dQw4w9WgXcQ"
+        if (dice == "d6") return@reply d6.random()
+        val split = dice.split("+")
+        split.joinToString("\n") {
+            val multiplier: Int
+            val type: Int
+            if (it.indexOf('d') == 0) {
+                multiplier = 1
+                type = it.substring(1).toInt()
+            } else {
+                multiplier = it.substring(0, it.indexOf('d')).toInt()
+                type = it.substring(it.indexOf('d')+1).toInt()
+            }
+            val values = (1..multiplier).map { Random.nextInt(1, type + 1) }
+            val result = values.joinToString(", ")
+            "*d$type* rolled *$multiplier* time(s): `$result` (*${values.sum()}*)"
         }
     }
 }
