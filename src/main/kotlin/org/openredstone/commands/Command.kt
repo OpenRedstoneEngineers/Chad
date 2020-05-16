@@ -3,6 +3,7 @@ package org.openredstone.commands
 import kotlin.random.Random
 
 import org.javacord.api.DiscordApi
+import org.openredstone.clamp
 
 import org.openredstone.logger
 import org.openredstone.toNullable
@@ -142,10 +143,10 @@ val rollCommand = command {
             val type: Int
             if (it.indexOf('d') == 0) {
                 multiplier = 1
-                type = it.substring(1).toInt()
+                type = it.substring(1).toInt().clamp(2, 128)
             } else {
-                multiplier = it.substring(0, it.indexOf('d')).toInt()
-                type = it.substring(it.indexOf('d')+1).toInt()
+                multiplier = it.substring(0, it.indexOf('d')).toInt().clamp(1, 20)
+                type = it.substring(it.indexOf('d')+1).toInt().clamp(2, 128)
             }
             val values = (1..multiplier).map { Random.nextInt(1, type + 1) }
             val result = values.joinToString(", ")
