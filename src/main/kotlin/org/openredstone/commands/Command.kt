@@ -27,10 +27,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val parts = message.split(Regex("""\s+"""))
         val args = parts.drop(1)
         val name = parts[0].substring(1)
-        val command = commands[name] ?: return CommandResponse(
-            "Invalid command.",
-            false
-        )
+        val command = commands[name] ?: return CommandResponse("Invalid command.", false)
 
         val reply = if (args.size < command.requireParameters) {
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
@@ -43,7 +40,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
                 "An error occurred while running the command."
             }
         }
-        return CommandResponse(reply, command.privateReply)
+        return CommandResponse(if (command.privateReply) reply else "${sender.username}: $reply", command.privateReply)
     }
 }
 
@@ -132,25 +129,24 @@ fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
 
 val rollCommand = command {
     val d6 = arrayOf("⚀", "⚁", "⚂", "⚃", "⚄", "⚅")
-    val dice by default("d6")
-    help = "NdT where N is the number and T is the type of die.\nSample: ,roll 2d6+10d12\n"
+
+    val dice by optional()
+    help = "NdT where N is the number and T is the type of die. Sample: ,roll 2d6+10d12."
     reply {
-        if (dice == "rick") return@reply link("https://youtu.be/dQw4w9WgXcQ>")
-        if (dice == "d6") return@reply d6.random()
-        val split = dice.split("+")
-        "\n" + split.joinToString("\n") {
-            val multiplier: Int
-            val type: Int
-            if (it.indexOf('d') == 0) {
-                multiplier = 1
-                type = it.substring(1).toInt().clamp(2, 128)
-            } else {
-                multiplier = it.substring(0, it.indexOf('d')).toInt().clamp(1, 20)
-                type = it.substring(it.indexOf('d')+1).toInt().clamp(2, 128)
+        when (dice) {
+            null -> d6.random()
+            "rick" -> link("https://youtu.be/dQw4w9WgXcQ>")
+            else -> {
+                val split = dice!!.split("+")  // non-null assertion is necessary, because dice has a custom getter
+                split.map { die ->
+                    val groups = Regex("""(\d+)?d(\d+)""").matchEntire(die)?.groupValues ?: return@reply "Invalid dice format."
+                    val repeat = groups[1].let { if (it == "") 1 else it.toIntOrNull() ?: return@reply "Invalid dice format." }.clamp(1, 20)
+                    val type = groups[2].toIntOrNull()?.clamp(2, 128) ?: return@reply "Invalid dice format."
+                    val values = List(repeat) { Random.nextInt(1, type + 1) }
+                    val result = values.joinToString()
+                    "**d$type** rolled **$repeat** time(s): `$result` (**${values.sum()}**)"
+                }.joinToString(separator = "\n", prefix = "\n")
             }
-            val values = (1..multiplier).map { Random.nextInt(1, type + 1) }
-            val result = values.joinToString(", ")
-            "**d$type** rolled **$multiplier** time(s): `$result` (**${values.sum()}**)"
         }
     }
 }

@@ -25,25 +25,23 @@ private class IrcCommandListener(private val ircConfig: IrcBotConfig, private va
             val parsedMessage = parsed.substring(parsed.indexOf(':') + 2)
             val commandSender = Sender(Service.IRC, parsedSender, emptyList())
             val response = executor.tryExecute(commandSender, parsedMessage) ?: return
-            val send: (String) -> Unit = if (response.privateReply) {
-                { event.user?.send()!!.message("$parsedSender $it") }
+            response.sendResponse(if (response.privateReply) {
+                { reply -> event.user?.send()!!.message("$parsedSender $reply") }
             } else {
-                { event.channel.send().message("$parsedSender: $it") }
-            }
-            response.sendResponse(send)
+                { reply -> event.channel.send().message(reply) }
+            })
         } else {
             val commandSender = Sender(Service.IRC, sender, listOf(role))
             val response = executor.tryExecute(commandSender, event.message) ?: return
-            val send: (String) -> Unit = if (response.privateReply) {
-                { event.user?.send()!!.message(it) }
+            response.sendResponse(if (response.privateReply) {
+                { reply -> event.user?.send()!!.message(reply) }
             } else {
-                { event.channel.send().message("$sender: $it") }
-            }
-            response.sendResponse(send)
+                { reply -> event.channel.send().message(reply) }
+            })
         }
     }
 
-    private fun CommandResponse.sendResponse(send: (String) -> Unit) {
+    private inline fun CommandResponse.sendResponse(send: (String) -> Unit) {
         reply.split("\n").forEach(send)
     }
 }
@@ -51,7 +49,7 @@ private class IrcCommandListener(private val ircConfig: IrcBotConfig, private va
 private class IrcLinkListener : ListenerAdapter() {
     private val logger = KotlinLogging.logger("IRC link listener")
     private val linkRegex =
-        "(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)".toRegex()
+        Regex("""(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)""")
 
     override fun onMessage(event: MessageEvent) {
         val url = extractLink(event.message) ?: return

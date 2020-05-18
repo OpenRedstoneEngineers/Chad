@@ -28,6 +28,11 @@ class `apply command` {
     ))
 
     @Test
+    fun `name in reply`() = executor.testIrc(",apply") {
+        assert(sender.username in reply)
+    }
+
+    @Test
     fun fish() = executor.testIrc(",apply fish") {
         assert("Specify" in reply)
     }
