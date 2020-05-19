@@ -135,7 +135,7 @@ val rollCommand = command {
     reply {
         when (dice) {
             null -> d6.random()
-            "rick" -> link("https://youtu.be/dQw4w9WgXcQ>")
+            "rick" -> link("https://youtu.be/dQw4w9WgXcQ")
             else -> {
                 val split = dice!!.split("+")  // non-null assertion is necessary, because dice has a custom getter
                 split.map { die ->
