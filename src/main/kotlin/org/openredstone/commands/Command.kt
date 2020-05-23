@@ -1,12 +1,10 @@
 package org.openredstone.commands
 
-import kotlin.random.Random
-
 import org.javacord.api.DiscordApi
 import org.openredstone.clamp
-
 import org.openredstone.logger
 import org.openredstone.toNullable
+import kotlin.random.Random
 
 enum class Service { DISCORD, IRC }
 
@@ -139,9 +137,7 @@ val rollCommand = command {
             else -> {
                 val split = dice!!.split("+")  // non-null assertion is necessary, because dice has a custom getter
                 split.map { die ->
-                    val groups = Regex("""(\d+)?d(\d+)""").matchEntire(die)?.groupValues ?: return@reply "Invalid dice format."
-                    val repeat = groups[1].let { if (it == "") 1 else it.toIntOrNull() ?: return@reply "Invalid dice format." }.clamp(1, 20)
-                    val type = groups[2].toIntOrNull()?.clamp(2, 128) ?: return@reply "Invalid dice format."
+                    val (repeat, type) = parseDie(die) ?: return@reply "Invalid dice format."
                     val values = List(repeat) { Random.nextInt(1, type + 1) }
                     val result = values.joinToString()
                     "**d$type** rolled **$repeat** time(s): `$result` (**${values.sum()}**)"
@@ -149,6 +145,15 @@ val rollCommand = command {
             }
         }
     }
+}
+
+private fun parseDie(die: String): Pair<Int, Int>? {
+    val (repeat, type) =
+        Regex("""(\d*)d(\d+)""").matchEntire(die)?.destructured ?: return null
+    return Pair(
+        repeat.toIntOrNull()?.clamp(1, 20) ?: 1,
+        type.toInt().clamp(2, 128)
+    )
 }
 
 fun staticCommand(message: String) = command {
