@@ -12,9 +12,6 @@ import org.openredstone.toNullable
 
 private fun startDiscordCommandListener(discordApi: DiscordApi, gameChatChannelId: Long, executor: CommandExecutor) {
     fun messageCreated(event: MessageCreateEvent) {
-        if (event.channel.id == gameChatChannelId) {
-            return
-        }
         val user = event.messageAuthor.asUser().toNullable() ?: return
         if (user.isBot) {
             return
@@ -27,7 +24,7 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, gameChatChannelI
         if (response.privateReply) {
             user.sendMessage(response.reply)
         } else {
-            event.channel.sendMessage(response.reply)
+            event.channel.sendMessage("$sender: ${response.reply}")
         }
     }
     discordApi.addMessageCreateListener(::messageCreated)

@@ -14,31 +14,42 @@ import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.entity.IrcBotConfig
+import org.pircbotx.hooks.events.PrivateMessageEvent
+
+val regex = Regex("\\x03..(.*)\\x0f")
 
 private class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
     override fun onMessage(event: MessageEvent) {
-        val role = if (event.user?.channelsOpIn!!.any { ircConfig.channel == it.name }) "op" else ""
-        val sender = event.user?.nick.toString()
-        if (sender == "ORENetwork" || sender == "OREDiscord") {
-            val parsed = event.message.replace(Regex("\\x03..(.*)\\x0f")) { it.groupValues[1] }
-            val parsedSender = parsed.substring(0, parsed.indexOf(':'))
-            val parsedMessage = parsed.substring(parsed.indexOf(':') + 2)
-            val commandSender = Sender(Service.IRC, parsedSender, emptyList())
-            val response = executor.tryExecute(commandSender, parsedMessage) ?: return
-            response.sendResponse(if (response.privateReply) {
-                { reply -> event.user?.send()!!.message("$parsedSender $reply") }
-            } else {
-                { reply -> event.channel.send().message(reply) }
-            })
-        } else {
-            val commandSender = Sender(Service.IRC, sender, listOf(role))
-            val response = executor.tryExecute(commandSender, event.message) ?: return
-            response.sendResponse(if (response.privateReply) {
-                { reply -> event.user?.send()!!.message(reply) }
-            } else {
-                { reply -> event.channel.send().message(reply) }
-            })
+        if (event.user?.nick == "ORENetwork") {
+            ingameListener(event)
+        } else if (event.user?.nick != "OREDiscord") {
+            ircListener(event)
         }
+    }
+
+    private fun ingameListener(event: MessageEvent) {
+        val parsed = event.message.replace(regex) { it.groupValues[1] }
+        val parsedSender = parsed.substring(0, parsed.indexOf(':'))
+        val parsedMessage = parsed.substring(parsed.indexOf(':') + 2)
+        val commandSender = Sender(Service.IRC, parsedSender, emptyList())
+        val response = executor.tryExecute(commandSender, parsedMessage) ?: return
+        response.sendResponse(if (response.privateReply) {
+            { reply -> event.user?.send()!!.message("$parsedSender $reply") }
+        } else {
+            { reply -> event.channel.send().message("$parsedSender: $reply") }
+        })
+    }
+
+    private fun ircListener(event: MessageEvent) {
+        val role = if (event.user?.channelsOpIn!!.any { ircConfig.channel == it.name }) "op" else ""
+        val sender = event.user?.nick!!
+        val commandSender = Sender(Service.IRC, sender, listOf(role))
+        val response = executor.tryExecute(commandSender, event.message) ?: return
+        response.sendResponse(if (response.privateReply) {
+            { reply -> event.user?.send()!!.message(reply) }
+        } else {
+            { reply -> event.channel.send().message("$sender: $reply") }
+        })
     }
 
     private inline fun CommandResponse.sendResponse(send: (String) -> Unit) {
@@ -52,6 +63,10 @@ private class IrcLinkListener : ListenerAdapter() {
         Regex("""(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)""")
 
     override fun onMessage(event: MessageEvent) {
+        if (event.user?.nick == "OREDiscord") {
+            val parsed = event.message.replace(regex) { it.groupValues[1] }
+            if (parsed.substring(0, parsed.indexOf(':')) == "Chad") return
+        }
         val url = extractLink(event.message) ?: return
         thread {
             try {

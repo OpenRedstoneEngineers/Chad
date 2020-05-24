@@ -38,7 +38,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
                 "An error occurred while running the command."
             }
         }
-        return CommandResponse(if (command.privateReply) reply else "${sender.username}: $reply", command.privateReply)
+        return CommandResponse(reply, command.privateReply)
     }
 }
 
