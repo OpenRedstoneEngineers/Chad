@@ -16,15 +16,21 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, gameChatChannelI
         if (user.isBot) {
             return
         }
-        val server = event.server.get()
-        val roles = user.getRoles(server).map(Role::getName)
-        val username = user.getDisplayName(server)
-        val sender = Sender(Service.DISCORD, username, roles)
-        val response = executor.tryExecute(sender, event.messageContent) ?: return
-        if (response.privateReply) {
-            user.sendMessage(response.reply)
+        if (event.server.isPresent) {
+            val server = event.server.get()
+            val roles = user.getRoles(server).map(Role::getName)
+            val username = user.getDisplayName(server)
+            val sender = Sender(Service.DISCORD, username, roles)
+            val response = executor.tryExecute(sender, event.messageContent) ?: return
+            if (response.privateReply) {
+                user.sendMessage(response.reply)
+            } else {
+                event.channel.sendMessage("$username: ${response.reply}")
+            }
         } else {
-            event.channel.sendMessage("$sender: ${response.reply}")
+            val sender = Sender(Service.DISCORD, event.messageAuthor.name, emptyList())
+            val response = executor.tryExecute(sender, event.messageContent) ?: return
+            user.sendMessage(response.reply)
         }
     }
     discordApi.addMessageCreateListener(::messageCreated)
