@@ -39,6 +39,7 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, gameChatChannelI
 val spoilerLogger = KotlinLogging.logger("Spoiler listener")
 
 private fun startSpoilerListener(discordApi: DiscordApi) {
+    // TODO parse for whether or not "||" is within a code snippet/block
     discordApi.addMessageCreateListener { event ->
         val message = event.message
         if (message.content.contains(Regex("\\|\\|"))) {
