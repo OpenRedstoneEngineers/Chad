@@ -148,11 +148,10 @@ val rollCommand = command {
 }
 
 private fun parseDie(die: String): Pair<Int, Int>? {
-    val (repeat, type) =
-        Regex("""(\d*)d(\d+)""").matchEntire(die)?.destructured ?: return null
+    val (repeat, type) = Regex("""(\d*)d(\d+)""").matchEntire(die)?.destructured ?: return null
     return Pair(
-        repeat.toIntOrNull()?.clamp(1, 20) ?: 1,
-        type.toInt().clamp(2, 128)
+        if (repeat == "") 1 else repeat.toIntOrNull()?.clamp(1, 20) ?: return null,
+        type.toIntOrNull()?.clamp(2, 128) ?: return null
     )
 }
 
