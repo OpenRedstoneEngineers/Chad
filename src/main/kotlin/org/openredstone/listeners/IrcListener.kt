@@ -69,7 +69,7 @@ private class IrcCommandListener(private val ircConfig: IrcBotConfig, private va
 private class IrcLinkListener : ListenerAdapter() {
     private val logger = KotlinLogging.logger("IRC link listener")
     private val linkRegex =
-        Regex("""(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)""")
+        Regex("""(https?://)?([-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&/=]*)""")
 
     override fun onMessage(event: MessageEvent) {
         if (event.user?.nick == "OREDiscord") {

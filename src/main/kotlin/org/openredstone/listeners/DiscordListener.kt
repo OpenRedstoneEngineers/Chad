@@ -10,7 +10,7 @@ import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.toNullable
 
-private fun startDiscordCommandListener(discordApi: DiscordApi, gameChatChannelId: Long, executor: CommandExecutor) {
+private fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
     fun messageCreated(event: MessageCreateEvent) {
         val user = event.messageAuthor.asUser().toNullable() ?: return
         if (user.isBot) {
@@ -50,7 +50,7 @@ private fun startSpoilerListener(discordApi: DiscordApi) {
     }
 }
 
-fun startDiscordListeners(discordApi: DiscordApi, gameChatChannelId: Long, executor: CommandExecutor, disableSpoilers: Boolean) {
-    startDiscordCommandListener(discordApi, gameChatChannelId, executor)
+fun startDiscordListeners(discordApi: DiscordApi, executor: CommandExecutor, disableSpoilers: Boolean) {
+    startDiscordCommandListener(discordApi, executor)
     if (disableSpoilers) startSpoilerListener(discordApi)
 }

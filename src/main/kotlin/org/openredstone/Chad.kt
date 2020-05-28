@@ -80,7 +80,7 @@ fun main(args: Array<String>) {
     logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
     logger.info("Starting listeners...")
 
-    startDiscordListeners(discordApi, chadConfig.gameChatChannelId, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
+    startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
     startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
 
     if (chadConfig.enableNotificationRoles) NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
