@@ -61,6 +61,7 @@ fun main(args: Array<String>) {
 
     fun reloadCommands() {
         config.toYaml.toFile(configFile)
+        val authorizedRoles = AuthorizedRoles(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles)
 
         logger.info("(Re)loading commands...")
 
@@ -68,16 +69,24 @@ fun main(args: Array<String>) {
             clear()
             putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
             putAll(listOf(
-                "add" to addCommand(chadConfig.discordCommands, ::reloadCommands),
+                "add" to command(authorizedRoles) {
+                    val name by required()
+                    val message by vararg()
+                    reply {
+                        chadConfig.commonCommands[name] = message.joinToString(separator = " ")
+                        reloadCommands()
+                        "Done!"
+                    }
+                },
                 "apply" to applyCommand,
-                "authorized" to command(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles) {
+                "authorized" to command(authorizedRoles) {
                     reply { "authorized !" }
                 },
                 "insult" to insultCommand(chadConfig.insults),
-                "reload" to command(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles) {
+                "reload" to command(authorizedRoles) {
                     reply {
                         reloadCommands()
-                        ""
+                        "Done!"
                     }
                 }
             ))

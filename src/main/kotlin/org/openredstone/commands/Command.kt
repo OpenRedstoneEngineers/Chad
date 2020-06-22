@@ -10,6 +10,8 @@ enum class Service { DISCORD, IRC }
 
 data class Sender(val service: Service, val username: String, val roles: List<String>)
 
+data class AuthorizedRoles(val discord: List<String>, val irc: List<String>)
+
 typealias Commands = Map<String, Command>
 
 data class CommandResponse(val reply: String, val privateReply: Boolean)
@@ -45,33 +47,21 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
 abstract class Command(
     val requireParameters: Int = 0,
     val privateReply: Boolean = false,
-    private val authorizedDiscordRoles: List<String>? = null,
-    private val authorizedIrcRoles: List<String>? = null,
+    private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(emptyList(), emptyList()),
     val notAuthorized: String = "You are not authorized to run this command."
 ) {
     fun isAuthorized(sender: Sender) = when (sender.service) {
-        Service.DISCORD -> isAuthorized(sender, authorizedDiscordRoles)
-        Service.IRC -> isAuthorized(sender, authorizedIrcRoles)
+        Service.DISCORD -> isAuthorized(sender, authorizedRoles.discord)
+        Service.IRC -> isAuthorized(sender, authorizedRoles.irc)
     }
 
-    private fun isAuthorized(sender: Sender, roles: List<String>?) =
-        roles == null || sender.roles.intersect(roles).isNotEmpty()
+    private fun isAuthorized(sender: Sender, roles: List<String>) = sender.roles.intersect(roles).isNotEmpty()
 
     open fun help(name: String) = "No help available for this command."
 
     abstract fun runCommand(sender: Sender, args: List<String>): String
 }
 
-
-fun addCommand(commands: MutableMap<String, String>, reload: () -> Unit) = command {
-    val name by required()
-    val message by vararg()
-    reply {
-        commands[name] = message.joinToString(separator = " ")
-        reload()
-        "Done!"
-    }
-}
 
 val applyCommand = command {
     help = "Instructions to apply."
