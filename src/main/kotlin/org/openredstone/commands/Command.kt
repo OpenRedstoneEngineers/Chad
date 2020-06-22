@@ -45,17 +45,33 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
 abstract class Command(
     val requireParameters: Int = 0,
     val privateReply: Boolean = false,
-    val authorizedRoles: List<String> = listOf("@"),
+    private val authorizedDiscordRoles: List<String>? = null,
+    private val authorizedIrcRoles: List<String>? = null,
     val notAuthorized: String = "You are not authorized to run this command."
 ) {
-    fun isAuthorized(sender: Sender): Boolean =
-        "@" in authorizedRoles || sender.roles.intersect(authorizedRoles).isNotEmpty()
+    fun isAuthorized(sender: Sender) = when (sender.service) {
+        Service.DISCORD -> isAuthorized(sender, authorizedDiscordRoles)
+        Service.IRC -> isAuthorized(sender, authorizedIrcRoles)
+    }
+
+    private fun isAuthorized(sender: Sender, roles: List<String>?) =
+        roles == null || sender.roles.intersect(roles).isNotEmpty()
 
     open fun help(name: String) = "No help available for this command."
 
     abstract fun runCommand(sender: Sender, args: List<String>): String
 }
 
+
+fun addCommand(commands: MutableMap<String, String>, reload: () -> Unit) = command {
+    val name by required()
+    val message by vararg()
+    reply {
+        commands[name] = message.joinToString(separator = " ")
+        reload()
+        "Done!"
+    }
+}
 
 val applyCommand = command {
     help = "Instructions to apply."
@@ -67,11 +83,6 @@ val applyCommand = command {
             else -> "Specify \"builder\" or \"student\"."
         }
     }
-}
-
-fun authorizedCommand(roles: List<String>) = command {
-    authorizedRoles = roles
-    reply { "authorized !" }
 }
 
 fun helpCommand(commands: Commands) = command {

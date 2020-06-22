@@ -6,8 +6,11 @@ import kotlin.reflect.KProperty
 /**
  * The command function can be used to build a command.
  */
-fun command(authorizedRoles: List<String> = listOf("@"), configure: CommandScope.() -> Unit) =
-    CommandScope(authorizedRoles).apply(configure).buildCommand()
+fun command(
+    authorizedDiscordRoles: List<String>? = null,
+    authorizedIrcRoles: List<String>? = null,
+    configure: CommandScope.() -> Unit
+) = CommandScope(authorizedDiscordRoles, authorizedIrcRoles).apply(configure).buildCommand()
 
 @DslMarker
 annotation class CommandMarker
@@ -26,7 +29,7 @@ class ReplyScope(val sender: Sender) {
 }
 
 @CommandMarker
-class CommandScope(private val authorized: List<String>) {
+class CommandScope(private val authorizedDiscordRoles: List<String>?, private val authorizedIrcRoles: List<String>?) {
     /**
      * The help message. It is used to generate the help message.
      */
@@ -44,7 +47,12 @@ class CommandScope(private val authorized: List<String>) {
      */
     fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String) {
         // requireParameters = 0, so that we can return custom error messages
-        command = object : Command(requireParameters = 0, privateReply = isPrivate, authorizedRoles = authorized) {
+        command = object : Command(
+            requireParameters = 0,
+            privateReply = isPrivate,
+            authorizedDiscordRoles = authorizedDiscordRoles,
+            authorizedIrcRoles = authorizedIrcRoles
+        ) {
             val params = parameters.joinToString(" ")
 
             override fun help(name: String): String {
