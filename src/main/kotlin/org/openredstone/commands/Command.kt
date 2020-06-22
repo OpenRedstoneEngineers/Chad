@@ -56,22 +56,6 @@ abstract class Command(
     abstract fun runCommand(sender: Sender, args: List<String>): String
 }
 
-class AddCommand(roles: List<String>) : Command(authorizedRoles = roles) {
-    override fun runCommand(sender: Sender, args: List<String>) = if (!isAuthorized(sender)) {
-        notAuthorized
-    } else {
-        "authorized !"  // TODO
-    }
-}
-
-class AuthorizedCommand(roles: List<String>) : Command(authorizedRoles = roles) {
-    override fun runCommand(sender: Sender, args: List<String>) = if (!isAuthorized(sender)) {
-        notAuthorized
-    } else {
-        "authorized !"
-    }
-}
-
 
 val applyCommand = command {
     help = "Instructions to apply."
@@ -83,6 +67,11 @@ val applyCommand = command {
             else -> "Specify \"builder\" or \"student\"."
         }
     }
+}
+
+fun authorizedCommand(roles: List<String>) = command {
+    authorizedRoles = roles
+    reply { "authorized !" }
 }
 
 fun helpCommand(commands: Commands) = command {

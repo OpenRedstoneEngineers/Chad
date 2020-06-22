@@ -56,7 +56,7 @@ fun main(args: Array<String>) {
     val commonCommands = chadConfig.commonCommands.mapValues { staticCommand(it.value) }
     val discordCommands = mutableMapOf(
         "apply" to applyCommand,
-        "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles),
+        "authorized" to authorizedCommand(chadConfig.authorizedDiscordRoles),
         "insult" to insultCommand(chadConfig.insults),
         "roll" to rollCommand
     ).apply {
@@ -67,7 +67,7 @@ fun main(args: Array<String>) {
 
     val ircCommands = mutableMapOf(
         "apply" to applyCommand,
-        "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
+        "authorized" to authorizedCommand(chadConfig.authorizedIrcRoles),
         "insult" to insultCommand(chadConfig.insults),
         "list" to listCommand(chadConfig.statusChannelId, discordApi)
     ).apply {

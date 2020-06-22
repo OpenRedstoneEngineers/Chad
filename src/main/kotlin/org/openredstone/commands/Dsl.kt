@@ -30,6 +30,7 @@ class CommandScope {
      * The help message. It is used to generate the help message.
      */
     var help: String? = null
+    var authorizedRoles: List<String>? = null
 
     private var requiredParameters = 0
     private var optionalParameters = 0
@@ -43,7 +44,7 @@ class CommandScope {
      */
     fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String) {
         // requireParameters = 0, so that we can return custom error messages
-        command = object : Command(requireParameters = 0, privateReply = isPrivate) {
+        command = object : Command(requireParameters = 0, privateReply = isPrivate, authorizedRoles = authorizedRoles ?: listOf("@")) {
             val params = parameters.joinToString(" ")
 
             override fun help(name: String): String {
@@ -52,22 +53,26 @@ class CommandScope {
             }
 
             override fun runCommand(sender: Sender, args: List<String>): String {
-                if (args.size < requiredParameters) {
-                    return "expected at least $requiredParameters argument(s), got ${args.size}"
-                }
-                val maxParameters = requiredParameters + optionalParameters
-                if (!vararg && args.size > maxParameters) {
-                    return "expected at most $maxParameters argument(s), got ${args.size}"
-                }
-                for ((i, parameter) in parameters.withIndex()) {
-                    when (parameter) {
-                        is Argument.Required -> parameter.value = args[i]
-                        is Argument.Optional -> parameter.value = args.getOrNull(i)
-                        is Argument.Default -> parameter.value = args.getOrNull(i) ?: parameter.default
-                        is Argument.Vararg -> parameter.values = args.subList(i, args.size)
+                if (isAuthorized(sender)) {
+                    if (args.size < requiredParameters) {
+                        return "expected at least $requiredParameters argument(s), got ${args.size}"
                     }
+                    val maxParameters = requiredParameters + optionalParameters
+                    if (!vararg && args.size > maxParameters) {
+                        return "expected at most $maxParameters argument(s), got ${args.size}"
+                    }
+                    for ((i, parameter) in parameters.withIndex()) {
+                        when (parameter) {
+                            is Argument.Required -> parameter.value = args[i]
+                            is Argument.Optional -> parameter.value = args.getOrNull(i)
+                            is Argument.Default -> parameter.value = args.getOrNull(i) ?: parameter.default
+                            is Argument.Vararg -> parameter.values = args.subList(i, args.size)
+                        }
+                    }
+                    return ReplyScope(sender).message()
+                } else {
+                    return notAuthorized
                 }
-                return ReplyScope(sender).message()
             }
         }
     }
