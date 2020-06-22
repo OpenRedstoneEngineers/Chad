@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
     val config = Config { addSpec(ChadSpec) }
         .from.yaml.file(args[0])
 
-    val chadConfig = config[ChadSpec.chad]
+    var chadConfig = config[ChadSpec.chad]
 
     // Logging properties
     val loggingConfig = chadConfig.logging
@@ -53,28 +53,59 @@ fun main(args: Array<String>) {
             updateActivity(chadConfig.playingMessage)
         }
 
-    val commonCommands = chadConfig.commonCommands.mapValues { staticCommand(it.value) }
-    val discordCommands = mutableMapOf(
-        "apply" to applyCommand,
-        "authorized" to authorizedCommand(chadConfig.authorizedDiscordRoles),
-        "insult" to insultCommand(chadConfig.insults),
-        "roll" to rollCommand
-    ).apply {
-        putAll(commonCommands)
-        putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
-        put("help", helpCommand(this))
+    val commonCommands = concurrentMapOf<String, Command>()
+    val discordCommands = concurrentMapOf<String, Command>()
+    val ircCommands = concurrentMapOf<String, Command>()
+
+    fun reloadCommands() {
+        chadConfig = config[ChadSpec.chad]
+
+        logger.info("(Re)loading commands...")
+
+        commonCommands.apply {
+            clear()
+            commonCommands.putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
+        }
+
+        discordCommands.apply {
+            clear()
+            putAll(listOf(
+                "apply" to applyCommand,
+                "authorized" to authorizedCommand(chadConfig.authorizedDiscordRoles),
+                "insult" to insultCommand(chadConfig.insults),
+                "roll" to rollCommand,
+                "help" to helpCommand(this)
+            ))
+            putAll(commonCommands)
+            putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
+            put("reload", command(chadConfig.authorizedDiscordRoles) {
+                reply {
+                    reloadCommands()
+                    ""
+                }
+            })
+        }
+
+        ircCommands.apply {
+            putAll(listOf(
+                "apply" to applyCommand,
+                "authorized" to authorizedCommand(chadConfig.authorizedIrcRoles),
+                "insult" to insultCommand(chadConfig.insults),
+                "list" to listCommand(chadConfig.statusChannelId, discordApi),
+                "help" to helpCommand(this)
+            ))
+            putAll(commonCommands)
+            putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
+            put("reload", command(chadConfig.authorizedIrcRoles) {
+                reply {
+                    reloadCommands()
+                    ""
+                }
+            })
+        }
     }
 
-    val ircCommands = mutableMapOf(
-        "apply" to applyCommand,
-        "authorized" to authorizedCommand(chadConfig.authorizedIrcRoles),
-        "insult" to insultCommand(chadConfig.insults),
-        "list" to listCommand(chadConfig.statusChannelId, discordApi)
-    ).apply {
-        putAll(commonCommands)
-        putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
-        put("help", helpCommand(this))
-    }
+    reloadCommands()
 
     logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
     logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
