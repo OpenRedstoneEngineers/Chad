@@ -4,6 +4,7 @@ import kotlin.system.exitProcess
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
+import com.uchuhimo.konf.source.yaml.toYaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
 
@@ -23,11 +24,12 @@ fun main(args: Array<String>) {
         println("Please specify a config file")
         exitProcess(1)
     }
+    val configFile = args[0]
 
     val config = Config { addSpec(ChadSpec) }
-        .from.yaml.file(args[0])
+        .from.yaml.file(configFile)
 
-    var chadConfig = config[ChadSpec.chad]
+    val chadConfig = config[ChadSpec.chad]
 
     // Logging properties
     val loggingConfig = chadConfig.logging
@@ -58,50 +60,42 @@ fun main(args: Array<String>) {
     val ircCommands = concurrentMapOf<String, Command>()
 
     fun reloadCommands() {
-        chadConfig = config[ChadSpec.chad]
+        config.toYaml.toFile(configFile)
 
         logger.info("(Re)loading commands...")
 
         commonCommands.apply {
             clear()
-            commonCommands.putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
+            putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
+            putAll(listOf(
+                "add" to addCommand(chadConfig.discordCommands, ::reloadCommands),
+                "apply" to applyCommand,
+                "authorized" to command(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles) {
+                    reply { "authorized !" }
+                },
+                "insult" to insultCommand(chadConfig.insults),
+                "reload" to command(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles) {
+                    reply {
+                        reloadCommands()
+                        ""
+                    }
+                }
+            ))
         }
 
         discordCommands.apply {
             clear()
-            putAll(listOf(
-                "apply" to applyCommand,
-                "authorized" to authorizedCommand(chadConfig.authorizedDiscordRoles),
-                "insult" to insultCommand(chadConfig.insults),
-                "roll" to rollCommand,
-                "help" to helpCommand(this)
-            ))
+            put("roll", rollCommand)
+            put("help", helpCommand(this))
             putAll(commonCommands)
             putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
-            put("reload", command(chadConfig.authorizedDiscordRoles) {
-                reply {
-                    reloadCommands()
-                    ""
-                }
-            })
         }
 
         ircCommands.apply {
-            putAll(listOf(
-                "apply" to applyCommand,
-                "authorized" to authorizedCommand(chadConfig.authorizedIrcRoles),
-                "insult" to insultCommand(chadConfig.insults),
-                "list" to listCommand(chadConfig.statusChannelId, discordApi),
-                "help" to helpCommand(this)
-            ))
+            put("list", listCommand(chadConfig.statusChannelId, discordApi))
+            put("help", helpCommand(this))
             putAll(commonCommands)
             putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
-            put("reload", command(chadConfig.authorizedIrcRoles) {
-                reply {
-                    reloadCommands()
-                    ""
-                }
-            })
         }
     }
 
