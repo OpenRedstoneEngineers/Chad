@@ -10,7 +10,7 @@ enum class Service { DISCORD, IRC }
 
 data class Sender(val service: Service, val username: String, val roles: List<String>)
 
-data class AuthorizedRoles(val discord: List<String>, val irc: List<String>)
+data class AuthorizedRoles(val discord: List<String>?, val irc: List<String>?)
 
 typealias Commands = Map<String, Command>
 
@@ -47,7 +47,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
 abstract class Command(
     val requireParameters: Int = 0,
     val privateReply: Boolean = false,
-    private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(emptyList(), emptyList()),
+    private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
     val notAuthorized: String = "You are not authorized to run this command."
 ) {
     fun isAuthorized(sender: Sender) = when (sender.service) {
@@ -55,7 +55,8 @@ abstract class Command(
         Service.IRC -> isAuthorized(sender, authorizedRoles.irc)
     }
 
-    private fun isAuthorized(sender: Sender, roles: List<String>) = sender.roles.intersect(roles).isNotEmpty()
+    private fun isAuthorized(sender: Sender, roles: List<String>?) =
+        roles == null || sender.roles.intersect(roles).isNotEmpty()
 
     open fun help(name: String) = "No help available for this command."
 

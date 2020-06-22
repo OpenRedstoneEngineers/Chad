@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
  * The command function can be used to build a command.
  */
 fun command(
-    authorizedRoles: AuthorizedRoles = AuthorizedRoles(emptyList(), emptyList()),
+    authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
     configure: CommandScope.() -> Unit
 ) = CommandScope(authorizedRoles).apply(configure).buildCommand()
 
