@@ -26,9 +26,9 @@ fun main(args: Array<String>) {
     }
     val configFile = args[0]
 
-    val config = Config { addSpec(ChadSpec) }
+    val config = Config { addSpec(ChadSpec) }.from.yaml.watchFile(configFile)
 
-    var chadConfig = config.from.yaml.file(configFile)[ChadSpec.chad]
+    var chadConfig = config[ChadSpec.chad]
 
     // Logging properties
     val loggingConfig = chadConfig.logging
@@ -58,7 +58,7 @@ fun main(args: Array<String>) {
     val ircCommands = concurrentMapOf<String, Command>()
 
     fun reloadCommands() {
-        chadConfig = config.from.yaml.file(configFile)[ChadSpec.chad]
+        chadConfig = config[ChadSpec.chad]
         val authorizedRoles = AuthorizedRoles(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles)
 
         logger.info("(Re)loading commands...")
