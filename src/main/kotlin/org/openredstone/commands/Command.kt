@@ -10,6 +10,8 @@ enum class Service { DISCORD, IRC }
 
 data class Sender(val service: Service, val username: String, val roles: List<String>)
 
+data class AuthorizedRoles(val discord: List<String>?, val irc: List<String>?)
+
 typealias Commands = Map<String, Command>
 
 data class CommandResponse(val reply: String, val privateReply: Boolean)
@@ -45,31 +47,20 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
 abstract class Command(
     val requireParameters: Int = 0,
     val privateReply: Boolean = false,
-    val authorizedRoles: List<String> = listOf("@"),
+    private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
     val notAuthorized: String = "You are not authorized to run this command."
 ) {
-    fun isAuthorized(sender: Sender): Boolean =
-        "@" in authorizedRoles || sender.roles.intersect(authorizedRoles).isNotEmpty()
+    fun isAuthorized(sender: Sender) = when (sender.service) {
+        Service.DISCORD -> isAuthorized(sender, authorizedRoles.discord)
+        Service.IRC -> isAuthorized(sender, authorizedRoles.irc)
+    }
+
+    private fun isAuthorized(sender: Sender, roles: List<String>?) =
+        roles == null || sender.roles.intersect(roles).isNotEmpty()
 
     open fun help(name: String) = "No help available for this command."
 
     abstract fun runCommand(sender: Sender, args: List<String>): String
-}
-
-class AddCommand(roles: List<String>) : Command(authorizedRoles = roles) {
-    override fun runCommand(sender: Sender, args: List<String>) = if (!isAuthorized(sender)) {
-        notAuthorized
-    } else {
-        "authorized !"  // TODO
-    }
-}
-
-class AuthorizedCommand(roles: List<String>) : Command(authorizedRoles = roles) {
-    override fun runCommand(sender: Sender, args: List<String>) = if (!isAuthorized(sender)) {
-        notAuthorized
-    } else {
-        "authorized !"
-    }
 }
 
 

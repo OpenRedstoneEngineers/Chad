@@ -4,6 +4,7 @@ import kotlin.system.exitProcess
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
+import com.uchuhimo.konf.source.yaml.toYaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
 
@@ -23,11 +24,11 @@ fun main(args: Array<String>) {
         println("Please specify a config file")
         exitProcess(1)
     }
+    val configFile = args[0]
 
-    val config = Config { addSpec(ChadSpec) }
-        .from.yaml.file(args[0])
+    val config = Config { addSpec(ChadSpec) }.from.yaml.watchFile(configFile)
 
-    val chadConfig = config[ChadSpec.chad]
+    var chadConfig = config[ChadSpec.chad]
 
     // Logging properties
     val loggingConfig = chadConfig.logging
@@ -53,28 +54,67 @@ fun main(args: Array<String>) {
             updateActivity(chadConfig.playingMessage)
         }
 
-    val commonCommands = chadConfig.commonCommands.mapValues { staticCommand(it.value) }
-    val discordCommands = mutableMapOf(
-        "apply" to applyCommand,
-        "authorized" to AuthorizedCommand(chadConfig.authorizedDiscordRoles),
-        "insult" to insultCommand(chadConfig.insults),
-        "roll" to rollCommand
-    ).apply {
-        putAll(commonCommands)
-        putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
-        put("help", helpCommand(this))
+    val discordCommands = concurrentMapOf<String, Command>()
+    val ircCommands = concurrentMapOf<String, Command>()
+
+    fun reloadCommands() {
+        chadConfig = config[ChadSpec.chad]
+        val authorizedRoles = AuthorizedRoles(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles)
+
+        logger.info("(Re)loading commands...")
+
+        val commonCommands = mutableMapOf(
+            "add" to command(authorizedRoles) {
+                val name by required()
+                val messages by vararg()
+                reply {
+                    val msg = messages.joinToString(separator = " ")
+                    val cmd = command {
+                        reply { msg }
+                    }
+                    // write the new command to the config file
+                    chadConfig.commonCommands[name] = msg
+                    config.toYaml.toFile(configFile)
+                    // add command and update the help command
+                    discordCommands[name] = cmd
+                    discordCommands["help"] = helpCommand(discordCommands)
+                    ircCommands[name] = cmd
+                    ircCommands["help"] = helpCommand(discordCommands)
+                    "Done!"
+                }
+            },
+            "apply" to applyCommand,
+            "authorized" to command(authorizedRoles) {
+                reply { "authorized !" }
+            },
+            "insult" to insultCommand(chadConfig.insults),
+            "reload" to command(authorizedRoles) {
+                reply {
+                    reloadCommands()
+                    "Done!"
+                }
+            }
+        ).apply {
+            putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
+        }
+
+        discordCommands.apply {
+            clear()
+            put("roll", rollCommand)
+            put("help", helpCommand(this))
+            putAll(commonCommands)
+            putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
+        }
+
+        ircCommands.apply {
+            put("list", listCommand(chadConfig.statusChannelId, discordApi))
+            put("help", helpCommand(this))
+            putAll(commonCommands)
+            putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
+        }
     }
 
-    val ircCommands = mutableMapOf(
-        "apply" to applyCommand,
-        "authorized" to AuthorizedCommand(chadConfig.authorizedIrcRoles),
-        "insult" to insultCommand(chadConfig.insults),
-        "list" to listCommand(chadConfig.statusChannelId, discordApi)
-    ).apply {
-        putAll(commonCommands)
-        putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
-        put("help", helpCommand(this))
-    }
+    reloadCommands()
 
     logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
     logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")

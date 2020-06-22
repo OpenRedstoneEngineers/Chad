@@ -18,9 +18,9 @@ data class ChadConfig(
     val authorizedDiscordRoles: List<String>,
     val logging: LoggingConfig,
     val insults: List<String>,
-    val commonCommands: Map<String, String>,
-    val discordCommands: Map<String, String>,
-    val ircCommands: Map<String, String>
+    val commonCommands: MutableMap<String, String>,
+    val discordCommands: MutableMap<String, String>,
+    val ircCommands: MutableMap<String, String>
 )
 
 object ChadSpec : ConfigSpec("") {
