@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
     val config = Config { addSpec(ChadSpec) }
         .from.yaml.file(configFile)
 
-    val chadConfig = config[ChadSpec.chad]
+    var chadConfig = config[ChadSpec.chad]
 
     // Logging properties
     val loggingConfig = chadConfig.logging
@@ -55,41 +55,48 @@ fun main(args: Array<String>) {
             updateActivity(chadConfig.playingMessage)
         }
 
-    val commonCommands = concurrentMapOf<String, Command>()
     val discordCommands = concurrentMapOf<String, Command>()
     val ircCommands = concurrentMapOf<String, Command>()
 
     fun reloadCommands() {
-        config.toYaml.toFile(configFile)
+        chadConfig = config[ChadSpec.chad]
         val authorizedRoles = AuthorizedRoles(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles)
 
         logger.info("(Re)loading commands...")
 
-        commonCommands.apply {
-            clear()
-            putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
-            putAll(listOf(
-                "add" to command(authorizedRoles) {
-                    val name by required()
-                    val message by vararg()
-                    reply {
-                        chadConfig.commonCommands[name] = message.joinToString(separator = " ")
-                        reloadCommands()
-                        "Done!"
+        val commonCommands = mutableMapOf(
+            "add" to command(authorizedRoles) {
+                val name by required()
+                val messages by vararg()
+                reply {
+                    val msg = messages.joinToString(separator = " ")
+                    val cmd = command {
+                        reply { msg }
                     }
-                },
-                "apply" to applyCommand,
-                "authorized" to command(authorizedRoles) {
-                    reply { "authorized !" }
-                },
-                "insult" to insultCommand(chadConfig.insults),
-                "reload" to command(authorizedRoles) {
-                    reply {
-                        reloadCommands()
-                        "Done!"
-                    }
+                    // write the new command to the config file
+                    chadConfig.commonCommands[name] = msg
+                    config.toYaml.toFile(configFile)
+                    // add command and update the help command
+                    discordCommands[name] = cmd
+                    discordCommands["help"] = helpCommand(discordCommands)
+                    ircCommands[name] = cmd
+                    ircCommands["help"] = helpCommand(discordCommands)
+                    "Done!"
                 }
-            ))
+            },
+            "apply" to applyCommand,
+            "authorized" to command(authorizedRoles) {
+                reply { "authorized !" }
+            },
+            "insult" to insultCommand(chadConfig.insults),
+            "reload" to command(authorizedRoles) {
+                reply {
+                    reloadCommands()
+                    "Done!"
+                }
+            }
+        ).apply {
+            putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
         }
 
         discordCommands.apply {
