@@ -83,6 +83,7 @@ fun main(args: Array<String>) {
                     "Done!"
                 }
             },
+            "lmgtfy" to lmgtfy,
             "apply" to applyCommand,
             "authorized" to command(authorizedRoles) {
                 reply { "authorized !" }

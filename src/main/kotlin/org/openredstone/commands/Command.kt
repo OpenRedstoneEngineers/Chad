@@ -4,6 +4,7 @@ import org.javacord.api.DiscordApi
 import org.openredstone.clamp
 import org.openredstone.logger
 import org.openredstone.toNullable
+import java.net.URLEncoder
 import kotlin.random.Random
 
 enum class Service { DISCORD, IRC }
@@ -112,6 +113,18 @@ fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
                     }
                     append("\n")
                 }
+        }
+    }
+}
+
+val lmgtfy = command {
+    val search by vararg()
+    reply {
+        buildString {
+            append("https://lmgtfy.com/?q=")
+            append(search.joinToString("+") {
+                URLEncoder.encode(it, "utf-8")
+            })
         }
     }
 }
