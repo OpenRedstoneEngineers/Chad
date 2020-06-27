@@ -20,10 +20,12 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    implementation(group = "com.github.jkcclemens", name = "khttp", version = "0.1.0")
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
     implementation(group = "org.javacord", name = "javacord", version = "3.0.3")
     implementation(group = "com.uchuhimo", name = "konf", version = "0.22.1")

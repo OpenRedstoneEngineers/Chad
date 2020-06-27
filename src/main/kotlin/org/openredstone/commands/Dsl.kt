@@ -75,7 +75,13 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
                             is Argument.Vararg -> parameter.values = args.subList(i, args.size)
                         }
                     }
-                    return ReplyScope(sender).message()
+                    val rawMessage = ReplyScope(sender).message()
+                    return if (rawMessage.length < 512) {
+                        rawMessage
+                    } else {
+                        val response = khttp.post(url = "https://hastebin.com/documents", data = rawMessage)
+                        "${rawMessage.substring(0, 64)} ... Snipped: https://hastebin.com/${response.jsonObject["key"]}"
+                    }
                 } else {
                     return notAuthorized
                 }
