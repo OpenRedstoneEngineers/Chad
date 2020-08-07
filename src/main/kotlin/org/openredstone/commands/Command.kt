@@ -73,7 +73,7 @@ val applyCommand = command {
             "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.15.2 and run `/apply`"
             "builder" -> "To apply for builder, follow the steps outlined here: ${link("https://discourse.openredstone.org/builder")}."
             "engineer" -> "To apply for engineer, follow the steps outlined here: ${link("https://discourse.openredstone.org/engineer")}"
-            else -> "Specify \"builder\" or \"student\"."
+            else -> "Specify \"student\", \"builder\", or \"engineer\"."
         }
     }
 }
