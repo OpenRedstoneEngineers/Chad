@@ -38,6 +38,7 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
     private var optionalParameters = 0
     private var vararg = false
     private val parameters = mutableListOf<Argument>()
+
     // TODO: should we make replies optional?
     private var command: Command? = null
 

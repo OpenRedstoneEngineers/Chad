@@ -18,13 +18,14 @@ import org.pircbotx.hooks.events.PrivateMessageEvent
 
 val regex = Regex("\\x03..(.*)\\x0f")
 
-private class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) : ListenerAdapter() {
+private class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) :
+    ListenerAdapter() {
     override fun onPrivateMessage(event: PrivateMessageEvent?) {
         val sender = event?.user?.nick!!
         val commandSender = Sender(Service.IRC, sender, emptyList())
         val response = executor.tryExecute(commandSender, event.message) ?: return
-        response.sendResponse {
-            reply -> event.user?.send()!!.message(reply)
+        response.sendResponse { reply ->
+            event.user?.send()!!.message(reply)
         }
     }
 
