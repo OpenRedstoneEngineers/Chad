@@ -70,7 +70,7 @@ val applyCommand = command {
     val arg by required()
     reply {
         when (arg) {
-            "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.16.1 and run `/apply`"
+            "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.16.2 and run `/apply`"
             "builder" -> "To apply for builder, follow the steps outlined here: ${link("https://discourse.openredstone.org/builder")}."
             "engineer" -> "To apply for engineer, follow the steps outlined here: ${link("https://discourse.openredstone.org/engineer")}"
             else -> "Specify \"student\", \"builder\", or \"engineer\"."
