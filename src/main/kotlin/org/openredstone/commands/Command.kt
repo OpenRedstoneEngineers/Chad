@@ -49,7 +49,7 @@ abstract class Command(
     val requireParameters: Int = 0,
     val privateReply: Boolean = false,
     private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
-    val notAuthorized: String = "You are not authorized to run this command."
+    val notAuthorized: String = "You are not authorized to run this command.",
 ) {
     fun isAuthorized(sender: Sender) = when (sender.service) {
         Service.DISCORD -> isAuthorized(sender, authorizedRoles.discord)

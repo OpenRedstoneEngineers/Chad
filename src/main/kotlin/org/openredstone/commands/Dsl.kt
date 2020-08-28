@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
  */
 fun command(
     authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
-    configure: CommandScope.() -> Unit
+    configure: CommandScope.() -> Unit,
 ) = CommandScope(authorizedRoles).apply(configure).buildCommand()
 
 @DslMarker
@@ -50,7 +50,7 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
         command = object : Command(
             requireParameters = 0,
             privateReply = isPrivate,
-            authorizedRoles = authorizedRoles
+            authorizedRoles = authorizedRoles,
         ) {
             val params = parameters.joinToString(" ")
 
@@ -157,9 +157,7 @@ sealed class Argument {
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
             name = property.name
-            return object : ReadOnlyProperty<Any?, String> {
-                override fun getValue(thisRef: Any?, property: KProperty<*>) = value
-            }
+            return ReadOnlyProperty { _, _ -> value }
         }
 
         override fun toString() = name
@@ -171,9 +169,7 @@ sealed class Argument {
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String?> {
             name = property.name
-            return object : ReadOnlyProperty<Any?, String?> {
-                override operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-            }
+            return ReadOnlyProperty { _, _ -> value }
         }
 
         override fun toString() = "[$name]"
@@ -185,9 +181,7 @@ sealed class Argument {
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
             name = property.name
-            return object : ReadOnlyProperty<Any?, String> {
-                override operator fun getValue(thisRef: Any?, property: KProperty<*>) = value
-            }
+            return ReadOnlyProperty { _, _ -> value }
         }
 
         override fun toString() = "[$name=$default]"
@@ -199,9 +193,7 @@ sealed class Argument {
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, List<String>> {
             name = property.name
-            return object : ReadOnlyProperty<Any?, List<String>> {
-                override operator fun getValue(thisRef: Any?, property: KProperty<*>) = values
-            }
+            return ReadOnlyProperty { _, _ -> values }
         }
 
         override fun toString() = "[$name...]"

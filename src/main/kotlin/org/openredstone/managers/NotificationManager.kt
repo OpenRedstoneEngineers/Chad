@@ -17,7 +17,7 @@ import org.openredstone.toNullable
 class NotificationManager(
     discordApi: DiscordApi,
     notificationChannelId: Long,
-    private val notificationRoles: List<NotificationRoleConfig>
+    private val notificationRoles: List<NotificationRoleConfig>,
 ) {
     private val listeners: List<ListenerManager<out Any>>
     private val notificationMessageId: Long

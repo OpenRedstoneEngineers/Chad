@@ -20,7 +20,7 @@ data class ChadConfig(
     val insults: List<String>,
     val commonCommands: MutableMap<String, String>,
     val discordCommands: MutableMap<String, String>,
-    val ircCommands: MutableMap<String, String>
+    val ircCommands: MutableMap<String, String>,
 )
 
 object ChadSpec : ConfigSpec("") {
