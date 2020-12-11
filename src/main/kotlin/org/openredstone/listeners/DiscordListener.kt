@@ -2,6 +2,7 @@ package org.openredstone.listeners
 
 import mu.KotlinLogging
 import org.javacord.api.DiscordApi
+import org.javacord.api.entity.message.Message
 import org.javacord.api.entity.permission.Role
 import org.javacord.api.event.message.MessageCreateEvent
 
@@ -39,15 +40,27 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, executor: Comman
 val spoilerLogger = KotlinLogging.logger("Spoiler listener")
 
 private fun startSpoilerListener(discordApi: DiscordApi) {
-    // TODO parse for whether or not "||" is within a code snippet/block
-    discordApi.addMessageCreateListener { event ->
-        val message = event.message
-        if (message.content.contains(Regex("\\|\\|"))) {
-            spoilerLogger.debug("${message.author} [${message.channel}]: ${message.content}")
+    fun Message.containsSpoiler(): Boolean {
+        var startingIndex = 0
+        val content = this.content ?: return false
+        val spoilerRegex = Regex("""\|\|(?s)(.+)\|\|""")
+        Regex("""(?s)`{3}(?:(?!```).)+`{3}|`[^`]+`""").findAll(content).forEach {
+            val prefix = startingIndex until it.range.first
+            if (content.substring(prefix).contains(spoilerRegex)) return true
+            startingIndex = it.range.last + 1
+        }
+        return content.substring(startingIndex).contains(spoilerRegex)
+    }
 
-            message.delete()
+    fun Message.spoilerCheck() {
+        if (this.containsSpoiler()) {
+            spoilerLogger.debug("${this.author} [${this.channel}]: ${this.content}")
+            this.delete()
         }
     }
+
+    discordApi.addMessageCreateListener { it.message.spoilerCheck() }
+    discordApi.addMessageEditListener { it.message.ifPresent { message -> message.spoilerCheck() } }
 }
 
 fun startDiscordListeners(discordApi: DiscordApi, executor: CommandExecutor, disableSpoilers: Boolean) {
