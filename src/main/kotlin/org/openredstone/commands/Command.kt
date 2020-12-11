@@ -49,7 +49,7 @@ abstract class Command(
     val requireParameters: Int = 0,
     val privateReply: Boolean = false,
     private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
-    val notAuthorized: String = "You are not authorized to run this command."
+    val notAuthorized: String = "You are not authorized to run this command.",
 ) {
     fun isAuthorized(sender: Sender) = when (sender.service) {
         Service.DISCORD -> isAuthorized(sender, authorizedRoles.discord)
@@ -70,7 +70,7 @@ val applyCommand = command {
     val arg by required()
     reply {
         when (arg) {
-            "student" -> "To apply for student, hop onto `mc.openredstone.org` on 1.16.1 and run `/apply`"
+            "student" -> "To apply for student, hop onto `mc.openredstone.org` and run `/apply`"
             "builder" -> "To apply for builder, follow the steps outlined here: ${link("https://discourse.openredstone.org/builder")}."
             "engineer" -> "To apply for engineer, follow the steps outlined here: ${link("https://discourse.openredstone.org/engineer")}"
             else -> "Specify \"student\", \"builder\", or \"engineer\"."
