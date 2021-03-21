@@ -1,5 +1,6 @@
 chad:
   botToken: ""
+  databaseFile: data.db
   enableNotificationRoles: true
   notificationChannelId: 701824005954600960
   gameChatChannelId: 475124545687388160
@@ -46,8 +47,6 @@ chad:
     - "%USER% is the reason God created the middle finger."
     - "I’ll never forget the first time I met %USER%. But I’ll keep trying."
     - "Hold still. I’m trying to imagine %USER% with a personality."
-  commonCommands:
-    ping: "pong"
   discordCommands:
     archive: "<https://archive.openredstone.org/>"
     invite: "<https://openredstone.org/discord>"

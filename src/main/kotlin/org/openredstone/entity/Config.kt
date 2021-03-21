@@ -4,6 +4,7 @@ import com.uchuhimo.konf.ConfigSpec
 
 data class ChadConfig(
     val botToken: String,
+    val databaseFile: String,
     val enableNotificationRoles: Boolean,
     val notificationChannelId: Long,
     val gameChatChannelId: Long,
@@ -18,7 +19,6 @@ data class ChadConfig(
     val authorizedDiscordRoles: List<String>,
     val logging: LoggingConfig,
     val insults: List<String>,
-    val commonCommands: MutableMap<String, String>,
     val discordCommands: MutableMap<String, String>,
     val ircCommands: MutableMap<String, String>,
 )

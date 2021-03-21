@@ -13,6 +13,7 @@ import org.openredstone.entity.ChadSpec
 import org.openredstone.listeners.startDiscordListeners
 import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
+import org.openredstone.managers.Sql
 
 /**
  * The global logger for Chad.
@@ -29,6 +30,9 @@ fun main(args: Array<String>) {
     val config = Config { addSpec(ChadSpec) }.from.yaml.watchFile(configFile)
 
     var chadConfig = config[ChadSpec.chad]
+
+    val database = Sql(chadConfig.databaseFile)
+    database.initTables()
 
     // Logging properties
     val loggingConfig = chadConfig.logging
@@ -72,10 +76,9 @@ fun main(args: Array<String>) {
                     val cmd = command {
                         reply { msg }
                     }
-                    // write the new command to the config file
-                    chadConfig.commonCommands[name] = msg
-                    config.toYaml.toFile(configFile)
-                    // add command and update the help command
+                    // write command to database
+                    database.insertCommand(name, msg)
+                    // add command
                     discordCommands[name] = cmd
                     discordCommands["help"] = helpCommand(discordCommands)
                     ircCommands[name] = cmd
@@ -96,7 +99,7 @@ fun main(args: Array<String>) {
                 }
             }
         ).apply {
-            putAll(chadConfig.commonCommands.mapValues { staticCommand(it.value) })
+            putAll(database.getCommands().mapValues { staticCommand(it.value) })
         }
 
         discordCommands.apply {
@@ -121,10 +124,22 @@ fun main(args: Array<String>) {
     logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
     logger.info("Starting listeners...")
 
-    startDiscordListeners(discordApi, CommandExecutor(chadConfig.commandChar, discordCommands), chadConfig.disableSpoilers)
-    startIrcListeners(chadConfig.irc, CommandExecutor(chadConfig.commandChar, ircCommands), chadConfig.enableLinkPreview)
+    startDiscordListeners(
+        discordApi,
+        CommandExecutor(chadConfig.commandChar, discordCommands),
+        chadConfig.disableSpoilers
+    )
+    startIrcListeners(
+        chadConfig.irc,
+        CommandExecutor(chadConfig.commandChar, ircCommands),
+        chadConfig.enableLinkPreview
+    )
 
-    if (chadConfig.enableNotificationRoles) NotificationManager(discordApi, chadConfig.notificationChannelId, chadConfig.notifications)
+    if (chadConfig.enableNotificationRoles) NotificationManager(
+        discordApi,
+        chadConfig.notificationChannelId,
+        chadConfig.notifications
+    )
 
     logger.info("Started listeners")
 }
