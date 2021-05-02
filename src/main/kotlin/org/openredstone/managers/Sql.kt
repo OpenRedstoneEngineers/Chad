@@ -38,8 +38,8 @@ class Sql(
     }
 
     fun getCommands(): Map<String, String> = transaction(database) {
-        Sql.Command.selectAll().map {
+        Sql.Command.selectAll().associate {
             it[Sql.Command.key] to it[Sql.Command.response]
-        }.toMap()
+        }
     }
 }

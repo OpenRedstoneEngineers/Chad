@@ -34,6 +34,11 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
      */
     var help: String? = null
 
+    /**
+     * The reactions to add to the message. This only has an effect on Discord.
+     */
+    var reactions: List<String> = emptyList()
+
     private var requiredParameters = 0
     private var optionalParameters = 0
     private var vararg = false
@@ -51,6 +56,7 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
             requireParameters = 0,
             privateReply = isPrivate,
             authorizedRoles = authorizedRoles,
+            reactions = reactions,
         ) {
             val params = parameters.joinToString(" ")
 

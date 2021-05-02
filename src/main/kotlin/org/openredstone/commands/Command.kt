@@ -15,7 +15,7 @@ data class AuthorizedRoles(val discord: List<String>?, val irc: List<String>?)
 
 typealias Commands = Map<String, Command>
 
-data class CommandResponse(val reply: String, val privateReply: Boolean)
+data class CommandResponse(val privateReply: Boolean, val reply: String, val reactions: List<String>)
 
 class CommandExecutor(private val commandChar: Char, private val commands: Commands) {
     fun tryExecute(sender: Sender, message: String): CommandResponse? {
@@ -28,7 +28,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val parts = message.split(Regex("""\s+"""))
         val args = parts.drop(1)
         val name = parts[0].substring(1)
-        val command = commands[name] ?: return CommandResponse("Invalid command.", false)
+        val command = commands[name] ?: return CommandResponse(false, "Invalid command.", emptyList())
 
         val reply = if (args.size < command.requireParameters) {
             "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
@@ -41,7 +41,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
                 "An error occurred while running the command."
             }
         }
-        return CommandResponse(reply, command.privateReply)
+        return CommandResponse(command.privateReply, reply, command.reactions)
     }
 }
 
@@ -50,6 +50,7 @@ abstract class Command(
     val privateReply: Boolean = false,
     private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
     val notAuthorized: String = "You are not authorized to run this command.",
+    val reactions: List<String> = emptyList(),
 ) {
     fun isAuthorized(sender: Sender) = when (sender.service) {
         Service.DISCORD -> isAuthorized(sender, authorizedRoles.discord)
@@ -96,7 +97,6 @@ fun insultCommand(insults: List<String>) = command {
         insults.random().replace("%USER%", targetName)
     }
 }
-
 
 fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
     reply(isPrivate = true) {
@@ -152,6 +152,25 @@ val rollCommand = command {
     }
 }
 
+val pollCommand = command {
+    val question by required()
+    val options by vararg()
+    reply {
+        if (options.size > 10) {
+            return@reply "Polls can't have more than 9 options."
+        }
+        val result = options
+            .mapIndexed { index, option -> "${numberEmoji(index + 1)} $option" }
+            .joinToString(prefix = "Poll: $question\n", separator = "\n")
+        // message.addReaction(emoji)
+        result
+    }
+}
+
+fun staticCommand(message: String) = command {
+    reply { message }
+}
+
 private fun parseDie(die: String): Pair<Int, Int>? {
     val (repeat, type) = Regex("""(\d*)d(\d+)""").matchEntire(die)?.destructured ?: return null
     return Pair(
@@ -160,6 +179,16 @@ private fun parseDie(die: String): Pair<Int, Int>? {
     )
 }
 
-fun staticCommand(message: String) = command {
-    reply { message }
+private fun numberEmoji(n: Int) = when (n) {
+    1 -> ":one:"
+    2 -> ":two:"
+    3 -> ":three:"
+    4 -> ":four:"
+    5 -> ":five:"
+    6 -> ":six:"
+    7 -> ":seven:"
+    8 -> ":eight:"
+    9 -> ":nine:"
+    10 -> ":keycap_ten:"
+    else -> error("invalid number")
 }
