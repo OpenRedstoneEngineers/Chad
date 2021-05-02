@@ -37,7 +37,7 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
     /**
      * The reactions to add to the message. This only has an effect on Discord.
      */
-    var reactions: List<String> = emptyList()
+    val reactions: MutableList<String> = mutableListOf()
 
     private var requiredParameters = 0
     private var optionalParameters = 0

@@ -160,7 +160,11 @@ val pollCommand = command {
             return@reply "Polls can't have more than 9 options."
         }
         val result = options
-            .mapIndexed { index, option -> "${numberEmoji(index + 1)} $option" }
+            .mapIndexed { index, option ->
+                val emoji = numberEmoji(index + 1)
+                this@command.reactions.add(emoji)
+                "$emoji $option"
+            }
             .joinToString(prefix = "Poll: $question\n", separator = "\n")
         // message.addReaction(emoji)
         result
