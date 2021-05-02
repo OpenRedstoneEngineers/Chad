@@ -155,6 +155,9 @@ val pollCommand = command {
     val question by required()
     val options by vararg()
     reply {
+        if (options.isEmpty()) {
+            return@reply "Polls must have at least 1 option"
+        }
         if (options.size > 9) {
             return@reply "Polls can't have more than 9 options."
         }
