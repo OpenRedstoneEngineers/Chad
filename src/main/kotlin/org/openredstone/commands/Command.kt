@@ -181,7 +181,7 @@ private fun parseDie(die: String): Pair<Int, Int>? {
 }
 
 private fun numberEmoji(n: Int) = when (n) {
-    1 -> "️\u0031\uFE0F\u20E3"
+    1 -> "\u0031\uFE0F\u20E3"
     2 -> "\u0032\uFE0F\u20E3"
     3 -> "\u0033\uFE0F\u20E3"
     4 -> "\u0034\uFE0F\u20E3"
