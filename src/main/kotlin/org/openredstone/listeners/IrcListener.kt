@@ -18,8 +18,10 @@ import org.pircbotx.hooks.events.PrivateMessageEvent
 
 val regex = Regex("\\x03..(.*)\\x0f")
 
-private class IrcCommandListener(private val ircConfig: IrcBotConfig, private val executor: CommandExecutor) :
-    ListenerAdapter() {
+private class IrcCommandListener(
+    private val ircConfig: IrcBotConfig,
+    private val executor: CommandExecutor,
+) : ListenerAdapter() {
     override fun onPrivateMessage(event: PrivateMessageEvent?) {
         val sender = event?.user?.nick!!
         val commandSender = Sender(Service.IRC, sender, emptyList())
@@ -99,7 +101,7 @@ private class IrcLinkListener : ListenerAdapter() {
 
     private fun extractLink(message: String): String? {
         val (matchedProto, url) = linkRegex.find(message)?.destructured ?: return null
-        val proto = if (matchedProto.isEmpty()) "http://" else matchedProto
+        val proto = matchedProto.ifEmpty { "http://" }
         return "$proto$url"
     }
 }

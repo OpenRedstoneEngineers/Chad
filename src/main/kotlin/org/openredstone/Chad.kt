@@ -4,7 +4,6 @@ import kotlin.system.exitProcess
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
-import com.uchuhimo.konf.source.yaml.toYaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
 
@@ -34,7 +33,7 @@ fun main(args: Array<String>) {
     val database = Sql(chadConfig.databaseFile)
     database.initTables()
 
-    // Logging properties
+    // logging properties
     val loggingConfig = chadConfig.logging
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", loggingConfig.defaultLevel)
     System.setProperty("org.slf4j.simpleLogger.log.Chad", loggingConfig.chadLevel)
@@ -104,6 +103,7 @@ fun main(args: Array<String>) {
 
         discordCommands.apply {
             clear()
+            put("poll", pollCommand)
             put("roll", rollCommand)
             put("help", helpCommand(this))
             putAll(commonCommands)

@@ -15,7 +15,7 @@ data class AuthorizedRoles(val discord: List<String>?, val irc: List<String>?)
 
 typealias Commands = Map<String, Command>
 
-data class CommandResponse(val reply: String, val privateReply: Boolean)
+data class CommandResponse(val privateReply: Boolean, val reply: String, val reactions: List<String> = emptyList())
 
 class CommandExecutor(private val commandChar: Char, private val commands: Commands) {
     fun tryExecute(sender: Sender, message: String): CommandResponse? {
@@ -25,23 +25,23 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
 
         logger.info("${sender.username} [${sender.service}]: $message")
 
+        // parse message
         val parts = message.split(Regex("""\s+"""))
         val args = parts.drop(1)
         val name = parts[0].substring(1)
-        val command = commands[name] ?: return CommandResponse("Invalid command.", false)
+        val command = commands[name] ?: return CommandResponse(false, "Invalid command.", emptyList())
 
-        val reply = if (args.size < command.requireParameters) {
-            "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}."
+        return if (args.size < command.requireParameters) {
+            CommandResponse(command.privateReply, "Not enough arguments passed to command `$name`, expected at least ${command.requireParameters}.")
         } else {
             try {
                 command.runCommand(sender, args)
             } catch (e: Exception) {
                 logger.error(e) { "caught exception while running command" }
 
-                "An error occurred while running the command."
+                CommandResponse(command.privateReply, "An error occurred while running the command.")
             }
         }
-        return CommandResponse(reply, command.privateReply)
     }
 }
 
@@ -61,7 +61,7 @@ abstract class Command(
 
     open fun help(name: String) = "No help available for this command."
 
-    abstract fun runCommand(sender: Sender, args: List<String>): String
+    abstract fun runCommand(sender: Sender, args: List<String>): CommandResponse
 }
 
 
@@ -96,7 +96,6 @@ fun insultCommand(insults: List<String>) = command {
         insults.random().replace("%USER%", targetName)
     }
 }
-
 
 fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
     reply(isPrivate = true) {
@@ -152,6 +151,30 @@ val rollCommand = command {
     }
 }
 
+val pollCommand = command {
+    val question by required()
+    val options by vararg()
+    reply {
+        if (options.isEmpty()) {
+            return@reply "Polls must have at least 1 option"
+        }
+        if (options.size > 9) {
+            return@reply "Polls can't have more than 9 options."
+        }
+        options
+            .mapIndexed { index, option ->
+                val emoji = numberEmoji(index + 1)
+                reactions.add(emoji)
+                "$emoji $option"
+            }
+            .joinToString(prefix = "Poll: $question\n", separator = "\n")
+    }
+}
+
+fun staticCommand(message: String) = command {
+    reply { message }
+}
+
 private fun parseDie(die: String): Pair<Int, Int>? {
     val (repeat, type) = Regex("""(\d*)d(\d+)""").matchEntire(die)?.destructured ?: return null
     return Pair(
@@ -160,6 +183,15 @@ private fun parseDie(die: String): Pair<Int, Int>? {
     )
 }
 
-fun staticCommand(message: String) = command {
-    reply { message }
+private fun numberEmoji(n: Int) = when (n) {
+    1 -> "\u0031\uFE0F\u20E3"
+    2 -> "\u0032\uFE0F\u20E3"
+    3 -> "\u0033\uFE0F\u20E3"
+    4 -> "\u0034\uFE0F\u20E3"
+    5 -> "\u0035\uFE0F\u20E3"
+    6 -> "\u0036\uFE0F\u20E3"
+    7 -> "\u0037\uFE0F\u20E3"
+    8 -> "\u0038\uFE0F\u20E3"
+    9 -> "\u0039\uFE0F\u20E3"
+    else -> error("invalid number")
 }

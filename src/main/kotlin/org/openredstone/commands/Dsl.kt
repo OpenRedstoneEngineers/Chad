@@ -16,6 +16,11 @@ annotation class CommandMarker
 
 @CommandMarker
 class ReplyScope(val sender: Sender) {
+    /**
+     * The reactions to add to the message. This only has an effect on Discord.
+     */
+    val reactions: MutableList<String> = mutableListOf()
+
     operator fun Subcommand.invoke(vararg args: String) = command.runCommand(sender, args.toList())
 
     /**
@@ -59,14 +64,14 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
                 return help?.let { "$it $usage" } ?: usage
             }
 
-            override fun runCommand(sender: Sender, args: List<String>): String {
+            override fun runCommand(sender: Sender, args: List<String>): CommandResponse {
                 if (isAuthorized(sender)) {
                     if (args.size < requiredParameters) {
-                        return "expected at least $requiredParameters argument(s), got ${args.size}"
+                        return response("expected at least $requiredParameters argument(s), got ${args.size}")
                     }
                     val maxParameters = requiredParameters + optionalParameters
                     if (!vararg && args.size > maxParameters) {
-                        return "expected at most $maxParameters argument(s), got ${args.size}"
+                        return response("expected at most $maxParameters argument(s), got ${args.size}")
                     }
                     for ((i, parameter) in parameters.withIndex()) {
                         when (parameter) {
@@ -76,17 +81,23 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
                             is Argument.Vararg -> parameter.values = args.subList(i, args.size)
                         }
                     }
-                    val rawMessage = ReplyScope(sender).message()
+                    val replyScope = ReplyScope(sender)
+                    val rawMessage = replyScope.message()
                     return if (rawMessage.length < 512) {
-                        rawMessage
+                        response(rawMessage, replyScope.reactions)
                     } else {
                         val response = khttp.post(url = "https://hastebin.com/documents", data = rawMessage)
-                        "${rawMessage.substring(0, 64)} ... Snipped: https://hastebin.com/${response.jsonObject["key"]}"
+                        response(
+                            "${rawMessage.substring(0, 64)} ... Snipped: https://hastebin.com/${response.jsonObject["key"]}",
+                            replyScope.reactions,
+                        )
                     }
                 } else {
-                    return notAuthorized
+                    return response(notAuthorized)
                 }
             }
+
+            fun response(reply: String, reactions: List<String> = emptyList()) = CommandResponse(privateReply, reply, reactions)
         }
     }
 

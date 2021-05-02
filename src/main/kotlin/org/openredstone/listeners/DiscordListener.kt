@@ -7,6 +7,7 @@ import org.javacord.api.entity.permission.Role
 import org.javacord.api.event.message.MessageCreateEvent
 
 import org.openredstone.commands.CommandExecutor
+import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.toNullable
@@ -17,12 +18,13 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, executor: Comman
         if (user.isBot) {
             return
         }
-        if (event.server.isPresent) {
+        val response : CommandResponse
+        val messageFuture = if (event.server.isPresent) {
             val server = event.server.get()
             val roles = user.getRoles(server).map(Role::getName)
             val username = user.getDisplayName(server)
             val sender = Sender(Service.DISCORD, username, roles)
-            val response = executor.tryExecute(sender, event.messageContent) ?: return
+            response = executor.tryExecute(sender, event.messageContent) ?: return
             if (response.privateReply) {
                 user.sendMessage(response.reply)
             } else {
@@ -30,10 +32,16 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, executor: Comman
             }
         } else {
             val sender = Sender(Service.DISCORD, event.messageAuthor.name, emptyList())
-            val response = executor.tryExecute(sender, event.messageContent) ?: return
+            response = executor.tryExecute(sender, event.messageContent) ?: return
             user.sendMessage(response.reply)
         }
+        messageFuture.thenAccept {
+            for (reaction in response.reactions) {
+                it.addReaction(reaction)
+            }
+        }
     }
+
     discordApi.addMessageCreateListener(::messageCreated)
 }
 

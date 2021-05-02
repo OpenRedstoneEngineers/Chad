@@ -70,7 +70,7 @@ class DSL {
             val sub = Subcommand(command {
                 reply { "git commit sudoku" }
             })
-            reply { sub() }
+            reply { sub().reply }
         }
     ))
 
