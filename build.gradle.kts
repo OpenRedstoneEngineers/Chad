@@ -4,7 +4,7 @@ import org.jetbrains.dokka.gradle.*
 plugins {
     application
     java
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.4.32"
     id("org.jetbrains.dokka") version "1.4.32"
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }

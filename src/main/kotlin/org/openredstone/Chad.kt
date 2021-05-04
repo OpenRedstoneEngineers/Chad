@@ -128,18 +128,18 @@ fun main(args: Array<String>) {
     startDiscordListeners(
         discordApi,
         CommandExecutor(chadConfig.commandChar, discordCommands),
-        chadConfig.disableSpoilers
+        chadConfig.disableSpoilers,
     )
     startIrcListeners(
         chadConfig.irc,
         CommandExecutor(chadConfig.commandChar, ircCommands),
-        chadConfig.enableLinkPreview
+        chadConfig.enableLinkPreview,
     )
 
     if (chadConfig.enableNotificationRoles) NotificationManager(
         discordApi,
         chadConfig.notificationChannelId,
-        chadConfig.notifications
+        chadConfig.notifications,
     )
 
     logger.info("Done")

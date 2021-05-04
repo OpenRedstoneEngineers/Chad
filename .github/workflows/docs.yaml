@@ -1,7 +1,6 @@
 name: Docs
 
 on:
-  workflow_dispatch:
   push:
     branches: [ $default-branch ]
   pull_request:
@@ -13,7 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        
+
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -21,10 +20,9 @@ jobs:
 
       - name: Build docs
         run: ./gradlew dokkaHtml
-        
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/dokka/html
-          
