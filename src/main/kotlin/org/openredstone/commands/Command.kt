@@ -1,6 +1,7 @@
 package org.openredstone.commands
 
 import org.javacord.api.DiscordApi
+import org.openredstone.commands.dsl.command
 import org.openredstone.logger
 import org.openredstone.toNullable
 import java.net.URLEncoder

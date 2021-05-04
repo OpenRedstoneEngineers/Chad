@@ -1,5 +1,10 @@
-package org.openredstone.commands
+package org.openredstone.commands.dsl
 
+import org.openredstone.commands.AuthorizedRoles
+import org.openredstone.commands.Command
+import org.openredstone.commands.CommandResponse
+import org.openredstone.commands.Sender
+import org.openredstone.commands.Service
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -40,7 +45,7 @@ class ReplyScope(val sender: Sender) {
 }
 
 /**
- * Used in [org.openredstone.commands.command].
+ * Used in [command].
  */
 @CommandMarker
 class CommandScope(private val authorizedRoles: AuthorizedRoles) {

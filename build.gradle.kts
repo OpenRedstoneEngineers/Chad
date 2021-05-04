@@ -1,10 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.dokka.gradle.*
 
 plugins {
     application
     java
     kotlin("jvm") version "1.4.0"
-    id("com.github.johnrengelman.shadow") version "6.0.0"
+    id("org.jetbrains.dokka") version "1.4.32"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 group = "org.openredstone"
@@ -27,17 +29,17 @@ repositories {
 dependencies {
     implementation(group = "com.github.jkcclemens", name = "khttp", version = "0.1.0")
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
-    implementation(group = "org.javacord", name = "javacord", version = "3.0.6")
-    implementation(group = "org.jetbrains.exposed", name = "exposed-core", version = "0.29.1")
-    implementation(group = "org.jetbrains.exposed", name = "exposed-jdbc", version = "0.29.1")
+    implementation(group = "org.javacord", name = "javacord", version = "3.3.0")
+    implementation(group = "org.jetbrains.exposed", name = "exposed-core", version = "0.31.1")
+    implementation(group = "org.jetbrains.exposed", name = "exposed-jdbc", version = "0.31.1")
     implementation(group = "org.xerial", name = "sqlite-jdbc", version = "3.34.0")
-    implementation(group = "com.uchuhimo", name = "konf", version = "0.22.1")
+    implementation(group = "com.uchuhimo", name = "konf", version = "1.1.2")
     implementation(group = "org.pircbotx", name = "pircbotx", version = "2.1")
-    implementation(group = "io.github.microutils", name = "kotlin-logging", version = "1.8.3")
+    implementation(group = "io.github.microutils", name = "kotlin-logging-jvm", version = "2.0.6")
     runtimeOnly(group = "org.slf4j", name = "slf4j-simple", version = "1.7.30")
 
     testImplementation(kotlin("test-junit5"))
-    testRuntimeOnly(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.6.2")
+    testRuntimeOnly(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.7.1")
 }
 
 tasks {
@@ -52,4 +54,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<JavaExec> {
     args("config.yaml")
+}
+
+tasks.withType<DokkaTask> {
+    dokkaSourceSets {
+        named("main") {
+            includes.from("packages.md")
+        }
+    }
 }

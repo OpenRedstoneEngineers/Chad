@@ -1,14 +1,16 @@
 @file:Suppress("ClassName")
 
-import kotlin.test.Test
-
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
-
 import org.openredstone.commands.CommandExecutor
 import org.openredstone.commands.CommandResponse
-import org.openredstone.commands.*
+import org.openredstone.commands.Sender
+import org.openredstone.commands.Service
+import org.openredstone.commands.applyCommand
+import org.openredstone.commands.dsl.Subcommand
+import org.openredstone.commands.dsl.command
 import org.openredstone.entity.ChadSpec
+import kotlin.test.Test
 
 val sender = Sender(Service.IRC, "tester", emptyList())
 
@@ -26,11 +28,7 @@ class `config file` {
 }
 
 class `apply command` {
-    private val executor = CommandExecutor(
-        ',', mapOf(
-            "apply" to applyCommand
-        )
-    )
+    private val executor = CommandExecutor(',', mapOf("apply" to applyCommand))
 
     @Test
     fun fish() = executor.testIrc(",apply fish") {

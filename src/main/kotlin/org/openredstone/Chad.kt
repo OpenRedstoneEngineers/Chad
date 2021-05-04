@@ -5,6 +5,7 @@ import com.uchuhimo.konf.source.yaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
 import org.openredstone.commands.*
+import org.openredstone.commands.dsl.command
 import org.openredstone.entity.ChadSpec
 import org.openredstone.listeners.startDiscordListeners
 import org.openredstone.listeners.startIrcListeners

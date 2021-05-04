@@ -34,7 +34,7 @@ class NotificationManager(
     }
 
     private fun reactionAdded(event: ReactionAddEvent) {
-        val user = event.user
+        val user = event.user.toNullable() ?: return
         if (user.isBot || event.messageId != notificationMessageId) {
             return
         }
