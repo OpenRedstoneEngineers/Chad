@@ -6,8 +6,8 @@ import kotlin.reflect.KProperty
 /**
  * The command function can be used to build a command using a DSL.
  */
-fun command(authorizedRoles: AuthorizedRoles = AuthorizedRoles(), configure: CommandScope.() -> Unit): Command =
-    CommandScope(authorizedRoles).apply(configure).buildCommand()
+fun command(authorizedRoles: AuthorizedRoles = AuthorizedRoles(), configure: CommandScope.() -> Command): Command =
+    CommandScope(authorizedRoles).configure()
 
 /**
  * An annotation class for the command DSL.
@@ -54,14 +54,11 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
     private var vararg = false
     private val parameters = mutableListOf<Argument>()
 
-    // TODO: should we make replies optional?
-    private var command: Command? = null
-
     /**
-     * The reply of the command.
+     * The reply of the command. This should be the last action in [command].
      */
-    fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String) {
-        command = object : Command(privateReply = isPrivate, authorizedRoles = authorizedRoles) {
+    fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String): Command =
+        object : Command(privateReply = isPrivate, authorizedRoles = authorizedRoles) {
             private val params = parameters.joinToString(" ") // used for the help message
 
             override fun help(name: String): String {
@@ -106,7 +103,6 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
             private fun response(reply: String, reactions: List<String> = emptyList()) =
                 CommandResponse(privateReply, reply, reactions)
         }
-    }
 
     /**
      * A required argument. This is supposed to be used as a delegate.
@@ -158,8 +154,6 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
         vararg = true
         parameters.add(it)
     }
-
-    internal fun buildCommand() = command ?: throw IllegalStateException("no reply supplied")
 }
 
 /**
