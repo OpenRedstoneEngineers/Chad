@@ -1,3 +1,5 @@
+@file:Suppress("ClassName")
+
 import kotlin.test.Test
 
 import com.uchuhimo.konf.Config

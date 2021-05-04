@@ -4,16 +4,20 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
- * The command function can be used to build a command.
+ * The command function can be used to build a command using a DSL.
  */
-fun command(
-    authorizedRoles: AuthorizedRoles = AuthorizedRoles(null, null),
-    configure: CommandScope.() -> Unit,
-) = CommandScope(authorizedRoles).apply(configure).buildCommand()
+fun command(authorizedRoles: AuthorizedRoles = AuthorizedRoles(), configure: CommandScope.() -> Unit): Command =
+    CommandScope(authorizedRoles).apply(configure).buildCommand()
 
+/**
+ * An annotation class for the command DSL.
+ */
 @DslMarker
 annotation class CommandMarker
 
+/**
+ * Used in [CommandScope.reply].
+ */
 @CommandMarker
 class ReplyScope(val sender: Sender) {
     /**
@@ -21,21 +25,27 @@ class ReplyScope(val sender: Sender) {
      */
     val reactions: MutableList<String> = mutableListOf()
 
+    /**
+     * Can be used to run a [Subcommand] with the current sender.
+     */
     operator fun Subcommand.invoke(vararg args: String) = command.runCommand(sender, args.toList())
 
     /**
      * Formats a link, depending on the service.
      */
-    fun link(link: String) = when (sender.service) {
+    fun link(link: String): String = when (sender.service) {
         Service.DISCORD -> "<$link>"
         Service.IRC -> link
     }
 }
 
+/**
+ * Used in [org.openredstone.commands.command].
+ */
 @CommandMarker
 class CommandScope(private val authorizedRoles: AuthorizedRoles) {
     /**
-     * The help message. It is used to generate the help message.
+     * Used to generate the help message.
      */
     var help: String? = null
 
@@ -51,13 +61,8 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
      * The reply of the command.
      */
     fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String) {
-        // requireParameters = 0, so that we can return custom error messages
-        command = object : Command(
-            requireParameters = 0,
-            privateReply = isPrivate,
-            authorizedRoles = authorizedRoles,
-        ) {
-            val params = parameters.joinToString(" ")
+        command = object : Command(privateReply = isPrivate, authorizedRoles = authorizedRoles) {
+            private val params = parameters.joinToString(" ") // used for the help message
 
             override fun help(name: String): String {
                 val usage = "Usage: ,$name $params"
@@ -65,39 +70,41 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
             }
 
             override fun runCommand(sender: Sender, args: List<String>): CommandResponse {
-                if (isAuthorized(sender)) {
-                    if (args.size < requiredParameters) {
-                        return response("expected at least $requiredParameters argument(s), got ${args.size}")
+                if (!isAuthorized(sender)) return response(notAuthorized)
+
+                if (args.size < requiredParameters) {
+                    return response("expected at least $requiredParameters argument(s), got ${args.size}")
+                }
+                val maxParameters = requiredParameters + optionalParameters
+                if (!vararg && args.size > maxParameters) {
+                    return response("expected at most $maxParameters argument(s), got ${args.size}")
+                }
+                parameters.withIndex().forEach { (i, parameter) ->
+                    when (parameter) {
+                        is Argument.Required -> parameter.value = args[i]
+                        is Argument.Optional -> parameter.value = args.getOrNull(i)
+                        is Argument.Default -> parameter.value = args.getOrNull(i) ?: parameter.default
+                        is Argument.Vararg -> parameter.values = args.subList(i, args.size)
                     }
-                    val maxParameters = requiredParameters + optionalParameters
-                    if (!vararg && args.size > maxParameters) {
-                        return response("expected at most $maxParameters argument(s), got ${args.size}")
-                    }
-                    for ((i, parameter) in parameters.withIndex()) {
-                        when (parameter) {
-                            is Argument.Required -> parameter.value = args[i]
-                            is Argument.Optional -> parameter.value = args.getOrNull(i)
-                            is Argument.Default -> parameter.value = args.getOrNull(i) ?: parameter.default
-                            is Argument.Vararg -> parameter.values = args.subList(i, args.size)
-                        }
-                    }
-                    val replyScope = ReplyScope(sender)
-                    val rawMessage = replyScope.message()
-                    return if (rawMessage.length < 512) {
-                        response(rawMessage, replyScope.reactions)
-                    } else {
-                        val response = khttp.post(url = "https://hastebin.com/documents", data = rawMessage)
-                        response(
-                            "${rawMessage.substring(0, 64)} ... Snipped: https://hastebin.com/${response.jsonObject["key"]}",
-                            replyScope.reactions,
-                        )
-                    }
+                }
+                val replyScope = ReplyScope(sender)
+                val rawMessage = replyScope.message()
+                return if (rawMessage.length < 512) {
+                    response(rawMessage, replyScope.reactions)
                 } else {
-                    return response(notAuthorized)
+                    val response = khttp.post(url = "https://hastebin.com/documents", data = rawMessage)
+                    response(
+                        "${rawMessage.substring(0, 64)} ... Snipped: https://hastebin.com/${response.jsonObject["key"]}",
+                        replyScope.reactions,
+                    )
                 }
             }
 
-            fun response(reply: String, reactions: List<String> = emptyList()) = CommandResponse(privateReply, reply, reactions)
+            /**
+             * A helper to generate a [CommandResponse].
+             */
+            private fun response(reply: String, reactions: List<String> = emptyList()) =
+                CommandResponse(privateReply, reply, reactions)
         }
     }
 
@@ -155,16 +162,17 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
     internal fun buildCommand() = command ?: throw IllegalStateException("no reply supplied")
 }
 
+/**
+ * A wrapper around a [Command], for usage as a subcommand inside another command.
+ */
 class Subcommand(internal val command: Command)
 
 // Arguments
 
 sealed class Argument {
-    internal abstract val name: String
-
     class Required : Argument() {
         internal lateinit var value: String
-        override lateinit var name: String
+        private lateinit var name: String
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
             name = property.name
@@ -176,7 +184,7 @@ sealed class Argument {
 
     class Optional : Argument() {
         internal var value: String? = null
-        override lateinit var name: String
+        private lateinit var name: String
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String?> {
             name = property.name
@@ -188,7 +196,7 @@ sealed class Argument {
 
     class Default(internal val default: String) : Argument() {
         internal lateinit var value: String
-        override lateinit var name: String
+        private lateinit var name: String
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, String> {
             name = property.name
@@ -200,7 +208,7 @@ sealed class Argument {
 
     class Vararg : Argument() {
         internal lateinit var values: List<String>
-        override lateinit var name: String
+        private lateinit var name: String
 
         operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, List<String>> {
             name = property.name

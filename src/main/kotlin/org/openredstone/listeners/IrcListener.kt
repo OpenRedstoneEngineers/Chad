@@ -1,22 +1,20 @@
 package org.openredstone.listeners
 
-import kotlin.concurrent.thread
-
 import mu.KotlinLogging
 import org.jsoup.Jsoup
-import org.pircbotx.Configuration
-import org.pircbotx.PircBotX
-import org.pircbotx.hooks.ListenerAdapter
-import org.pircbotx.hooks.events.MessageEvent
-
 import org.openredstone.commands.CommandExecutor
 import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.entity.IrcBotConfig
+import org.pircbotx.Configuration
+import org.pircbotx.PircBotX
+import org.pircbotx.hooks.ListenerAdapter
+import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
+import kotlin.concurrent.thread
 
-val regex = Regex("\\x03..(.*)\\x0f")
+val regex = Regex("""\x03..(.*)\x0f""")
 
 private class IrcCommandListener(
     private val ircConfig: IrcBotConfig,
@@ -33,13 +31,13 @@ private class IrcCommandListener(
 
     override fun onMessage(event: MessageEvent) {
         if (event.user?.nick == "ORENetwork") {
-            ingameListener(event)
+            inGameListener(event)
         } else if (event.user?.nick != "OREDiscord") {
             ircListener(event)
         }
     }
 
-    private fun ingameListener(event: MessageEvent) {
+    private fun inGameListener(event: MessageEvent) {
         val parsed = event.message.replace(regex) { it.groupValues[1] }
         val parsedSender = parsed.substring(0, parsed.indexOf(':'))
         val parsedMessage = parsed.substring(parsed.indexOf(':') + 2)
@@ -94,7 +92,7 @@ private class IrcLinkListener : ListenerAdapter() {
                 }
                 event.channel.send().message("${connection.url().host} | $title")
             } catch (e: Exception) {
-                // plz b q ui e T! x d
+                // plz b q u e T! x d
             }
         }
     }

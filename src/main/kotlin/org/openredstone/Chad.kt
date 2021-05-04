@@ -1,35 +1,37 @@
 package org.openredstone
 
-import kotlin.system.exitProcess
-
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
-
 import org.openredstone.commands.*
 import org.openredstone.entity.ChadSpec
 import org.openredstone.listeners.startDiscordListeners
 import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
 import org.openredstone.managers.Sql
+import kotlin.system.exitProcess
 
 /**
  * The global logger for Chad.
  */
 val logger = KotlinLogging.logger("Chad")
 
+/**
+ * The main function.
+ */
 fun main(args: Array<String>) {
-    if (args.isEmpty()) {
-        println("Please specify a config file")
+    // argument parsing
+    if (args.size != 1) {
+        eprintln("Expected one argument, got ${args.size}")
+        eprintln("Usage: Chad config")
         exitProcess(1)
     }
     val configFile = args[0]
 
+    // loading config
     val config = Config { addSpec(ChadSpec) }.from.yaml.watchFile(configFile)
-
     var chadConfig = config[ChadSpec.chad]
-
     val database = Sql(chadConfig.databaseFile)
     database.initTables()
 
@@ -53,9 +55,7 @@ fun main(args: Array<String>) {
         .setToken(chadConfig.botToken)
         .login()
         .join()
-        .apply {
-            updateActivity(chadConfig.playingMessage)
-        }
+        .apply { updateActivity(chadConfig.playingMessage) }
 
     val discordCommands = concurrentMapOf<String, Command>()
     val ircCommands = concurrentMapOf<String, Command>()
@@ -141,5 +141,5 @@ fun main(args: Array<String>) {
         chadConfig.notifications
     )
 
-    logger.info("Started listeners")
+    logger.info("Done")
 }

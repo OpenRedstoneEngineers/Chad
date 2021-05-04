@@ -4,21 +4,28 @@ import mu.KotlinLogging
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.Message
 import org.javacord.api.entity.permission.Role
-import org.javacord.api.event.message.MessageCreateEvent
-
 import org.openredstone.commands.CommandExecutor
 import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
 import org.openredstone.commands.Service
 import org.openredstone.toNullable
 
+val spoilerLogger = KotlinLogging.logger("Spoiler listener")
+
+fun startDiscordListeners(discordApi: DiscordApi, executor: CommandExecutor, disableSpoilers: Boolean) {
+    startDiscordCommandListener(discordApi, executor)
+    if (disableSpoilers) {
+        startSpoilerListener(discordApi)
+    }
+}
+
 private fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
-    fun messageCreated(event: MessageCreateEvent) {
+    discordApi.addMessageCreateListener(fun (event) {
         val user = event.messageAuthor.asUser().toNullable() ?: return
         if (user.isBot) {
             return
         }
-        val response : CommandResponse
+        val response: CommandResponse
         val messageFuture = if (event.server.isPresent) {
             val server = event.server.get()
             val roles = user.getRoles(server).map(Role::getName)
@@ -40,12 +47,8 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, executor: Comman
                 it.addReaction(reaction)
             }
         }
-    }
-
-    discordApi.addMessageCreateListener(::messageCreated)
+    })
 }
-
-val spoilerLogger = KotlinLogging.logger("Spoiler listener")
 
 private fun startSpoilerListener(discordApi: DiscordApi) {
     fun Message.containsSpoiler(): Boolean {
@@ -69,9 +72,4 @@ private fun startSpoilerListener(discordApi: DiscordApi) {
 
     discordApi.addMessageCreateListener { it.message.spoilerCheck() }
     discordApi.addMessageEditListener { it.message.ifPresent { message -> message.spoilerCheck() } }
-}
-
-fun startDiscordListeners(discordApi: DiscordApi, executor: CommandExecutor, disableSpoilers: Boolean) {
-    startDiscordCommandListener(discordApi, executor)
-    if (disableSpoilers) startSpoilerListener(discordApi)
 }
