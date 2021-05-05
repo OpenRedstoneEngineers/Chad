@@ -57,6 +57,11 @@ $dokka.location:org.openredstone.commands/Command/isAuthorized/#org.openredstone
 $dokka.location:org.openredstone.commands/Command/notAuthorized/#/PointingToDeclaration/-chad/org.openredstone.commands/-command/not-authorized.html
 $dokka.location:org.openredstone.commands/Command/privateReply/#/PointingToDeclaration/-chad/org.openredstone.commands/-command/private-reply.html
 $dokka.location:org.openredstone.commands/Command/runCommand/#org.openredstone.commands.Sender#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.commands/-command/run-command.html
+$dokka.location:org.openredstone.commands/CommandExecutor.Companion///PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/-companion/index.html
+$dokka.location:org.openredstone.commands/CommandExecutor.Companion/argRegex/#/PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/-companion/arg-regex.html
+$dokka.location:org.openredstone.commands/CommandExecutor.Companion/invalidArg/#/PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/-companion/invalid-arg.html
+$dokka.location:org.openredstone.commands/CommandExecutor.Companion/invalidCommand/#/PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/-companion/invalid-command.html
+$dokka.location:org.openredstone.commands/CommandExecutor.Companion/nameRegex/#/PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/-companion/name-regex.html
 $dokka.location:org.openredstone.commands/CommandExecutor///PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/index.html
 $dokka.location:org.openredstone.commands/CommandExecutor/CommandExecutor/#kotlin.Char#kotlin.collections.Map[kotlin.String,org.openredstone.commands.Command]/PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/-command-executor.html
 $dokka.location:org.openredstone.commands/CommandExecutor/tryExecute/#org.openredstone.commands.Sender#kotlin.String/PointingToDeclaration/-chad/org.openredstone.commands/-command-executor/try-execute.html
