@@ -50,11 +50,12 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, executor: Comman
     })
 }
 
+private val spoilerRegex = Regex("""\|\|(?s)(.+)\|\|""")
+
 private fun startSpoilerListener(discordApi: DiscordApi) {
     fun Message.containsSpoiler(): Boolean {
         var startingIndex = 0
         val content = this.content ?: return false
-        val spoilerRegex = Regex("""\|\|(?s)(.+)\|\|""")
         Regex("""(?s)`{3}(?:(?!```).)+`{3}|`[^`]+`""").findAll(content).forEach {
             val prefix = startingIndex until it.range.first
             if (content.substring(prefix).contains(spoilerRegex)) return true

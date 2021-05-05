@@ -30,6 +30,14 @@ typealias Commands = Map<String, Command>
 data class CommandResponse(val privateReply: Boolean, val reply: String, val reactions: List<String> = emptyList())
 
 class CommandExecutor(private val commandChar: Char, private val commands: Commands) {
+    companion object {
+        val nameRegex = Regex("""^\S+""")
+        val argRegex = Regex("""^\s+(?:"([^"]*)"|(\S+))""")
+
+        val invalidCommand = CommandResponse(false, "Invalid command", emptyList())
+        val invalidArg = CommandResponse(false, "Invalid argument", emptyList())
+    }
+
     fun tryExecute(sender: Sender, message: String): CommandResponse? {
         if (message.isEmpty() || message[0] != commandChar) {
             return null
@@ -38,10 +46,19 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         logger.info("${sender.username} [${sender.service}]: $message")
 
         // parse message
-        val parts = message.split(Regex("""\s+"""))
-        val args = parts.drop(1)
-        val name = parts[0].substring(1)
-        val command = commands[name] ?: return CommandResponse(false, "Invalid command.", emptyList())
+        var index = 1 // skip commandChar
+        val nameResult = nameRegex.find(message.substring(1)) ?: return invalidCommand
+        val name = nameResult.value
+        val args = mutableListOf<String>()
+        index += nameResult.value.length
+        while (index < message.length) {
+            val argResult = argRegex.find(message.substring(index)) ?: return invalidArg
+            args.add(argResult.groups.let {
+                it[1]?.value ?: it[2]?.value ?: return invalidArg
+            })
+            index += argResult.value.length
+        }
+        val command = commands[name] ?: return invalidCommand
 
         return try {
             command.runCommand(sender, args)
@@ -126,11 +143,11 @@ fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
 }
 
 val lmgtfy = command {
-    val search by vararg()
+    val search by required()
     reply {
         buildString {
             append("https://lmgtfy.com/?q=")
-            append(search.joinToString("+") {
+            append(search.split("\\s+").joinToString("+") {
                 URLEncoder.encode(it, "utf-8")
             })
         }
@@ -185,8 +202,10 @@ fun staticCommand(message: String) = command {
     reply { message }
 }
 
+private val dieRegex = Regex("""(\d*)d(\d+)""")
+
 private fun parseDie(die: String): Pair<Int, Int>? {
-    val (repeat, type) = Regex("""(\d*)d(\d+)""").matchEntire(die)?.destructured ?: return null
+    val (repeat, type) = dieRegex.matchEntire(die)?.destructured ?: return null
     return Pair(
         if (repeat == "") 1 else repeat.toIntOrNull()?.coerceIn(1..20) ?: return null,
         type.toIntOrNull()?.coerceIn(2..128) ?: return null
