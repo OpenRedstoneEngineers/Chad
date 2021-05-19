@@ -4,6 +4,7 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
+import org.javacord.api.entity.permission.Role
 import org.openredstone.commands.*
 import org.openredstone.commands.dsl.command
 import org.openredstone.entity.ChadSpec
@@ -11,6 +12,8 @@ import org.openredstone.listeners.startDiscordListeners
 import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
 import org.openredstone.managers.Sql
+import java.util.*
+import kotlin.concurrent.schedule
 import kotlin.system.exitProcess
 
 /**
@@ -58,6 +61,8 @@ fun main(args: Array<String>) {
         .join()
         .apply { updateActivity(chadConfig.playingMessage) }
 
+    val discordServer = discordApi.getServerById(chadConfig.serverId).get()
+
     val discordCommands = concurrentMapOf<String, Command>()
     val ircCommands = concurrentMapOf<String, Command>()
 
@@ -84,6 +89,37 @@ fun main(args: Array<String>) {
                     ircCommands[name] = cmd
                     ircCommands["help"] = helpCommand(discordCommands)
                     "Done!"
+                }
+            },
+            "pikl" to command(authorizedRoles) {
+                val name by required()
+                fun parseId(): String? {
+                    val match = Regex("""<@!?([0-9]{10,20})>""").find(name) ?: return null
+                    if (match.groupValues.isEmpty()) {
+                        return null
+                    }
+                    return match.groupValues.last()
+                }
+
+                fun gimmiePikl(): Role? {
+                    val allRoles = discordServer.getRolesByName("pikl")
+                    if (allRoles.isEmpty()) {
+                        return null
+                    }
+                    return allRoles.first()
+                }
+                reply {
+                    val piklRole = gimmiePikl() ?: return@reply "No pikl rank :("
+                    val discordId = parseId() ?: return@reply "Invalid user."
+                    val user = discordApi.getUserById(discordId).get()
+                    val roles = user.getRoles(discordServer)
+                    if (roles.none { role -> role.name == "pikl" }) {
+                        user.addRole(piklRole)
+                    }
+                    Timer().schedule(120000) {
+                        user.removeRole(piklRole)
+                    }
+                    "<@${discordId}> got pikl'd."
                 }
             },
             "lmgtfy" to lmgtfy,

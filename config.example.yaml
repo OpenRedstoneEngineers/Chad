@@ -5,6 +5,7 @@ chad:
   notificationChannelId: 701824005954600960
   gameChatChannelId: 475124545687388160
   statusChannelId: 701102820409212968
+  serverId: 116914772766752769
   playingMessage: "with Kotlin"
   commandChar: ','
   disableSpoilers: true

@@ -9,6 +9,7 @@ data class ChadConfig(
     val notificationChannelId: Long,
     val gameChatChannelId: Long,
     val statusChannelId: Long,
+    val serverId: Long,
     val playingMessage: String,
     val commandChar: Char,
     val disableSpoilers: Boolean,
