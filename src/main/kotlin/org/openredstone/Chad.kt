@@ -4,7 +4,6 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
-import org.javacord.api.entity.permission.Role
 import org.openredstone.commands.*
 import org.openredstone.commands.dsl.command
 import org.openredstone.entity.ChadSpec
@@ -93,21 +92,8 @@ fun main(args: Array<String>) {
             },
             "pikl" to command(authorizedRoles) {
                 val name by required()
-                fun parseId(): String? {
-                    val match = Regex("""<@!?([0-9]{10,20})>""").find(name) ?: return null
-                    if (match.groupValues.isEmpty()) {
-                        return null
-                    }
-                    return match.groupValues.last()
-                }
-
-                fun gimmiePikl(): Role? {
-                    val allRoles = discordServer.getRolesByName("pikl")
-                    if (allRoles.isEmpty()) {
-                        return null
-                    }
-                    return allRoles.first()
-                }
+                fun parseId() = Regex("""<@!?([0-9]{10,20})>""").find(name)?.groupValues?.last()
+                fun gimmiePikl() = discordServer.getRolesByName("pikl")?.firstOrNull()
                 reply {
                     val piklRole = gimmiePikl() ?: return@reply "No pikl rank :("
                     val discordId = parseId() ?: return@reply "Invalid user."
