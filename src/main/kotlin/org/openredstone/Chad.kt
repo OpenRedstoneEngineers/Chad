@@ -56,6 +56,7 @@ fun main(args: Array<String>) {
 
     val discordApi = DiscordApiBuilder()
         .setToken(chadConfig.botToken)
+        .setAllIntents()
         .login()
         .join()
         .apply { updateActivity(chadConfig.playingMessage) }
