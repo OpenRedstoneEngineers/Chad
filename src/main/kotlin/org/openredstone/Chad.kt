@@ -87,7 +87,7 @@ fun main(args: Array<String>) {
                     discordCommands[name] = cmd
                     discordCommands["help"] = helpCommand(discordCommands)
                     ircCommands[name] = cmd
-                    ircCommands["help"] = helpCommand(discordCommands)
+                    ircCommands["help"] = helpCommand(ircCommands)
                     "Done!"
                 }
             },
