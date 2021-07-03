@@ -10,11 +10,11 @@ class DuplicateCommandInsert {
     @Test
     fun `inserting a command overwrites previous command with the same name`(): Unit = withTempDatabase { sql ->
         sql.initTables()
-        assertEquals(sql.getCommands(), emptyMap())
+        assertEquals(emptyMap(), sql.getCommands())
         sql.insertCommand("kek", "dee")
-        assertEquals(sql.getCommands(), mapOf("kek" to "dee"))
+        assertEquals(mapOf("kek" to "dee"), sql.getCommands())
         sql.insertCommand("kek", "bee")
-        assertEquals(sql.getCommands(), mapOf("kek" to "bee"))
+        assertEquals(mapOf("kek" to "bee"), sql.getCommands())
     }
 
     @OptIn(ExperimentalPathApi::class)
