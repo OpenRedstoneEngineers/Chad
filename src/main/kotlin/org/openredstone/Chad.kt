@@ -66,6 +66,11 @@ fun main(args: Array<String>) {
     val discordCommands = concurrentMapOf<String, Command>()
     val ircCommands = concurrentMapOf<String, Command>()
 
+    fun regenerateHelpCommands() {
+        discordCommands["help"] = helpCommand(discordCommands)
+        ircCommands["help"] = helpCommand(ircCommands)
+    }
+
     fun reloadCommands() {
         chadConfig = config[ChadSpec.chad]
         val authorizedRoles = AuthorizedRoles(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles)
@@ -85,9 +90,18 @@ fun main(args: Array<String>) {
                     database.insertCommand(name, msg)
                     // add command
                     discordCommands[name] = cmd
-                    discordCommands["help"] = helpCommand(discordCommands)
                     ircCommands[name] = cmd
-                    ircCommands["help"] = helpCommand(ircCommands)
+                    regenerateHelpCommands()
+                    "Done!"
+                }
+            },
+            "remove" to command(authorizedRoles) {
+                val name by required()
+                reply {
+                    database.removeCommand(name)
+                    discordCommands.remove(name)
+                    ircCommands.remove(name)
+                    regenerateHelpCommands()
                     "Done!"
                 }
             },

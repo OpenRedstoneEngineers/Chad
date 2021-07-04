@@ -19,6 +19,10 @@ class Sql(file: String, driver: String = "org.sqlite.JDBC") {
         }
     }
 
+    fun removeCommand(key: String) = transaction(database) {
+        Sql.Command.deleteWhere { Sql.Command.key eq key }
+    }
+
     fun getCommands(): Map<String, String> = transaction(database) {
         Sql.Command.selectAll().associate {
             it[Sql.Command.key] to it[Sql.Command.response]
