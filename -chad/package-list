@@ -140,6 +140,7 @@ $dokka.location:org.openredstone.managers/Sql/Sql/#kotlin.String#kotlin.String/P
 $dokka.location:org.openredstone.managers/Sql/getCommands/#/PointingToDeclaration/-chad/org.openredstone.managers/-sql/get-commands.html
 $dokka.location:org.openredstone.managers/Sql/initTables/#/PointingToDeclaration/-chad/org.openredstone.managers/-sql/init-tables.html
 $dokka.location:org.openredstone.managers/Sql/insertCommand/#kotlin.String#kotlin.String/PointingToDeclaration/-chad/org.openredstone.managers/-sql/insert-command.html
+$dokka.location:org.openredstone.managers/Sql/removeCommand/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.managers/-sql/remove-command.html
 $dokka.location:org.openredstone////PointingToDeclaration/-chad/org.openredstone/index.html
 $dokka.location:org.openredstone//logger/#/PointingToDeclaration/-chad/org.openredstone/logger.html
 $dokka.location:org.openredstone//main/#kotlin.Array[kotlin.String]/PointingToDeclaration/-chad/org.openredstone/main.html
