@@ -70,6 +70,7 @@ fun main(args: Array<String>) {
         discordCommands["help"] = helpCommand(discordCommands)
         ircCommands["help"] = helpCommand(ircCommands)
     }
+    // rekt
 
     fun reloadCommands() {
         chadConfig = config[ChadSpec.chad]
