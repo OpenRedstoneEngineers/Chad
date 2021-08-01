@@ -12,15 +12,31 @@ import org.openredstone.toNullable
 
 val spoilerLogger = KotlinLogging.logger("Spoiler listener")
 
-fun startDiscordListeners(discordApi: DiscordApi, executor: CommandExecutor, disableSpoilers: Boolean) {
+fun startDiscordListeners(
+    discordApi: DiscordApi,
+    executor: CommandExecutor,
+    disableSpoilers: Boolean,
+    welcomeChannel: Long,
+    greetings: List<String>
+) {
     startDiscordCommandListener(discordApi, executor)
     if (disableSpoilers) {
         startSpoilerListener(discordApi)
     }
+    if (greetings.isNotEmpty()) {
+        startJoinListener(discordApi, welcomeChannel, greetings)
+    }
+}
+
+private fun startJoinListener(discordApi: DiscordApi, welcomeChannel: Long, greetings: List<String>) {
+    val channel = discordApi.getTextChannelById(welcomeChannel).get()
+    discordApi.addServerMemberJoinListener {
+        channel.sendMessage(greetings.random().replace("@USER", "<@${it.user.id}>"))
+    }
 }
 
 private fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
-    discordApi.addMessageCreateListener(fun (event) {
+    discordApi.addMessageCreateListener(fun(event) {
         val user = event.messageAuthor.asUser().toNullable() ?: return
         if (user.isBot) {
             return

@@ -167,6 +167,8 @@ fun main(args: Array<String>) {
         discordApi,
         CommandExecutor(chadConfig.commandChar, discordCommands),
         chadConfig.disableSpoilers,
+        chadConfig.welcomeChannelId,
+        chadConfig.greetings
     )
     startIrcListeners(
         chadConfig.irc,

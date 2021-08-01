@@ -3,6 +3,7 @@ chad:
   databaseFile: data.db
   enableNotificationRoles: true
   notificationChannelId: 701824005954600960
+  welcomeChannelId: 708732557453426728
   gameChatChannelId: 475124545687388160
   statusChannelId: 701102820409212968
   serverId: 116914772766752769
@@ -36,6 +37,10 @@ chad:
     defaultLevel: "warn"
     chadLevel: "debug"
     dateTimeFormat: "[yyyy-MM-dd HH:mm:ss]"
+  greetings:
+    - "Welcome to ORE, @USER! Make sure to run `/discord` ingame and link your account to view the rest of DiscOREd!"
+    - "Oh hi, @USER! Run `/discord` ingame to link your account to view the rest of DiscOREd!"
+    - "Welcome, @USER! To see the rest of our DiscOREd, link your account by running `/discord` ingame!"
   insults:
     - "once in the 4th grade %USER% got a 2% on their math quiz so everyone called them milk for the rest of the year"
     - "%USER% may look like an idiot and talk like an idiot but don't let that fool you. %USER% really is an idiot."
