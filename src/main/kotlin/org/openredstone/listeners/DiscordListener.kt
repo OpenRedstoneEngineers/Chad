@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.Message
 import org.javacord.api.entity.permission.Role
+import org.javacord.api.event.message.MessageCreateEvent
 import org.openredstone.commands.CommandExecutor
 import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
@@ -17,9 +18,11 @@ fun startDiscordListeners(
     executor: CommandExecutor,
     disableSpoilers: Boolean,
     welcomeChannel: Long,
-    greetings: List<String>
+    greetings: List<String>,
+    ingameBotRole: String,
+    gameChatChannelId: Long,
 ) {
-    startDiscordCommandListener(discordApi, executor)
+    startDiscordCommandListener(discordApi, executor, ingameBotRole, gameChatChannelId)
     if (disableSpoilers) {
         startSpoilerListener(discordApi)
     }
@@ -35,15 +38,28 @@ private fun startJoinListener(discordApi: DiscordApi, welcomeChannel: Long, gree
     }
 }
 
-private fun startDiscordCommandListener(discordApi: DiscordApi, executor: CommandExecutor) {
+private fun startDiscordCommandListener(
+    discordApi: DiscordApi,
+    executor: CommandExecutor,
+    ingameBotRole: String,
+    gameChatChannelId: Long,
+) {
     discordApi.addMessageCreateListener(fun(event) {
+        val server = event.server.toNullable()
         val user = event.messageAuthor.asUser().toNullable() ?: return
+        if (event.channel.id == gameChatChannelId &&
+            user.isBot &&
+            // :ore_ogag:
+            discordApi.getRoleById(ingameBotRole).toNullable() in user.getRoles(server) &&
+            !user.isYourself
+        ) {
+            inGameListener(event, executor)
+        }
         if (user.isBot) {
             return
         }
         val response: CommandResponse
-        val messageFuture = if (event.server.isPresent) {
-            val server = event.server.get()
+        val messageFuture = if (server != null) {
             val roles = user.getRoles(server).map(Role::getName)
             val username = user.getDisplayName(server)
             val sender = Sender(Service.DISCORD, username, roles)
@@ -63,6 +79,20 @@ private fun startDiscordCommandListener(discordApi: DiscordApi, executor: Comman
                 it.addReaction(reaction)
             }
         }
+    })
+}
+
+private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*(\w+)\*\*:  (.*)$""")
+
+private fun inGameListener(event: MessageCreateEvent, executor: CommandExecutor) {
+    val rawMessage = event.message.content
+    val (sender, message) = inGameRegex.matchEntire(rawMessage)?.destructured ?: return
+    val commandSender = Sender(Service.IRC, sender, emptyList())
+    val response = executor.tryExecute(commandSender, message) ?: return
+    event.channel.sendMessage(if (response.privateReply) {
+        "$sender: I can't private message to in-game yet!"
+    } else {
+        "$sender: ${response.reply}"
     })
 }
 

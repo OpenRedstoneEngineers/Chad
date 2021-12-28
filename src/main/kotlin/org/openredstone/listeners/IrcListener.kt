@@ -14,7 +14,7 @@ import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import kotlin.concurrent.thread
 
-val regex = Regex("""\x03..(.*)\x0f""")
+private val regex = Regex("""\x03..(.*)\x0f""")
 
 private class IrcCommandListener(
     private val ircConfig: IrcBotConfig,
@@ -31,23 +31,10 @@ private class IrcCommandListener(
 
     override fun onMessage(event: MessageEvent) {
         if (event.user?.nick == "ORENetwork") {
-            inGameListener(event)
+            // this used to be ingame listener but not anymore
         } else if (event.user?.nick != "OREDiscord") {
             ircListener(event)
         }
-    }
-
-    private fun inGameListener(event: MessageEvent) {
-        val parsed = event.message.replace(regex) { it.groupValues[1] }
-        val parsedSender = parsed.substring(0, parsed.indexOf(':'))
-        val parsedMessage = parsed.substring(parsed.indexOf(':') + 2)
-        val commandSender = Sender(Service.IRC, parsedSender, emptyList())
-        val response = executor.tryExecute(commandSender, parsedMessage) ?: return
-        response.sendResponse(if (response.privateReply) {
-            { reply -> event.user?.send()!!.message("$parsedSender $reply") }
-        } else {
-            { reply -> event.channel.send().message("$parsedSender: $reply") }
-        })
     }
 
     private fun ircListener(event: MessageEvent) {

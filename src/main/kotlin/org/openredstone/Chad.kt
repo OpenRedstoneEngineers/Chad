@@ -70,7 +70,6 @@ fun main(args: Array<String>) {
         discordCommands["help"] = helpCommand(discordCommands)
         ircCommands["help"] = helpCommand(ircCommands)
     }
-    // rekt
 
     fun reloadCommands() {
         chadConfig = config[ChadSpec.chad]
@@ -168,7 +167,9 @@ fun main(args: Array<String>) {
         CommandExecutor(chadConfig.commandChar, discordCommands),
         chadConfig.disableSpoilers,
         chadConfig.welcomeChannelId,
-        chadConfig.greetings
+        chadConfig.greetings,
+        chadConfig.ingameBotRoleId,
+        chadConfig.gameChatChannelId,
     )
     startIrcListeners(
         chadConfig.irc,

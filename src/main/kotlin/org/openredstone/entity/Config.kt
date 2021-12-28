@@ -11,6 +11,7 @@ data class ChadConfig(
     val gameChatChannelId: Long,
     val statusChannelId: Long,
     val serverId: Long,
+    val ingameBotRoleId: String,
     val playingMessage: String,
     val commandChar: Char,
     val disableSpoilers: Boolean,
