@@ -2,27 +2,31 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>ChadConfig</title>
-<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" async="async"></script>  </head>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><link href="../../../styles/prism.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script><script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>  </head>
   <body>
+    <div class="navigation-wrapper" id="navigation-wrapper">
+      <div id="leftToggler"><span class="icon-toggler"></span></div>
+      <div class="library-name"><a href="../../../index.html">Chad</a></div>
+      <div>1.0</div>
+      <div class="pull-right d-flex"><button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+      </div>
+    </div>
     <div id="container">
-      <div id="leftColumn"><a href="../../../index.html">
-          <div id="logo"></div>
-        </a>
-        <div id="paneSearch"></div>
+      <div id="leftColumn">
         <div id="sideMenu"></div>
       </div>
       <div id="main">
-        <div id="leftToggler"><span class="icon-toggler"></span></div>
-<script type="text/javascript" src="../../../scripts/main.js"></script>        <div class="main-content" id="content" pageIds="Chad::org.openredstone.entity/ChadConfig///PointingToDeclaration//769193423">
-          <div class="navigation-wrapper" id="navigation-wrapper">
-            <div class="breadcrumbs"><a href="../../../index.html">Chad</a>/<a href="../index.html">org.openredstone.entity</a>/<a href="index.html">ChadConfig</a></div>
-            <div class="pull-right d-flex">
-              <div id="searchBar"></div>
-            </div>
-          </div>
+        <div class="main-content" id="content" pageIds="Chad::org.openredstone.entity/ChadConfig///PointingToDeclaration//769193423">
+          <div class="breadcrumbs"><a href="../../../index.html">Chad</a>/<a href="../index.html">org.openredstone.entity</a>/<a href="index.html">ChadConfig</a></div>
           <div class="cover ">
-            <h1 class="cover"><span>Chad</span><wbr></wbr><span>Config</span></h1>
-            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace">data class <a href="index.html">ChadConfig</a>(botToken: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, databaseFile: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, enableNotificationRoles: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, notificationChannelId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>, welcomeChannelId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>, gameChatChannelId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>, statusChannelId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>, serverId: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a>, playingMessage: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, commandChar: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char/index.html">Char</a>, disableSpoilers: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, enableLinkPreview: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, irc: <a href="../-irc-bot-config/index.html">IrcBotConfig</a>, notifications: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-notification-role-config/index.html">NotificationRoleConfig</a>&gt;, authorizedIrcRoles: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, authorizedDiscordRoles: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, logging: <a href="../-logging-config/index.html">LoggingConfig</a>, greetings: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, insults: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, discordCommands: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, ircCommands: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+            <h1 class="cover"><span>Chad</span><wbr></wbr><span><span>Config</span></span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">ChadConfig</a><span class="token punctuation">(</span>botToken<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>databaseFile<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>enableNotificationRoles<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span>notificationChannelId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span>welcomeChannelId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span>gameChatChannelId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span>statusChannelId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span>serverId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="token punctuation">, </span>ingameBotRoleId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>playingMessage<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>commandChar<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char/index.html">Char</a><span class="token punctuation">, </span>disableSpoilers<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span>enableLinkPreview<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span>irc<span class="token operator">: </span><a href="../-irc-bot-config/index.html">IrcBotConfig</a><span class="token punctuation">, </span>notifications<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-notification-role-config/index.html">NotificationRoleConfig</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>authorizedIrcRoles<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>authorizedDiscordRoles<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>logging<span class="token operator">: </span><a href="../-logging-config/index.html">LoggingConfig</a><span class="token punctuation">, </span>greetings<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>insults<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>discordCommands<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>ircCommands<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
           </div>
           <div class="tabbedcontent">
             <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Properties">Properties</button></div>
@@ -31,12 +35,14 @@
               <div class="table" data-togglable="Properties"><a data-name="-637020526%2FProperties%2F769193423" anchor-label="authorizedDiscordRoles" id="-637020526%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="authorized-discord-roles.html">authorizedDiscordRoles</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-637020526%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="authorized-discord-roles.html">authorizedDiscordRoles</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-637020526%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-637020526%2FProperties%2F769193423" anchor-label="authorizedDiscordRoles" id="-637020526%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="authorized-discord-roles.html">authorizedDiscordRoles</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-637020526%2FProperties%2F769193423" anchor-label="authorizedDiscordRoles" id="-637020526%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="authorized-discord-roles.html">authorizedDiscordRoles</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -44,12 +50,14 @@
 <a data-name="963260480%2FProperties%2F769193423" anchor-label="authorizedIrcRoles" id="963260480%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="authorized-irc-roles.html">authorizedIrcRoles</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="963260480%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="authorized-irc-roles.html">authorizedIrcRoles</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="963260480%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="963260480%2FProperties%2F769193423" anchor-label="authorizedIrcRoles" id="963260480%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="authorized-irc-roles.html">authorizedIrcRoles</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="963260480%2FProperties%2F769193423" anchor-label="authorizedIrcRoles" id="963260480%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="authorized-irc-roles.html">authorizedIrcRoles</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -57,12 +65,14 @@
 <a data-name="2138127564%2FProperties%2F769193423" anchor-label="botToken" id="2138127564%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="bot-token.html">botToken</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2138127564%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="bot-token.html">botToken</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2138127564%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="2138127564%2FProperties%2F769193423" anchor-label="botToken" id="2138127564%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="bot-token.html">botToken</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="2138127564%2FProperties%2F769193423" anchor-label="botToken" id="2138127564%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="bot-token.html">botToken</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -70,12 +80,14 @@
 <a data-name="1141677243%2FProperties%2F769193423" anchor-label="commandChar" id="1141677243%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="command-char.html">commandChar</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1141677243%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="command-char.html">commandChar</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1141677243%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="1141677243%2FProperties%2F769193423" anchor-label="commandChar" id="1141677243%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="command-char.html">commandChar</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char/index.html">Char</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="1141677243%2FProperties%2F769193423" anchor-label="commandChar" id="1141677243%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="command-char.html">commandChar</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-char/index.html">Char</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -83,12 +95,14 @@
 <a data-name="-1046551865%2FProperties%2F769193423" anchor-label="databaseFile" id="-1046551865%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="database-file.html">databaseFile</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1046551865%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="database-file.html">databaseFile</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1046551865%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1046551865%2FProperties%2F769193423" anchor-label="databaseFile" id="-1046551865%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="database-file.html">databaseFile</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1046551865%2FProperties%2F769193423" anchor-label="databaseFile" id="-1046551865%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="database-file.html">databaseFile</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -96,12 +110,14 @@
 <a data-name="-1473243261%2FProperties%2F769193423" anchor-label="disableSpoilers" id="-1473243261%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="disable-spoilers.html">disableSpoilers</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1473243261%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="disable-spoilers.html">disableSpoilers</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1473243261%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1473243261%2FProperties%2F769193423" anchor-label="disableSpoilers" id="-1473243261%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="disable-spoilers.html">disableSpoilers</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1473243261%2FProperties%2F769193423" anchor-label="disableSpoilers" id="-1473243261%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="disable-spoilers.html">disableSpoilers</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -109,12 +125,14 @@
 <a data-name="-463799800%2FProperties%2F769193423" anchor-label="discordCommands" id="-463799800%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="discord-commands.html">discordCommands</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-463799800%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="discord-commands.html">discordCommands</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-463799800%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-463799800%2FProperties%2F769193423" anchor-label="discordCommands" id="-463799800%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="discord-commands.html">discordCommands</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-463799800%2FProperties%2F769193423" anchor-label="discordCommands" id="-463799800%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="discord-commands.html">discordCommands</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -122,12 +140,14 @@
 <a data-name="412886289%2FProperties%2F769193423" anchor-label="enableLinkPreview" id="412886289%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="enable-link-preview.html">enableLinkPreview</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="412886289%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="enable-link-preview.html">enableLinkPreview</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="412886289%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="412886289%2FProperties%2F769193423" anchor-label="enableLinkPreview" id="412886289%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="enable-link-preview.html">enableLinkPreview</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="412886289%2FProperties%2F769193423" anchor-label="enableLinkPreview" id="412886289%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="enable-link-preview.html">enableLinkPreview</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -135,12 +155,14 @@
 <a data-name="-114599443%2FProperties%2F769193423" anchor-label="enableNotificationRoles" id="-114599443%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="enable-notification-roles.html">enableNotificationRoles</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-114599443%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="enable-notification-roles.html">enableNotificationRoles</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-114599443%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-114599443%2FProperties%2F769193423" anchor-label="enableNotificationRoles" id="-114599443%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="enable-notification-roles.html">enableNotificationRoles</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-114599443%2FProperties%2F769193423" anchor-label="enableNotificationRoles" id="-114599443%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="enable-notification-roles.html">enableNotificationRoles</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -148,12 +170,14 @@
 <a data-name="-1193886744%2FProperties%2F769193423" anchor-label="gameChatChannelId" id="-1193886744%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="game-chat-channel-id.html">gameChatChannelId</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1193886744%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="game-chat-channel-id.html">gameChatChannelId</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1193886744%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1193886744%2FProperties%2F769193423" anchor-label="gameChatChannelId" id="-1193886744%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="game-chat-channel-id.html">gameChatChannelId</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1193886744%2FProperties%2F769193423" anchor-label="gameChatChannelId" id="-1193886744%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="game-chat-channel-id.html">gameChatChannelId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -161,12 +185,29 @@
 <a data-name="1991932034%2FProperties%2F769193423" anchor-label="greetings" id="1991932034%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="greetings.html">greetings</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1991932034%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="greetings.html">greetings</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1991932034%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="1991932034%2FProperties%2F769193423" anchor-label="greetings" id="1991932034%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="greetings.html">greetings</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="1991932034%2FProperties%2F769193423" anchor-label="greetings" id="1991932034%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="greetings.html">greetings</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="-861077893%2FProperties%2F769193423" anchor-label="ingameBotRoleId" id="-861077893%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex">
+                        <div><a href="ingame-bot-role-id.html">ingameBotRoleId</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-861077893%2FProperties%2F769193423"></span>
+                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-861077893%2FProperties%2F769193423" anchor-label="ingameBotRoleId" id="-861077893%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="ingame-bot-role-id.html">ingameBotRoleId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -174,12 +215,14 @@
 <a data-name="1690296984%2FProperties%2F769193423" anchor-label="insults" id="1690296984%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="insults.html">insults</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1690296984%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="insults.html">insults</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1690296984%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="1690296984%2FProperties%2F769193423" anchor-label="insults" id="1690296984%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="insults.html">insults</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="1690296984%2FProperties%2F769193423" anchor-label="insults" id="1690296984%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="insults.html">insults</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -187,12 +230,14 @@
 <a data-name="-424224062%2FProperties%2F769193423" anchor-label="irc" id="-424224062%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="irc.html">irc</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-424224062%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="irc.html">irc</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-424224062%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-424224062%2FProperties%2F769193423" anchor-label="irc" id="-424224062%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="irc.html">irc</a>: <a href="../-irc-bot-config/index.html">IrcBotConfig</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-424224062%2FProperties%2F769193423" anchor-label="irc" id="-424224062%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="irc.html">irc</a><span class="token operator">: </span><a href="../-irc-bot-config/index.html">IrcBotConfig</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -200,12 +245,14 @@
 <a data-name="-1219763174%2FProperties%2F769193423" anchor-label="ircCommands" id="-1219763174%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="irc-commands.html">ircCommands</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1219763174%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="irc-commands.html">ircCommands</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1219763174%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1219763174%2FProperties%2F769193423" anchor-label="ircCommands" id="-1219763174%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="irc-commands.html">ircCommands</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1219763174%2FProperties%2F769193423" anchor-label="ircCommands" id="-1219763174%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="irc-commands.html">ircCommands</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -213,12 +260,14 @@
 <a data-name="-2026274851%2FProperties%2F769193423" anchor-label="logging" id="-2026274851%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="logging.html">logging</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2026274851%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="logging.html">logging</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2026274851%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-2026274851%2FProperties%2F769193423" anchor-label="logging" id="-2026274851%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="logging.html">logging</a>: <a href="../-logging-config/index.html">LoggingConfig</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-2026274851%2FProperties%2F769193423" anchor-label="logging" id="-2026274851%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="logging.html">logging</a><span class="token operator">: </span><a href="../-logging-config/index.html">LoggingConfig</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -226,12 +275,14 @@
 <a data-name="-1506127191%2FProperties%2F769193423" anchor-label="notificationChannelId" id="-1506127191%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="notification-channel-id.html">notificationChannelId</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1506127191%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="notification-channel-id.html">notificationChannelId</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1506127191%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1506127191%2FProperties%2F769193423" anchor-label="notificationChannelId" id="-1506127191%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="notification-channel-id.html">notificationChannelId</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1506127191%2FProperties%2F769193423" anchor-label="notificationChannelId" id="-1506127191%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="notification-channel-id.html">notificationChannelId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -239,12 +290,14 @@
 <a data-name="-391143628%2FProperties%2F769193423" anchor-label="notifications" id="-391143628%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="notifications.html">notifications</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-391143628%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="notifications.html">notifications</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-391143628%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-391143628%2FProperties%2F769193423" anchor-label="notifications" id="-391143628%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="notifications.html">notifications</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="../-notification-role-config/index.html">NotificationRoleConfig</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-391143628%2FProperties%2F769193423" anchor-label="notifications" id="-391143628%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="notifications.html">notifications</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-notification-role-config/index.html">NotificationRoleConfig</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -252,12 +305,14 @@
 <a data-name="-285657499%2FProperties%2F769193423" anchor-label="playingMessage" id="-285657499%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="playing-message.html">playingMessage</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-285657499%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="playing-message.html">playingMessage</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-285657499%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-285657499%2FProperties%2F769193423" anchor-label="playingMessage" id="-285657499%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="playing-message.html">playingMessage</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-285657499%2FProperties%2F769193423" anchor-label="playingMessage" id="-285657499%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="playing-message.html">playingMessage</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -265,12 +320,14 @@
 <a data-name="389850880%2FProperties%2F769193423" anchor-label="serverId" id="389850880%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="server-id.html">serverId</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="389850880%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="server-id.html">serverId</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="389850880%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="389850880%2FProperties%2F769193423" anchor-label="serverId" id="389850880%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="server-id.html">serverId</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="389850880%2FProperties%2F769193423" anchor-label="serverId" id="389850880%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="server-id.html">serverId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -278,12 +335,14 @@
 <a data-name="-953316560%2FProperties%2F769193423" anchor-label="statusChannelId" id="-953316560%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="status-channel-id.html">statusChannelId</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-953316560%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="status-channel-id.html">statusChannelId</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-953316560%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-953316560%2FProperties%2F769193423" anchor-label="statusChannelId" id="-953316560%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="status-channel-id.html">statusChannelId</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-953316560%2FProperties%2F769193423" anchor-label="statusChannelId" id="-953316560%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="status-channel-id.html">statusChannelId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -291,12 +350,14 @@
 <a data-name="-1802129598%2FProperties%2F769193423" anchor-label="welcomeChannelId" id="-1802129598%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a>
                 <div class="table-row" data-filterable-current=":dokkaHtml/main" data-filterable-set=":dokkaHtml/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="welcome-channel-id.html">welcomeChannelId</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1802129598%2FProperties%2F769193423"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="welcome-channel-id.html">welcomeChannelId</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1802129598%2FProperties%2F769193423"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1802129598%2FProperties%2F769193423" anchor-label="welcomeChannelId" id="-1802129598%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace">val <a href="welcome-channel-id.html">welcomeChannelId</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":dokkaHtml/main"><a data-name="-1802129598%2FProperties%2F769193423" anchor-label="welcomeChannelId" id="-1802129598%2FProperties%2F769193423" data-filterable-set=":dokkaHtml/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="welcome-channel-id.html">welcomeChannelId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -305,7 +366,7 @@
             </div>
           </div>
         </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
       </div>
     </div>
   </body>
