@@ -82,12 +82,12 @@ private fun startDiscordCommandListener(
     })
 }
 
-private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*(\w+)\*\*:  (.*)$""")
+private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*([A-Za-z0-9_\\]{3,16})\*\*:  (.*)$""")
 
 private fun inGameListener(event: MessageCreateEvent, executor: CommandExecutor) {
     val rawMessage = event.message.content
     val (sender, message) = inGameRegex.matchEntire(rawMessage)?.destructured ?: return
-    val commandSender = Sender(Service.IRC, sender, emptyList())
+    val commandSender = Sender(Service.IRC, sender.replace("\\", ""), emptyList())
     val response = executor.tryExecute(commandSender, message) ?: return
     event.channel.sendMessage(if (response.privateReply) {
         "$sender: I can't private message to in-game yet!"
