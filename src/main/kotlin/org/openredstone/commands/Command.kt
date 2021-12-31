@@ -95,7 +95,7 @@ val applyCommand = command {
     reply {
         when (arg) {
             "student" -> "To apply for student, hop onto `mc.openredstone.org` and run `/apply`"
-            "builder" -> "To apply for builder, follow the steps outlined here: ${link("https://discourse.openredstone.org/builder")}."
+            "builder" -> "To apply for builder, follow the steps outlined here: ${link("https://discourse.openredstone.org/builder")}"
             "engineer" -> "To apply for engineer, follow the steps outlined here: ${link("https://discourse.openredstone.org/engineer")}"
             else -> "Specify \"student\", \"builder\", or \"engineer\"."
         }
