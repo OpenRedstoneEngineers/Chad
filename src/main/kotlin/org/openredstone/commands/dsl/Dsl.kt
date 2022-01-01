@@ -94,9 +94,17 @@ class CommandScope(private val authorizedRoles: AuthorizedRoles) {
                 return if (rawMessage.length < 512) {
                     response(rawMessage, replyScope.reactions)
                 } else {
-                    val response = khttp.post(url = "https://hastebin.com/documents", data = rawMessage)
+                    val paste = khttp.post(
+                        url = "https://dpaste.com/api/v2/",
+                        headers = mapOf("User-Agent" to "ORE Chad"),
+                        data = mapOf(
+                            "content" to rawMessage,
+                            "syntax" to "text",
+                            "title" to "ORE Election Results"
+                        )
+                    ).text
                     response(
-                        "${rawMessage.substring(0, 64)} ... Snipped: https://hastebin.com/${response.jsonObject["key"]}",
+                        "${rawMessage.substring(0, 64)} ... Snipped: $paste",
                         replyScope.reactions,
                     )
                 }
