@@ -1,4 +1,4 @@
-import org.openredstone.managers.Sql
+import org.openredstone.chad.Sql
 import java.nio.file.Files
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.absolutePathString

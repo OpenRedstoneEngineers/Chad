@@ -2,13 +2,13 @@
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
-import org.openredstone.commands.CommandExecutor
-import org.openredstone.commands.CommandResponse
-import org.openredstone.commands.Sender
-import org.openredstone.commands.applyCommand
-import org.openredstone.commands.dsl.command
-import org.openredstone.commands.lmgtfy
-import org.openredstone.entity.ChadSpec
+import org.openredstone.chad.commands.CommandExecutor
+import org.openredstone.chad.commands.CommandResponse
+import org.openredstone.chad.commands.Sender
+import org.openredstone.chad.commands.applyCommand
+import org.openredstone.chad.commands.dsl.command
+import org.openredstone.chad.commands.lmgtfy
+import org.openredstone.chad.ChadSpec
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

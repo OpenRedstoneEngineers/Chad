@@ -1,14 +1,13 @@
-package org.openredstone.listeners
+package org.openredstone.chad
 
 import mu.KotlinLogging
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.Message
 import org.javacord.api.entity.permission.Role
 import org.javacord.api.event.message.MessageCreateEvent
-import org.openredstone.commands.CommandExecutor
-import org.openredstone.commands.CommandResponse
-import org.openredstone.commands.Sender
-import org.openredstone.toNullable
+import org.openredstone.chad.commands.CommandExecutor
+import org.openredstone.chad.commands.CommandResponse
+import org.openredstone.chad.commands.Sender
 
 val spoilerLogger = KotlinLogging.logger("Spoiler listener")
 

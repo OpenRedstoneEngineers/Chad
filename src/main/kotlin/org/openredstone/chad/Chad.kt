@@ -1,15 +1,11 @@
-package org.openredstone
+package org.openredstone.chad
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
-import org.openredstone.commands.*
-import org.openredstone.commands.dsl.command
-import org.openredstone.entity.ChadSpec
-import org.openredstone.listeners.startDiscordListeners
-import org.openredstone.managers.NotificationManager
-import org.openredstone.managers.Sql
+import org.openredstone.chad.commands.*
+import org.openredstone.chad.commands.dsl.command
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.system.exitProcess

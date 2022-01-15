@@ -1,31 +1,35 @@
-package org.openredstone.managers
+package org.openredstone.chad
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.openredstone.entity.Sql
+
+object SqlCommand : Table("command") {
+    val key = varchar("cmd_key", 128)
+    val response = varchar("cmd_response", 512)
+}
 
 class Sql(file: String, driver: String = "org.sqlite.JDBC") {
     private val database = Database.connect("jdbc:sqlite:$file", driver)
 
     fun initTables() = transaction(database) {
-        SchemaUtils.create(Sql.Command)
+        SchemaUtils.create(SqlCommand)
     }
 
     fun insertCommand(key: String, response: String) = transaction(database) {
-        Sql.Command.deleteWhere { Sql.Command.key eq key }
-        Sql.Command.insert {
-            it[Sql.Command.key] = key
-            it[Sql.Command.response] = response
+        SqlCommand.deleteWhere { SqlCommand.key eq key }
+        SqlCommand.insert {
+            it[SqlCommand.key] = key
+            it[SqlCommand.response] = response
         }
     }
 
     fun removeCommand(key: String) = transaction(database) {
-        Sql.Command.deleteWhere { Sql.Command.key eq key }
+        SqlCommand.deleteWhere { SqlCommand.key eq key }
     }
 
     fun getCommands(): Map<String, String> = transaction(database) {
-        Sql.Command.selectAll().associate {
-            it[Sql.Command.key] to it[Sql.Command.response]
+        SqlCommand.selectAll().associate {
+            it[SqlCommand.key] to it[SqlCommand.response]
         }
     }
 }

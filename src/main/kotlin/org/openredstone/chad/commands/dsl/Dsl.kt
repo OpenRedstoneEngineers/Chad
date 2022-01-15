@@ -1,8 +1,8 @@
-package org.openredstone.commands.dsl
+package org.openredstone.chad.commands.dsl
 
-import org.openredstone.commands.Command
-import org.openredstone.commands.CommandResponse
-import org.openredstone.commands.Sender
+import org.openredstone.chad.commands.Command
+import org.openredstone.chad.commands.CommandResponse
+import org.openredstone.chad.commands.Sender
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

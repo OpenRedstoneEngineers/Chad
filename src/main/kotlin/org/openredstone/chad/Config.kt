@@ -1,4 +1,4 @@
-package org.openredstone.entity
+package org.openredstone.chad
 
 import com.uchuhimo.konf.ConfigSpec
 

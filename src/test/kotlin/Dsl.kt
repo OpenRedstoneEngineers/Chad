@@ -1,6 +1,6 @@
-import org.openredstone.commands.CommandExecutor
-import org.openredstone.commands.dsl.Subcommand
-import org.openredstone.commands.dsl.command
+import org.openredstone.chad.commands.CommandExecutor
+import org.openredstone.chad.commands.dsl.Subcommand
+import org.openredstone.chad.commands.dsl.command
 import kotlin.test.Test
 
 class Dsl {

@@ -1,9 +1,9 @@
-package org.openredstone.commands
+package org.openredstone.chad.commands
 
 import org.javacord.api.DiscordApi
-import org.openredstone.commands.dsl.command
-import org.openredstone.logger
-import org.openredstone.toNullable
+import org.openredstone.chad.commands.dsl.command
+import org.openredstone.chad.logger
+import org.openredstone.chad.toNullable
 import java.net.URLEncoder
 import kotlin.random.Random
 
