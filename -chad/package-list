@@ -1,7 +1,7 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:org.openredstone.commands.dsl////PointingToDeclaration/-chad/org.openredstone.commands.dsl/index.html
-$dokka.location:org.openredstone.commands.dsl//command/#org.openredstone.commands.AuthorizedRoles#kotlin.Function1[org.openredstone.commands.dsl.CommandScope,org.openredstone.commands.Command]/PointingToDeclaration/-chad/org.openredstone.commands.dsl/command.html
+$dokka.location:org.openredstone.commands.dsl//command/#kotlin.collections.List[kotlin.String]?#kotlin.Function1[org.openredstone.commands.dsl.CommandScope,org.openredstone.commands.Command]/PointingToDeclaration/-chad/org.openredstone.commands.dsl/command.html
 $dokka.location:org.openredstone.commands.dsl/Argument.Default///PointingToDeclaration/-chad/org.openredstone.commands.dsl/-argument/-default/index.html
 $dokka.location:org.openredstone.commands.dsl/Argument.Default/Default/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-argument/-default/-default.html
 $dokka.location:org.openredstone.commands.dsl/Argument.Default/provideDelegate/#kotlin.Any?#kotlin.reflect.KProperty[*]/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-argument/-default/provide-delegate.html
@@ -22,7 +22,7 @@ $dokka.location:org.openredstone.commands.dsl/Argument///PointingToDeclaration/
 $dokka.location:org.openredstone.commands.dsl/CommandMarker///PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-marker/index.html
 $dokka.location:org.openredstone.commands.dsl/CommandMarker/CommandMarker/#/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-marker/-command-marker.html
 $dokka.location:org.openredstone.commands.dsl/CommandScope///PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-scope/index.html
-$dokka.location:org.openredstone.commands.dsl/CommandScope/CommandScope/#org.openredstone.commands.AuthorizedRoles/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-scope/-command-scope.html
+$dokka.location:org.openredstone.commands.dsl/CommandScope/CommandScope/#kotlin.collections.List[kotlin.String]?/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-scope/-command-scope.html
 $dokka.location:org.openredstone.commands.dsl/CommandScope/default/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-scope/default.html
 $dokka.location:org.openredstone.commands.dsl/CommandScope/help/#/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-scope/help.html
 $dokka.location:org.openredstone.commands.dsl/CommandScope/optional/#/PointingToDeclaration/-chad/org.openredstone.commands.dsl/-command-scope/optional.html
@@ -46,12 +46,8 @@ $dokka.location:org.openredstone.commands//lmgtfy/#/PointingToDeclaration/-chad
 $dokka.location:org.openredstone.commands//pollCommand/#/PointingToDeclaration/-chad/org.openredstone.commands/poll-command.html
 $dokka.location:org.openredstone.commands//rollCommand/#/PointingToDeclaration/-chad/org.openredstone.commands/roll-command.html
 $dokka.location:org.openredstone.commands//staticCommand/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.commands/static-command.html
-$dokka.location:org.openredstone.commands/AuthorizedRoles///PointingToDeclaration/-chad/org.openredstone.commands/-authorized-roles/index.html
-$dokka.location:org.openredstone.commands/AuthorizedRoles/AuthorizedRoles/#kotlin.collections.List[kotlin.String]?#kotlin.collections.List[kotlin.String]?/PointingToDeclaration/-chad/org.openredstone.commands/-authorized-roles/-authorized-roles.html
-$dokka.location:org.openredstone.commands/AuthorizedRoles/discord/#/PointingToDeclaration/-chad/org.openredstone.commands/-authorized-roles/discord.html
-$dokka.location:org.openredstone.commands/AuthorizedRoles/irc/#/PointingToDeclaration/-chad/org.openredstone.commands/-authorized-roles/irc.html
 $dokka.location:org.openredstone.commands/Command///PointingToDeclaration/-chad/org.openredstone.commands/-command/index.html
-$dokka.location:org.openredstone.commands/Command/Command/#kotlin.Boolean#kotlin.String#org.openredstone.commands.AuthorizedRoles/PointingToDeclaration/-chad/org.openredstone.commands/-command/-command.html
+$dokka.location:org.openredstone.commands/Command/Command/#kotlin.Boolean#kotlin.String#kotlin.collections.List[kotlin.String]?/PointingToDeclaration/-chad/org.openredstone.commands/-command/-command.html
 $dokka.location:org.openredstone.commands/Command/help/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.commands/-command/help.html
 $dokka.location:org.openredstone.commands/Command/isAuthorized/#org.openredstone.commands.Sender/PointingToDeclaration/-chad/org.openredstone.commands/-command/is-authorized.html
 $dokka.location:org.openredstone.commands/Command/notAuthorized/#/PointingToDeclaration/-chad/org.openredstone.commands/-command/not-authorized.html
@@ -71,31 +67,23 @@ $dokka.location:org.openredstone.commands/CommandResponse/privateReply/#/Pointin
 $dokka.location:org.openredstone.commands/CommandResponse/reactions/#/PointingToDeclaration/-chad/org.openredstone.commands/-command-response/reactions.html
 $dokka.location:org.openredstone.commands/CommandResponse/reply/#/PointingToDeclaration/-chad/org.openredstone.commands/-command-response/reply.html
 $dokka.location:org.openredstone.commands/Sender///PointingToDeclaration/-chad/org.openredstone.commands/-sender/index.html
-$dokka.location:org.openredstone.commands/Sender/Sender/#org.openredstone.commands.Service#kotlin.String#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.commands/-sender/-sender.html
+$dokka.location:org.openredstone.commands/Sender/Sender/#kotlin.String#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.commands/-sender/-sender.html
 $dokka.location:org.openredstone.commands/Sender/roles/#/PointingToDeclaration/-chad/org.openredstone.commands/-sender/roles.html
-$dokka.location:org.openredstone.commands/Sender/service/#/PointingToDeclaration/-chad/org.openredstone.commands/-sender/service.html
 $dokka.location:org.openredstone.commands/Sender/username/#/PointingToDeclaration/-chad/org.openredstone.commands/-sender/username.html
-$dokka.location:org.openredstone.commands/Service.DISCORD///PointingToDeclaration/-chad/org.openredstone.commands/-service/-d-i-s-c-o-r-d/index.html
-$dokka.location:org.openredstone.commands/Service.IRC///PointingToDeclaration/-chad/org.openredstone.commands/-service/-i-r-c/index.html
-$dokka.location:org.openredstone.commands/Service///PointingToDeclaration/-chad/org.openredstone.commands/-service/index.html
 $dokka.location:org.openredstone.entity////PointingToDeclaration/-chad/org.openredstone.entity/index.html
 $dokka.location:org.openredstone.entity/ChadConfig///PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/index.html
-$dokka.location:org.openredstone.entity/ChadConfig/ChadConfig/#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.String#kotlin.String#kotlin.Char#kotlin.Boolean#kotlin.Boolean#org.openredstone.entity.IrcBotConfig#kotlin.collections.List[org.openredstone.entity.NotificationRoleConfig]#kotlin.collections.List[kotlin.String]#kotlin.collections.List[kotlin.String]#org.openredstone.entity.LoggingConfig#kotlin.collections.List[kotlin.String]#kotlin.collections.List[kotlin.String]#kotlin.collections.Map[kotlin.String,kotlin.String]#kotlin.collections.Map[kotlin.String,kotlin.String]/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/-chad-config.html
+$dokka.location:org.openredstone.entity/ChadConfig/ChadConfig/#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.String#kotlin.String#kotlin.Char#kotlin.Boolean#kotlin.collections.List[org.openredstone.entity.NotificationRoleConfig]#kotlin.collections.List[kotlin.String]#org.openredstone.entity.LoggingConfig#kotlin.collections.List[kotlin.String]#kotlin.collections.List[kotlin.String]#kotlin.collections.Map[kotlin.String,kotlin.String]/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/-chad-config.html
 $dokka.location:org.openredstone.entity/ChadConfig/authorizedDiscordRoles/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/authorized-discord-roles.html
-$dokka.location:org.openredstone.entity/ChadConfig/authorizedIrcRoles/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/authorized-irc-roles.html
 $dokka.location:org.openredstone.entity/ChadConfig/botToken/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/bot-token.html
 $dokka.location:org.openredstone.entity/ChadConfig/commandChar/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/command-char.html
 $dokka.location:org.openredstone.entity/ChadConfig/databaseFile/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/database-file.html
 $dokka.location:org.openredstone.entity/ChadConfig/disableSpoilers/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/disable-spoilers.html
 $dokka.location:org.openredstone.entity/ChadConfig/discordCommands/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/discord-commands.html
-$dokka.location:org.openredstone.entity/ChadConfig/enableLinkPreview/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/enable-link-preview.html
 $dokka.location:org.openredstone.entity/ChadConfig/enableNotificationRoles/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/enable-notification-roles.html
 $dokka.location:org.openredstone.entity/ChadConfig/gameChatChannelId/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/game-chat-channel-id.html
 $dokka.location:org.openredstone.entity/ChadConfig/greetings/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/greetings.html
 $dokka.location:org.openredstone.entity/ChadConfig/ingameBotRoleId/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/ingame-bot-role-id.html
 $dokka.location:org.openredstone.entity/ChadConfig/insults/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/insults.html
-$dokka.location:org.openredstone.entity/ChadConfig/irc/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/irc.html
-$dokka.location:org.openredstone.entity/ChadConfig/ircCommands/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/irc-commands.html
 $dokka.location:org.openredstone.entity/ChadConfig/logging/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/logging.html
 $dokka.location:org.openredstone.entity/ChadConfig/notificationChannelId/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/notification-channel-id.html
 $dokka.location:org.openredstone.entity/ChadConfig/notifications/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/notifications.html
@@ -105,12 +93,6 @@ $dokka.location:org.openredstone.entity/ChadConfig/statusChannelId/#/PointingToD
 $dokka.location:org.openredstone.entity/ChadConfig/welcomeChannelId/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-config/welcome-channel-id.html
 $dokka.location:org.openredstone.entity/ChadSpec///PointingToDeclaration/-chad/org.openredstone.entity/-chad-spec/index.html
 $dokka.location:org.openredstone.entity/ChadSpec/chad/#/PointingToDeclaration/-chad/org.openredstone.entity/-chad-spec/chad.html
-$dokka.location:org.openredstone.entity/IrcBotConfig///PointingToDeclaration/-chad/org.openredstone.entity/-irc-bot-config/index.html
-$dokka.location:org.openredstone.entity/IrcBotConfig/IrcBotConfig/#kotlin.String#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-chad/org.openredstone.entity/-irc-bot-config/-irc-bot-config.html
-$dokka.location:org.openredstone.entity/IrcBotConfig/channel/#/PointingToDeclaration/-chad/org.openredstone.entity/-irc-bot-config/channel.html
-$dokka.location:org.openredstone.entity/IrcBotConfig/name/#/PointingToDeclaration/-chad/org.openredstone.entity/-irc-bot-config/name.html
-$dokka.location:org.openredstone.entity/IrcBotConfig/password/#/PointingToDeclaration/-chad/org.openredstone.entity/-irc-bot-config/password.html
-$dokka.location:org.openredstone.entity/IrcBotConfig/server/#/PointingToDeclaration/-chad/org.openredstone.entity/-irc-bot-config/server.html
 $dokka.location:org.openredstone.entity/LoggingConfig///PointingToDeclaration/-chad/org.openredstone.entity/-logging-config/index.html
 $dokka.location:org.openredstone.entity/LoggingConfig/LoggingConfig/#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-chad/org.openredstone.entity/-logging-config/-logging-config.html
 $dokka.location:org.openredstone.entity/LoggingConfig/chadLevel/#/PointingToDeclaration/-chad/org.openredstone.entity/-logging-config/chad-level.html
@@ -129,7 +111,6 @@ $dokka.location:org.openredstone.entity/Sql///PointingToDeclaration/-chad/org.o
 $dokka.location:org.openredstone.listeners////PointingToDeclaration/-chad/org.openredstone.listeners/index.html
 $dokka.location:org.openredstone.listeners//spoilerLogger/#/PointingToDeclaration/-chad/org.openredstone.listeners/spoiler-logger.html
 $dokka.location:org.openredstone.listeners//startDiscordListeners/#org.javacord.api.DiscordApi#org.openredstone.commands.CommandExecutor#kotlin.Boolean#kotlin.Long#kotlin.collections.List[kotlin.String]#kotlin.String#kotlin.Long/PointingToDeclaration/-chad/org.openredstone.listeners/start-discord-listeners.html
-$dokka.location:org.openredstone.listeners//startIrcListeners/#org.openredstone.entity.IrcBotConfig#org.openredstone.commands.CommandExecutor#kotlin.Boolean/PointingToDeclaration/-chad/org.openredstone.listeners/start-irc-listeners.html
 $dokka.location:org.openredstone.managers////PointingToDeclaration/-chad/org.openredstone.managers/index.html
 $dokka.location:org.openredstone.managers/NotificationManager///PointingToDeclaration/-chad/org.openredstone.managers/-notification-manager/index.html
 $dokka.location:org.openredstone.managers/NotificationManager/NotificationManager/#org.javacord.api.DiscordApi#kotlin.Long#kotlin.collections.List[org.openredstone.entity.NotificationRoleConfig]/PointingToDeclaration/-chad/org.openredstone.managers/-notification-manager/-notification-manager.html
