@@ -56,10 +56,10 @@ fun main(args: Array<String>) {
 
     val discordServer = discordApi.getServerById(chadConfig.serverId).get()
 
-    val discordCommands = concurrentMapOf<String, Command>()
+    val commands = concurrentMapOf<String, Command>()
 
     fun regenerateHelpCommand() {
-        discordCommands["help"] = helpCommand(discordCommands)
+        commands["help"] = helpCommand(commands)
     }
 
     fun reloadCommands() {
@@ -68,8 +68,13 @@ fun main(args: Array<String>) {
 
         logger.info("(Re)loading commands...")
 
-        val commonCommands = mutableMapOf(
-            "add" to command(authorizedRoles) {
+        commands.apply {
+            clear()
+            put("poll", pollCommand)
+            put("roll", rollCommand)
+            put("lmgtfy", lmgtfy)
+            put("apply", applyCommand)
+            put("add", command(authorizedRoles) {
                 val name by required()
                 val messages by vararg()
                 reply {
@@ -78,21 +83,21 @@ fun main(args: Array<String>) {
                         reply { msg }
                     }
                     database.insertCommand(name, msg)
-                    discordCommands[name] = cmd
+                    commands[name] = cmd
                     regenerateHelpCommand()
                     "Done!"
                 }
-            },
-            "remove" to command(authorizedRoles) {
+            })
+            put("remove", command(authorizedRoles) {
                 val name by required()
                 reply {
                     database.removeCommand(name)
-                    discordCommands.remove(name)
+                    commands.remove(name)
                     regenerateHelpCommand()
                     "Done!"
                 }
-            },
-            "pikl" to command(authorizedRoles) {
+            })
+            put("pikl", command(authorizedRoles) {
                 val name by required()
                 fun parseId() = Regex("""<@!?([0-9]{10,20})>""").find(name)?.groupValues?.last()
                 fun gimmiePikl() = discordServer.getRolesByName("pikl")?.firstOrNull()
@@ -109,41 +114,30 @@ fun main(args: Array<String>) {
                     }
                     "<@${discordId}> got pikl'd."
                 }
-            },
-            "lmgtfy" to lmgtfy,
-            "apply" to applyCommand,
-            "authorized" to command(authorizedRoles) {
+            })
+            put("authorized", command(authorizedRoles) {
                 reply { "authorized !" }
-            },
-            "insult" to insultCommand(chadConfig.insults),
-            "reload" to command(authorizedRoles) {
+            })
+            put("insult", insultCommand(chadConfig.insults))
+            put("reload", command(authorizedRoles) {
                 reply {
                     reloadCommands()
                     "Done!"
                 }
-            }
-        ).apply {
+            })
             putAll(database.getCommands().mapValues { staticCommand(it.value) })
-        }
-
-        discordCommands.apply {
-            clear()
-            put("poll", pollCommand)
-            put("roll", rollCommand)
             put("help", helpCommand(this))
-            putAll(commonCommands)
-            putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
         }
     }
 
     reloadCommands()
 
-    logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
+    logger.info("Loaded the following Discord commands: ${commands.keys.joinToString()}")
     logger.info("Starting listeners...")
 
     startDiscordListeners(
         discordApi,
-        CommandExecutor(chadConfig.commandChar, discordCommands),
+        CommandExecutor(chadConfig.commandChar, commands),
         chadConfig.disableSpoilers,
         chadConfig.welcomeChannelId,
         chadConfig.greetings,

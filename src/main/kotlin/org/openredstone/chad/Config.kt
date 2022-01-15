@@ -20,7 +20,6 @@ data class ChadConfig(
     val logging: LoggingConfig,
     val greetings: List<String>,
     val insults: List<String>,
-    val discordCommands: Map<String, String>,
 )
 
 object ChadSpec : ConfigSpec("") {
