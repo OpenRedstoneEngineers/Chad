@@ -39,9 +39,9 @@ $dokka.location:org.openredstone.chad.commands.dsl/Subcommand///PointingToDeclar
 $dokka.location:org.openredstone.chad.commands.dsl/Subcommand/Subcommand/#org.openredstone.chad.commands.Command/PointingToDeclaration/-chad/org.openredstone.chad.commands.dsl/-subcommand/-subcommand.html
 $dokka.location:org.openredstone.chad.commands////PointingToDeclaration/-chad/org.openredstone.chad.commands/index.html
 $dokka.location:org.openredstone.chad.commands//applyCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/apply-command.html
+$dokka.location:org.openredstone.chad.commands//deleteCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/delete-command.html
 $dokka.location:org.openredstone.chad.commands//helpCommand/#kotlin.collections.Map[kotlin.String,org.openredstone.chad.commands.Command]/PointingToDeclaration/-chad/org.openredstone.chad.commands/help-command.html
 $dokka.location:org.openredstone.chad.commands//insultCommand/#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.chad.commands/insult-command.html
-$dokka.location:org.openredstone.chad.commands//listCommand/#kotlin.Long#org.javacord.api.DiscordApi/PointingToDeclaration/-chad/org.openredstone.chad.commands/list-command.html
 $dokka.location:org.openredstone.chad.commands//lmgtfy/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/lmgtfy.html
 $dokka.location:org.openredstone.chad.commands//pollCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/poll-command.html
 $dokka.location:org.openredstone.chad.commands//rollCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/roll-command.html
