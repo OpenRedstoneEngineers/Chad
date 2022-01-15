@@ -4,8 +4,12 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
+import org.javacord.api.entity.message.MessageBuilder
+import org.javacord.api.entity.message.MessageType
+import org.javacord.api.entity.message.embed.EmbedBuilder
 import org.openredstone.chad.commands.*
 import org.openredstone.chad.commands.dsl.command
+import java.awt.Color
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.system.exitProcess
@@ -74,6 +78,7 @@ fun main(args: Array<String>) {
             put("roll", rollCommand)
             put("lmgtfy", lmgtfy)
             put("apply", applyCommand)
+            put("insult", insultCommand(chadConfig.insults))
             put("add", command(authorizedRoles) {
                 val name by required()
                 val messages by vararg()
@@ -97,6 +102,56 @@ fun main(args: Array<String>) {
                     "Done!"
                 }
             })
+            put("delete", command(authorizedRoles) {
+                val reason by vararg()
+                reply {
+                    val realReason = reason.joinToString(" ")
+                    val target = message.referencedMessage.toNullable()
+                    if (message.type != MessageType.REPLY || target == null) {
+                        return@reply "Unable to delete, I do not know what to delete"
+                    }
+                    val removedContentChannel =
+                        discordApi.getTextChannelById(chadConfig.removedContentChannelId).toNullable()
+                            ?: return@reply "uhoh !"
+                    val server = discordApi.getServerById(chadConfig.serverId).toNullable() ?: return@reply "uhoh !"
+                    target.reply("Message deleted by <@!${message.author.id}>: \"$realReason\"")
+                        .thenCompose {
+                            val displayName = target.userAuthor.toNullable()?.getNickname(server)?.toNullable()
+                            val embed = EmbedBuilder().apply {
+                                setAuthor(
+                                    "ORE Moderation Services",
+                                    "https://youtu.be/dQw4w9WgXcQ",
+                                    "https://openredstone.org/wp-content/uploads/2018/07/icon-mini.png"
+                                )
+                                addField("Staff Member", "<@!${message.author.id}>")
+                                if (displayName != null) {
+                                    addInlineField("User", "<@!${target.author.id}>")
+                                    addInlineField("Display Name", displayName)
+                                } else {
+                                    addField("User", "<@!${target.author.id}>")
+                                }
+                                addField("Reason", realReason)
+                                addInlineField("Channel", "<#${it.channel.id}>")
+                                addInlineField(
+                                    "Context",
+                                    "https://discord.com/channels/${chadConfig.serverId}/" +
+                                            "${chadConfig.removedContentChannelId}/${it.id}"
+                                )
+                                setColor(Color.RED)
+                                setFooter("FootORE")
+                                setThumbnail("https://cdn.discordapp.com/emojis/892499052942463027.webp")
+                            }
+                            MessageBuilder().copy(target).addEmbed(embed).send(removedContentChannel)
+                        }
+                        .thenCompose {
+                            target.delete()
+                        }
+                        .thenCompose {
+                            message.delete()
+                        }
+                    "" // totally a bad hack for now
+                }
+            })
             put("pikl", command(authorizedRoles) {
                 val name by required()
                 fun parseId() = Regex("""<@!?([0-9]{10,20})>""").find(name)?.groupValues?.last()
@@ -118,7 +173,6 @@ fun main(args: Array<String>) {
             put("authorized", command(authorizedRoles) {
                 reply { "authorized !" }
             })
-            put("insult", insultCommand(chadConfig.insults))
             put("reload", command(authorizedRoles) {
                 reply {
                     reloadCommands()

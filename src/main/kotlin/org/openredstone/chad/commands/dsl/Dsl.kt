@@ -23,7 +23,7 @@ annotation class CommandMarker
  * Used in [CommandScope.reply].
  */
 @CommandMarker
-class ReplyScope(val sender: Sender) {
+class ReplyScope(val sender: Sender, val message: Message) {
     /**
      * The reactions to add to the message. This only has an effect on Discord.
      */
@@ -32,7 +32,7 @@ class ReplyScope(val sender: Sender) {
     /**
      * Can be used to run a [Subcommand] with the current sender.
      */
-    operator fun Subcommand.invoke(vararg args: String) = command.runCommand(sender, args.toList())
+    operator fun Subcommand.invoke(vararg args: String) = command.runCommand(this@ReplyScope, args.toList())
 
     /**
      * Formats a link.
@@ -67,8 +67,8 @@ class CommandScope(private val authorizedRoles: List<String>?) {
                 return help?.let { "$it $usage" } ?: usage
             }
 
-            override fun runCommand(sender: Sender, args: List<String>): CommandResponse {
-                if (!isAuthorized(sender)) return response(notAuthorized)
+            override fun runCommand(replyScope: ReplyScope, args: List<String>): CommandResponse {
+                if (!isAuthorized(replyScope.sender.roles)) return response(notAuthorized)
 
                 if (args.size < requiredParameters) {
                     return response("expected at least $requiredParameters argument(s), got ${args.size}")
@@ -77,7 +77,7 @@ class CommandScope(private val authorizedRoles: List<String>?) {
                 if (!vararg && args.size > maxParameters) {
                     return response("expected at most $maxParameters argument(s), got ${args.size}")
                 }
-                parameters.withIndex().forEach { (i, parameter) ->
+                parameters.forEachIndexed { i, parameter ->
                     when (parameter) {
                         is Argument.Required -> parameter.value = args[i]
                         is Argument.Optional -> parameter.value = args.getOrNull(i)
@@ -85,7 +85,6 @@ class CommandScope(private val authorizedRoles: List<String>?) {
                         is Argument.Vararg -> parameter.values = args.subList(i, args.size)
                     }
                 }
-                val replyScope = ReplyScope(sender)
                 return response(replyScope.message(), replyScope.reactions)
             }
 

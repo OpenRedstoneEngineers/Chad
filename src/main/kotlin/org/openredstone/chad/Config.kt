@@ -7,6 +7,7 @@ data class ChadConfig(
     val databaseFile: String,
     val enableNotificationRoles: Boolean,
     val notificationChannelId: Long,
+    val removedContentChannelId: Long,
     val welcomeChannelId: Long,
     val gameChatChannelId: Long,
     val statusChannelId: Long,

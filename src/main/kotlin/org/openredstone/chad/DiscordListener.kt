@@ -62,7 +62,7 @@ private fun startDiscordCommandListener(
             val roles = user.getRoles(server).map(Role::getName)
             val username = user.getDisplayName(server)
             val sender = Sender(username, roles)
-            response = executor.tryExecute(sender, event.messageContent) ?: return
+            response = executor.tryExecute(sender, event.message, event.messageContent) ?: return
             if (response.privateReply) {
                 user.sendMessage(response.reply)
             } else {
@@ -70,7 +70,7 @@ private fun startDiscordCommandListener(
             }
         } else {
             val sender = Sender(event.messageAuthor.name, emptyList())
-            response = executor.tryExecute(sender, event.messageContent) ?: return
+            response = executor.tryExecute(sender, event.message, event.messageContent) ?: return
             user.sendMessage(response.reply)
         }
         messageFuture.thenAccept {
@@ -103,7 +103,7 @@ private fun inGameListener(event: MessageCreateEvent, executor: CommandExecutor)
     val rawMessage = event.message.content
     val (sender, message) = inGameRegex.matchEntire(rawMessage)?.destructured ?: return
     val commandSender = Sender(sender.replace("\\", ""), emptyList())
-    val response = executor.tryExecute(commandSender, message) ?: return
+    val response = executor.tryExecute(commandSender, event.message, message) ?: return
     event.channel.sendMessage(
         if (response.privateReply) {
             "$sender: I can't private message to in-game yet!"

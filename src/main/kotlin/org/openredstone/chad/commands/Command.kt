@@ -1,9 +1,15 @@
 package org.openredstone.chad.commands
 
 import org.javacord.api.DiscordApi
+import org.javacord.api.entity.message.Message
+import org.javacord.api.entity.message.MessageBuilder
+import org.javacord.api.entity.message.MessageType
+import org.javacord.api.entity.message.embed.EmbedBuilder
+import org.openredstone.chad.commands.dsl.ReplyScope
 import org.openredstone.chad.commands.dsl.command
 import org.openredstone.chad.logger
 import org.openredstone.chad.toNullable
+import java.awt.Color
 import java.net.URLEncoder
 import kotlin.random.Random
 
@@ -29,13 +35,12 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val invalidArg = CommandResponse(false, "Invalid argument", emptyList())
     }
 
-    fun tryExecute(sender: Sender, message: String): CommandResponse? {
+    fun tryExecute(sender: Sender, discordMessage: Message, message: String): CommandResponse? {
         if (message.isEmpty() || message[0] != commandChar) {
             return null
         }
 
         logger.info("${sender.username} $message")
-
         // parse message
         var index = 1 // skip commandChar
         val nameResult = nameRegex.find(message.substring(1)) ?: return invalidCommand
@@ -50,9 +55,10 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
             index += argResult.value.length
         }
         val command = commands[name] ?: return invalidCommand
+        val scope = ReplyScope(sender, discordMessage)
 
         return try {
-            command.runCommand(sender, args)
+            command.runCommand(scope, args).takeIf { it.reply.isNotEmpty() }
         } catch (e: Exception) {
             logger.error(e) { "caught exception while running command" }
             CommandResponse(command.privateReply, "An error occurred while running the command.")
@@ -65,12 +71,12 @@ abstract class Command(
     val notAuthorized: String = "You are not authorized to run this command.",
     private val authorizedRoles: List<String>? = null,
 ) {
-    abstract fun runCommand(sender: Sender, args: List<String>): CommandResponse
+    abstract fun runCommand(replyScope: ReplyScope, args: List<String>): CommandResponse
 
     open fun help(name: String): String = "No help available for this command."
 
-    fun isAuthorized(sender: Sender): Boolean {
-        return authorizedRoles == null || sender.roles.intersect(authorizedRoles).isNotEmpty()
+    fun isAuthorized(senderRoles: List<String>): Boolean {
+        return authorizedRoles == null || senderRoles.intersect(authorizedRoles).isNotEmpty()
     }
 }
 
@@ -159,13 +165,6 @@ val pollCommand = command {
                 reactions.add(emoji)
                 "$emoji $option"
             }.joinToString(prefix = "Poll: $question\n", separator = "\n")
-    }
-}
-
-val deleteCommand = command {
-    val reason by vararg()
-    reply {
-        "lmao"
     }
 }
 
