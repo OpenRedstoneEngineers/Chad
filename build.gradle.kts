@@ -13,7 +13,7 @@ group = "org.openredstone"
 version = "1.0"
 
 application {
-    mainClassName = "org.openredstone.ChadKt"
+    mainClassName = "org.openredstone.chad.ChadKt"
 }
 
 java {
