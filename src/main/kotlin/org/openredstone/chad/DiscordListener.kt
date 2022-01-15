@@ -1,5 +1,6 @@
 package org.openredstone.chad
 
+import khttp.post
 import mu.KotlinLogging
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.Message
@@ -65,7 +66,7 @@ private fun startDiscordCommandListener(
             if (response.privateReply) {
                 user.sendMessage(response.reply)
             } else {
-                event.channel.sendMessage("$username: ${response.reply}")
+                event.channel.sendMessage(snipped("$username: ${response.reply}"))
             }
         } else {
             val sender = Sender(event.messageAuthor.name, emptyList())
@@ -79,6 +80,22 @@ private fun startDiscordCommandListener(
         }
     })
 }
+
+private fun snipped(response: String) =
+    if (response.length < 512) {
+        response
+    } else {
+        val paste = post(
+            url = "https://dpaste.com/api/v2/",
+            headers = mapOf("User-Agent" to "ORE Chad"),
+            data = mapOf(
+                "content" to response,
+                "syntax" to "text",
+                "title" to "ORE Chad"
+            )
+        ).text
+        "${response.substring(0, 64)} ... Snipped: $paste"
+    }
 
 private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*([A-Za-z0-9_\\]+)\*\*:  (.*)$""")
 

@@ -1,5 +1,6 @@
 package org.openredstone.chad.commands.dsl
 
+import org.javacord.api.entity.message.Message
 import org.openredstone.chad.commands.Command
 import org.openredstone.chad.commands.CommandResponse
 import org.openredstone.chad.commands.Sender
@@ -85,24 +86,7 @@ class CommandScope(private val authorizedRoles: List<String>?) {
                     }
                 }
                 val replyScope = ReplyScope(sender)
-                val rawMessage = replyScope.message()
-                return if (rawMessage.length < 512) {
-                    response(rawMessage, replyScope.reactions)
-                } else {
-                    val paste = khttp.post(
-                        url = "https://dpaste.com/api/v2/",
-                        headers = mapOf("User-Agent" to "ORE Chad"),
-                        data = mapOf(
-                            "content" to rawMessage,
-                            "syntax" to "text",
-                            "title" to "ORE Election Results"
-                        )
-                    ).text
-                    response(
-                        "${rawMessage.substring(0, 64)} ... Snipped: $paste",
-                        replyScope.reactions,
-                    )
-                }
+                return response(replyScope.message(), replyScope.reactions)
             }
 
             /**

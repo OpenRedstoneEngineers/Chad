@@ -109,26 +109,6 @@ fun insultCommand(insults: List<String>) = command {
     }
 }
 
-fun listCommand(statusChannelId: Long, discordApi: DiscordApi) = command {
-    reply(isPrivate = true) {
-        buildString {
-            val channel = discordApi.getServerTextChannelById(statusChannelId).toNullable() ?: return@reply ""
-            channel.getMessages(1).get().first()
-                .embeds[0].fields.drop(1)
-                .filter { !it.isInline }
-                .forEach {
-                    val name = it.name.replace("*", "")
-                    val value = it.value.replace("`", "")
-                    append(name)
-                    if (!name.contains("offline") && !name.contains("(0)")) {
-                        append(": $value")
-                    }
-                    append("\n")
-                }
-        }
-    }
-}
-
 val lmgtfy = command {
     val search by required()
     reply {
@@ -179,6 +159,13 @@ val pollCommand = command {
                 reactions.add(emoji)
                 "$emoji $option"
             }.joinToString(prefix = "Poll: $question\n", separator = "\n")
+    }
+}
+
+val deleteCommand = command {
+    val reason by vararg()
+    reply {
+        "lmao"
     }
 }
 
