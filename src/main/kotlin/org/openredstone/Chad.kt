@@ -8,7 +8,6 @@ import org.openredstone.commands.*
 import org.openredstone.commands.dsl.command
 import org.openredstone.entity.ChadSpec
 import org.openredstone.listeners.startDiscordListeners
-import org.openredstone.listeners.startIrcListeners
 import org.openredstone.managers.NotificationManager
 import org.openredstone.managers.Sql
 import java.util.*
@@ -42,7 +41,6 @@ fun main(args: Array<String>) {
     val loggingConfig = chadConfig.logging
     System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", loggingConfig.defaultLevel)
     System.setProperty("org.slf4j.simpleLogger.log.Chad", loggingConfig.chadLevel)
-    System.setProperty("org.slf4j.simpleLogger.log.IRC link listener", loggingConfig.chadLevel)
     System.setProperty("org.slf4j.simpleLogger.log.Spoiler listener", loggingConfig.chadLevel)
     System.setProperty("org.slf4j.simpleLogger.showDateTime", "true")
     System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", chadConfig.logging.dateTimeFormat)
@@ -52,7 +50,6 @@ fun main(args: Array<String>) {
     logger.info("Notification channel ID: ${chadConfig.notificationChannelId}")
     logger.info("Command character: '${chadConfig.commandChar}'")
     logger.info("Disable spoilers: ${chadConfig.disableSpoilers}")
-    logger.info("Link preview: ${chadConfig.enableLinkPreview}")
 
     val discordApi = DiscordApiBuilder()
         .setToken(chadConfig.botToken)
@@ -64,16 +61,14 @@ fun main(args: Array<String>) {
     val discordServer = discordApi.getServerById(chadConfig.serverId).get()
 
     val discordCommands = concurrentMapOf<String, Command>()
-    val ircCommands = concurrentMapOf<String, Command>()
 
-    fun regenerateHelpCommands() {
+    fun regenerateHelpCommand() {
         discordCommands["help"] = helpCommand(discordCommands)
-        ircCommands["help"] = helpCommand(ircCommands)
     }
 
     fun reloadCommands() {
         chadConfig = config[ChadSpec.chad]
-        val authorizedRoles = AuthorizedRoles(chadConfig.authorizedDiscordRoles, chadConfig.authorizedIrcRoles)
+        val authorizedRoles = chadConfig.authorizedDiscordRoles
 
         logger.info("(Re)loading commands...")
 
@@ -86,12 +81,9 @@ fun main(args: Array<String>) {
                     val cmd = command {
                         reply { msg }
                     }
-                    // write command to database
                     database.insertCommand(name, msg)
-                    // add command
                     discordCommands[name] = cmd
-                    ircCommands[name] = cmd
-                    regenerateHelpCommands()
+                    regenerateHelpCommand()
                     "Done!"
                 }
             },
@@ -100,8 +92,7 @@ fun main(args: Array<String>) {
                 reply {
                     database.removeCommand(name)
                     discordCommands.remove(name)
-                    ircCommands.remove(name)
-                    regenerateHelpCommands()
+                    regenerateHelpCommand()
                     "Done!"
                 }
             },
@@ -147,19 +138,11 @@ fun main(args: Array<String>) {
             putAll(commonCommands)
             putAll(chadConfig.discordCommands.mapValues { staticCommand(it.value) })
         }
-
-        ircCommands.apply {
-            put("list", listCommand(chadConfig.statusChannelId, discordApi))
-            put("help", helpCommand(this))
-            putAll(commonCommands)
-            putAll(chadConfig.ircCommands.mapValues { staticCommand(it.value) })
-        }
     }
 
     reloadCommands()
 
     logger.info("Loaded the following Discord commands: ${discordCommands.keys.joinToString()}")
-    logger.info("Loaded the following IRC commands: ${ircCommands.keys.joinToString()}")
     logger.info("Starting listeners...")
 
     startDiscordListeners(
@@ -170,11 +153,6 @@ fun main(args: Array<String>) {
         chadConfig.greetings,
         chadConfig.ingameBotRoleId,
         chadConfig.gameChatChannelId,
-    )
-    startIrcListeners(
-        chadConfig.irc,
-        CommandExecutor(chadConfig.commandChar, ircCommands),
-        chadConfig.enableLinkPreview,
     )
 
     if (chadConfig.enableNotificationRoles) NotificationManager(

@@ -11,12 +11,6 @@ chad:
   playingMessage: "with Kotlin"
   commandChar: ','
   disableSpoilers: true
-  enableLinkPreview: true
-  irc:
-    name: "OREChad"
-    server: "irc.esper.net"
-    channel: "#orebotspam"
-    password: "lolno"
   notifications:
     - role: "Survival"
       emoji: "🇸"
@@ -30,8 +24,6 @@ chad:
       emoji: "🇺"
       name: "🇺pdates"
       description: "Network updates"
-  authorizedIrcRoles:
-    - "op"
   authorizedDiscordRoles:
     - "Staff"
   logging:
@@ -61,9 +53,3 @@ chad:
     rules: "<https://openredstone.org/rules/>"
     schems: "<https://schems.openredstone.org/>"
     list: "Check <#701102820409212968> for current network status."
-  ircCommands:
-    archive: "https://archive.openredstone.org/"
-    invite: "https://openredstone.org/discord"
-    owner: "https://openredstone.org/owner/"
-    rules: "https://openredstone.org/rules/"
-    schems: "https://schems.openredstone.org/"

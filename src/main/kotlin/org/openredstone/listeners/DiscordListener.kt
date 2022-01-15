@@ -8,7 +8,6 @@ import org.javacord.api.event.message.MessageCreateEvent
 import org.openredstone.commands.CommandExecutor
 import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
-import org.openredstone.commands.Service
 import org.openredstone.toNullable
 
 val spoilerLogger = KotlinLogging.logger("Spoiler listener")
@@ -62,7 +61,7 @@ private fun startDiscordCommandListener(
         val messageFuture = if (server != null) {
             val roles = user.getRoles(server).map(Role::getName)
             val username = user.getDisplayName(server)
-            val sender = Sender(Service.DISCORD, username, roles)
+            val sender = Sender(username, roles)
             response = executor.tryExecute(sender, event.messageContent) ?: return
             if (response.privateReply) {
                 user.sendMessage(response.reply)
@@ -70,7 +69,7 @@ private fun startDiscordCommandListener(
                 event.channel.sendMessage("$username: ${response.reply}")
             }
         } else {
-            val sender = Sender(Service.DISCORD, event.messageAuthor.name, emptyList())
+            val sender = Sender(event.messageAuthor.name, emptyList())
             response = executor.tryExecute(sender, event.messageContent) ?: return
             user.sendMessage(response.reply)
         }
@@ -82,18 +81,20 @@ private fun startDiscordCommandListener(
     })
 }
 
-private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*([A-Za-z0-9_\\]{3,16})\*\*:  (.*)$""")
+private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*([A-Za-z0-9_\\]+)\*\*:  (.*)$""")
 
 private fun inGameListener(event: MessageCreateEvent, executor: CommandExecutor) {
     val rawMessage = event.message.content
     val (sender, message) = inGameRegex.matchEntire(rawMessage)?.destructured ?: return
-    val commandSender = Sender(Service.IRC, sender.replace("\\", ""), emptyList())
+    val commandSender = Sender(sender.replace("\\", ""), emptyList())
     val response = executor.tryExecute(commandSender, message) ?: return
-    event.channel.sendMessage(if (response.privateReply) {
-        "$sender: I can't private message to in-game yet!"
-    } else {
-        "$sender: ${response.reply}"
-    })
+    event.channel.sendMessage(
+        if (response.privateReply) {
+            "$sender: I can't private message to in-game yet!"
+        } else {
+            "$sender: ${response.reply}"
+        }
+    )
 }
 
 private val spoilerRegex = Regex("""\|\|(?s)(.+)\|\|""")

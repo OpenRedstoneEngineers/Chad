@@ -1,17 +1,15 @@
 package org.openredstone.commands.dsl
 
-import org.openredstone.commands.AuthorizedRoles
 import org.openredstone.commands.Command
 import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
-import org.openredstone.commands.Service
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
  * The command function can be used to build a command using a DSL.
  */
-fun command(authorizedRoles: AuthorizedRoles = AuthorizedRoles(), configure: CommandScope.() -> Command): Command =
+fun command(authorizedRoles: List<String>? = null, configure: CommandScope.() -> Command): Command =
     CommandScope(authorizedRoles).configure()
 
 /**
@@ -36,19 +34,16 @@ class ReplyScope(val sender: Sender) {
     operator fun Subcommand.invoke(vararg args: String) = command.runCommand(sender, args.toList())
 
     /**
-     * Formats a link, depending on the service.
+     * Formats a link.
      */
-    fun link(link: String): String = when (sender.service) {
-        Service.DISCORD -> "<$link>"
-        Service.IRC -> link
-    }
+    fun link(link: String): String = "<$link>"
 }
 
 /**
  * Used in [command].
  */
 @CommandMarker
-class CommandScope(private val authorizedRoles: AuthorizedRoles) {
+class CommandScope(private val authorizedRoles: List<String>?) {
     /**
      * Used to generate the help message.
      */

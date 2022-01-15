@@ -34,7 +34,6 @@ dependencies {
     implementation(group = "org.jetbrains.exposed", name = "exposed-jdbc", version = "0.31.1")
     implementation(group = "org.xerial", name = "sqlite-jdbc", version = "3.34.0")
     implementation(group = "com.uchuhimo", name = "konf", version = "1.1.2")
-    implementation(group = "org.pircbotx", name = "pircbotx", version = "2.1")
     implementation(group = "io.github.microutils", name = "kotlin-logging-jvm", version = "2.0.6")
     runtimeOnly(group = "org.slf4j", name = "slf4j-simple", version = "1.7.30")
 
@@ -50,6 +49,7 @@ tasks {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }
 
 tasks.withType<JavaExec> {

@@ -2,11 +2,9 @@
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
-import org.openredstone.commands.AuthorizedRoles
 import org.openredstone.commands.CommandExecutor
 import org.openredstone.commands.CommandResponse
 import org.openredstone.commands.Sender
-import org.openredstone.commands.Service
 import org.openredstone.commands.applyCommand
 import org.openredstone.commands.dsl.command
 import org.openredstone.commands.lmgtfy
@@ -14,7 +12,7 @@ import org.openredstone.entity.ChadSpec
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-val sender = Sender(Service.IRC, "tester", emptyList())
+val sender = Sender("tester", emptyList())
 
 fun CommandExecutor.testIrc(cmd: String, fn: CommandResponse.() -> Unit) =
     tryExecute(sender, cmd)!!.fn()
@@ -30,13 +28,15 @@ class `config file` {
 }
 
 class Commands {
-    private val executor = CommandExecutor(',', mapOf(
-        "apply" to applyCommand,
-        "authorized" to command(authorizedRoles = AuthorizedRoles(emptyList(), emptyList())) {
-            reply { "yes !" }
-        },
-        "lmgtfy" to lmgtfy,
-    ))
+    private val executor = CommandExecutor(
+        ',', mapOf(
+            "apply" to applyCommand,
+            "authorized" to command(authorizedRoles = emptyList()) {
+                reply { "yes !" }
+            },
+            "lmgtfy" to lmgtfy,
+        )
+    )
 
     @Test
     fun fish() = executor.testIrc(",apply fish") {
@@ -65,28 +65,32 @@ class Commands {
 }
 
 class `command exception` {
-    private val executor = CommandExecutor('.', mapOf(
-        "rip" to command {
-            reply { throw IllegalStateException("dis is not ok bro") }
-        },
-    ))
+    private val executor = CommandExecutor(
+        '.', mapOf(
+            "rip" to command {
+                reply { throw IllegalStateException("dis is not ok bro") }
+            },
+        )
+    )
 
     @Test
-    fun rip() =executor.testIrc(".rip") {
+    fun rip() = executor.testIrc(".rip") {
         assert("error" in reply)
     }
 }
 
 class `command parsing` {
     // this also tests that ' ' works as command character
-    private val executor = CommandExecutor(' ', mapOf(
-        "id" to command {
-            val args by vararg()
-            reply {
-                args.joinToString()
-            }
-        },
-    ))
+    private val executor = CommandExecutor(
+        ' ', mapOf(
+            "id" to command {
+                val args by vararg()
+                reply {
+                    args.joinToString()
+                }
+            },
+        )
+    )
 
     @Test
     fun classic() = executor.testIrc(" id yes no maybe") {
@@ -100,7 +104,7 @@ class `command parsing` {
 
     @Test
     fun rip() = executor.testIrc(" id \"\"\"") {
-            // fails for unclosed quotes
+        // fails for unclosed quotes
         assertEquals("Invalid argument", reply)
     }
 }

@@ -7,20 +7,11 @@ import org.openredstone.toNullable
 import java.net.URLEncoder
 import kotlin.random.Random
 
-/**
- * The service of the sender.
- */
-enum class Service { DISCORD, IRC }
 
 /**
  * Information about the sender of a command.
  */
-data class Sender(val service: Service, val username: String, val roles: List<String>)
-
-/**
- * A list of authorized roles for Discord and IRC. `null` means that every role is authorized.
- */
-data class AuthorizedRoles(val discord: List<String>? = null, val irc: List<String>? = null)
+data class Sender(val username: String, val roles: List<String>)
 
 typealias Commands = Map<String, Command>
 
@@ -43,7 +34,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
             return null
         }
 
-        logger.info("${sender.username} [${sender.service}]: $message")
+        logger.info("${sender.username} $message")
 
         // parse message
         var index = 1 // skip commandChar
@@ -72,18 +63,14 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
 abstract class Command(
     val privateReply: Boolean = false,
     val notAuthorized: String = "You are not authorized to run this command.",
-    private val authorizedRoles: AuthorizedRoles = AuthorizedRoles(),
+    private val authorizedRoles: List<String>? = null,
 ) {
     abstract fun runCommand(sender: Sender, args: List<String>): CommandResponse
 
     open fun help(name: String): String = "No help available for this command."
 
     fun isAuthorized(sender: Sender): Boolean {
-        val roles = when (sender.service) {
-            Service.DISCORD -> authorizedRoles.discord
-            Service.IRC -> authorizedRoles.irc
-        }
-        return roles == null || sender.roles.intersect(roles).isNotEmpty()
+        return authorizedRoles == null || sender.roles.intersect(authorizedRoles).isNotEmpty()
     }
 }
 
