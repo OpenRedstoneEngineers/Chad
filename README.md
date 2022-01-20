@@ -14,4 +14,4 @@ Create the jar by running the `shadowJar` gradle task. This will create `Chad-1.
 
 ## Docs
 
-Documentation is automatically generated and available at https://openredstoneengineers.github.io/Chad/index.html.
+Documentation is automatically generated and available at: https://openredstoneengineers.github.io/Chad/index.html.
