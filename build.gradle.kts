@@ -29,7 +29,7 @@ repositories {
 dependencies {
     implementation(group = "com.github.jkcclemens", name = "khttp", version = "0.1.0")
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
-    implementation(group = "org.javacord", name = "javacord-core", version = "3.4.0-SNAPSHOT")
+    implementation(group = "org.javacord", name = "javacord-core", version = "3.4.0")
     implementation(group = "org.jetbrains.exposed", name = "exposed-core", version = "0.31.1")
     implementation(group = "org.jetbrains.exposed", name = "exposed-jdbc", version = "0.31.1")
     implementation(group = "org.xerial", name = "sqlite-jdbc", version = "3.34.0")

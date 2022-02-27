@@ -4,9 +4,12 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
+import org.javacord.api.entity.channel.AutoArchiveDuration
+import org.javacord.api.entity.channel.ChannelType
 import org.javacord.api.entity.message.MessageBuilder
 import org.javacord.api.entity.message.MessageType
 import org.javacord.api.entity.message.embed.EmbedBuilder
+import org.javacord.api.entity.server.BoostLevel
 import org.openredstone.chad.commands.*
 import org.openredstone.chad.commands.dsl.command
 import java.awt.Color
@@ -102,6 +105,55 @@ fun main(args: Array<String>) {
                     "Done!"
                 }
             })
+            put("issue", command(authorizedRoles) {
+                val topic by vararg()
+                reply {
+                    val realTopic = topic.joinToString(" ")
+                    val target = message.referencedMessage.toNullable()
+                    if (message.type != MessageType.REPLY || target == null) {
+                        return@reply "Unable to create issue, I do not know what to base the issue off of"
+                    }
+                    val staffHelpChannel =
+                        discordApi.getServerTextChannelById(chadConfig.staffHelpChannelId).toNullable()
+                            ?: return@reply "uhoh !"
+                    val duration = when (discordServer.boostLevel) {
+                        BoostLevel.TIER_1 -> AutoArchiveDuration.THREE_DAYS
+                        BoostLevel.TIER_2 -> AutoArchiveDuration.ONE_WEEK
+                        else -> AutoArchiveDuration.ONE_DAY
+                    }
+                    if (message.channel.id == chadConfig.staffHelpChannelId) {
+                        staffHelpChannel.createThreadForMessage(target, realTopic, duration)
+                            .thenAccept { helpChannel ->
+                                message.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
+                                target.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
+                                message.delete()
+                            }
+                    } else {
+                        staffHelpChannel.createThread(ChannelType.SERVER_PUBLIC_THREAD, realTopic, duration, false)
+                            .thenCompose { helpChannel ->
+                                message.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
+                                val reply = "Help topic created: ${channelUrl(chadConfig.serverId, helpChannel.id)}"
+                                if (!target.author.isBotUser) {
+                                    target.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
+                                    target.reply(reply)
+                                } else {
+                                    message.channel.sendMessage(reply)
+                                }
+                                helpChannel.sendMessage(
+                                    "Originally referenced message: ${
+                                        messageUrl(
+                                            chadConfig.serverId,
+                                            target.channel.id,
+                                            target.id
+                                        )
+                                    }"
+                                )
+                                message.delete()
+                            }
+                    }
+                    ""
+                }
+            })
             put("delete", command(authorizedRoles) {
                 val reason by vararg()
                 reply {
@@ -134,8 +186,7 @@ fun main(args: Array<String>) {
                                 addInlineField("Channel", "<#${it.channel.id}>")
                                 addInlineField(
                                     "Context",
-                                    "https://discord.com/channels/${chadConfig.serverId}/" +
-                                            "${chadConfig.removedContentChannelId}/${it.id}"
+                                    messageUrl(chadConfig.serverId, it.channel.id, it.id)
                                 )
                                 setColor(Color.RED)
                                 setFooter("FootORE")
@@ -146,7 +197,7 @@ fun main(args: Array<String>) {
                         .thenCompose {
                             target.delete()
                         }
-                        .thenCompose {
+                        .thenRun {
                             message.delete()
                         }
                     "" // totally a bad hack for now

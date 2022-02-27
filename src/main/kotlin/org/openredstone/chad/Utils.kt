@@ -10,3 +10,9 @@ internal fun <K, V> concurrentMapOf(vararg pairs: Pair<K, V>): ConcurrentMap<K, 
     ConcurrentHashMap<K, V>(pairs.size).apply { putAll(pairs) }
 
 internal fun eprintln(x: Any?) = System.err.println(x)
+
+internal fun channelUrl(server: Long, channel: Long) =
+    "https://discord.com/channels/${server}/${channel}"
+
+internal fun messageUrl(server: Long, channel: Long, message: Long) =
+    "${channelUrl(server, channel)}/${message}"
