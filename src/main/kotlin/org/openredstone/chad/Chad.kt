@@ -197,7 +197,7 @@ fun main(args: Array<String>) {
                         .thenCompose {
                             target.delete()
                         }
-                        .thenRun {
+                        .thenCompose {
                             message.delete()
                         }
                     "" // totally a bad hack for now
