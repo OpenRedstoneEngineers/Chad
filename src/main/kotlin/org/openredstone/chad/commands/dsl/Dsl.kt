@@ -1,5 +1,6 @@
 package org.openredstone.chad.commands.dsl
 
+import kotlinx.coroutines.CoroutineScope
 import org.javacord.api.entity.message.Message
 import org.openredstone.chad.commands.Command
 import org.openredstone.chad.commands.CommandResponse
@@ -22,8 +23,9 @@ annotation class CommandMarker
 /**
  * Used in [CommandScope.reply].
  */
+// TODO: coroutine scope as context thing
 @CommandMarker
-class ReplyScope(val sender: Sender, val message: Message) {
+class ReplyScope(val sender: Sender, val message: Message, private val cs: CoroutineScope) : CoroutineScope by cs {
     /**
      * The reactions to add to the message. This only has an effect on Discord.
      */
@@ -32,7 +34,8 @@ class ReplyScope(val sender: Sender, val message: Message) {
     /**
      * Can be used to run a [Subcommand] with the current sender.
      */
-    operator fun Subcommand.invoke(vararg args: String) = command.runCommand(this@ReplyScope, args.toList())
+    suspend operator fun Subcommand.invoke(vararg args: String) =
+        command.runCommand(this@ReplyScope, args.toList())
 
     /**
      * Formats a link.
@@ -58,7 +61,7 @@ class CommandScope(private val authorizedRoles: List<String>?) {
     /**
      * The reply of the command. This should be the last action in [command].
      */
-    fun reply(isPrivate: Boolean = false, message: ReplyScope.() -> String): Command =
+    fun reply(isPrivate: Boolean = false, message: suspend ReplyScope.() -> String): Command =
         object : Command(privateReply = isPrivate, authorizedRoles = authorizedRoles) {
             private val params = parameters.joinToString(" ") // used for the help message
 
@@ -67,7 +70,7 @@ class CommandScope(private val authorizedRoles: List<String>?) {
                 return help?.let { "$it $usage" } ?: usage
             }
 
-            override fun runCommand(replyScope: ReplyScope, args: List<String>): CommandResponse {
+            override suspend fun runCommand(replyScope: ReplyScope, args: List<String>): CommandResponse {
                 if (!isAuthorized(replyScope.sender.roles)) return response(notAuthorized)
 
                 if (args.size < requiredParameters) {

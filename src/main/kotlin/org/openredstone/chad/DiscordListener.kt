@@ -1,6 +1,9 @@
 package org.openredstone.chad
 
 import khttp.post
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.Message
@@ -20,20 +23,24 @@ fun startDiscordListeners(
     greetings: List<String>,
     ingameBotRole: String,
     gameChatChannelId: Long,
+    coroutineScope: CoroutineScope,
 ) {
-    startDiscordCommandListener(discordApi, executor, ingameBotRole, gameChatChannelId)
+    startDiscordCommandListener(discordApi, executor, ingameBotRole, gameChatChannelId, coroutineScope)
     if (disableSpoilers) {
-        startSpoilerListener(discordApi)
+        startSpoilerListener(discordApi, coroutineScope)
     }
     if (greetings.isNotEmpty()) {
-        startJoinListener(discordApi, welcomeChannel, greetings)
+        startJoinListener(discordApi, welcomeChannel, greetings, coroutineScope)
     }
 }
 
-private fun startJoinListener(discordApi: DiscordApi, welcomeChannel: Long, greetings: List<String>) {
-    val channel = discordApi.getTextChannelById(welcomeChannel).get()
+private fun startJoinListener(discordApi: DiscordApi, welcomeChannel: Long, greetings: List<String>, coroutineScope: CoroutineScope) {
+    val channel = discordApi.getTextChannelById(welcomeChannel)
+        .orElseThrow { NoSuchElementException("welcome channel not found") }
     discordApi.addServerMemberJoinListener {
-        channel.sendMessage(greetings.random().replace("@USER", "<@${it.user.id}>"))
+        coroutineScope.launch {
+            channel.sendMessage(greetings.random().replace("@USER", "<@${it.user.id}>")).await()
+        }
     }
 }
 
@@ -42,8 +49,9 @@ private fun startDiscordCommandListener(
     executor: CommandExecutor,
     ingameBotRole: String,
     gameChatChannelId: Long,
+    coroutineScope: CoroutineScope,
 ) {
-    discordApi.addMessageCreateListener(fun(event) {
+    suspend fun onDiscordCommand(event: MessageCreateEvent) {
         val server = event.server.toNullable()
         val user = event.messageAuthor.asUser().toNullable() ?: return
         if (event.channel.id == gameChatChannelId &&
@@ -52,39 +60,39 @@ private fun startDiscordCommandListener(
             discordApi.getRoleById(ingameBotRole).toNullable() in user.getRoles(server) &&
             !user.isYourself
         ) {
-            inGameListener(event, executor)
+            inGameListener(event, executor, coroutineScope)
         }
         if (user.isBot) {
             return
         }
         val response: CommandResponse
-        val messageFuture = if (server != null) {
+        val message = if (server != null) {
             val roles = user.getRoles(server).map(Role::getName)
             val username = user.getDisplayName(server)
             val sender = Sender(username, roles)
-            response = executor.tryExecute(sender, event.message, event.messageContent) ?: return
+            response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope) ?: return
             if (response.privateReply) {
-                user.sendMessage(response.reply)
+                user.sendMessage(response.reply).await()
             } else {
-                event.channel.sendMessage(snipped("$username: ${response.reply}"))
+                event.channel.sendMessage(snipped("$username: ${response.reply}")).await()
             }
         } else {
             val sender = Sender(event.messageAuthor.name, emptyList())
-            response = executor.tryExecute(sender, event.message, event.messageContent) ?: return
-            user.sendMessage(response.reply)
+            response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope) ?: return
+            user.sendMessage(response.reply).await()
         }
-        messageFuture.thenAccept {
-            for (reaction in response.reactions) {
-                it.addReaction(reaction)
-            }
+        for (reaction in response.reactions) {
+            message.addReaction(reaction)
         }
-    })
+    }
+    discordApi.addMessageCreateListener { event -> coroutineScope.launch { onDiscordCommand(event) } }
 }
 
 private fun snipped(response: String) =
     if (response.length < 512) {
         response
     } else {
+        // TODO: coroutinize
         val paste = post(
             url = "https://dpaste.com/api/v2/",
             headers = mapOf("User-Agent" to "ORE Chad"),
@@ -99,23 +107,23 @@ private fun snipped(response: String) =
 
 private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*([A-Za-z0-9_\\]+)\*\*:  (.*)$""")
 
-private fun inGameListener(event: MessageCreateEvent, executor: CommandExecutor) {
+private suspend fun inGameListener(event: MessageCreateEvent, executor: CommandExecutor, coroutineScope: CoroutineScope) {
     val rawMessage = event.message.content
     val (sender, message) = inGameRegex.matchEntire(rawMessage)?.destructured ?: return
     val commandSender = Sender(sender.replace("\\", ""), emptyList())
-    val response = executor.tryExecute(commandSender, event.message, message) ?: return
+    val response = executor.tryExecute(commandSender, event.message, message, coroutineScope) ?: return
     event.channel.sendMessage(
         if (response.privateReply) {
             "$sender: I can't private message to in-game yet!"
         } else {
             "$sender: ${response.reply}"
         }
-    )
+    ).await()
 }
 
 private val spoilerRegex = Regex("""\|\|(?s)(.+)\|\|""")
 
-private fun startSpoilerListener(discordApi: DiscordApi) {
+private fun startSpoilerListener(discordApi: DiscordApi, coroutineScope: CoroutineScope) {
     fun Message.containsSpoiler(): Boolean {
         var startingIndex = 0
         val content = this.content ?: return false
@@ -127,13 +135,17 @@ private fun startSpoilerListener(discordApi: DiscordApi) {
         return content.substring(startingIndex).contains(spoilerRegex)
     }
 
-    fun Message.spoilerCheck() {
+    suspend fun Message.spoilerCheck() {
         if (this.containsSpoiler()) {
             spoilerLogger.debug("${this.author} [${this.channel}]: ${this.content}")
-            this.delete()
+            this.delete().await()
         }
     }
 
-    discordApi.addMessageCreateListener { it.message.spoilerCheck() }
-    discordApi.addMessageEditListener { it.message.ifPresent { message -> message.spoilerCheck() } }
+    discordApi.addMessageCreateListener {
+        coroutineScope.launch { it.message.spoilerCheck() }
+    }
+    discordApi.addMessageEditListener {
+        coroutineScope.launch { it.message.toNullable()?.spoilerCheck() }
+    }
 }

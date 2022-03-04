@@ -1,5 +1,9 @@
 package org.openredstone.chad.commands
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.launch
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.channel.AutoArchiveDuration
 import org.javacord.api.entity.channel.ChannelType
@@ -18,6 +22,7 @@ import org.openredstone.chad.toNullable
 import java.awt.Color
 import java.net.URLEncoder
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.concurrent.schedule
 import kotlin.random.Random
 
@@ -43,7 +48,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val invalidArg = CommandResponse(false, "Invalid argument", emptyList())
     }
 
-    fun tryExecute(sender: Sender, discordMessage: Message, message: String): CommandResponse? {
+    suspend fun tryExecute(sender: Sender, discordMessage: Message, message: String, coroutineScope: CoroutineScope): CommandResponse? {
         if (message.isEmpty() || message[0] != commandChar) {
             return null
         }
@@ -63,7 +68,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
             index += argResult.value.length
         }
         val command = commands[name] ?: return invalidCommand
-        val scope = ReplyScope(sender, discordMessage)
+        val scope = ReplyScope(sender, discordMessage, coroutineScope)
 
         return try {
             command.runCommand(scope, args).takeIf { it.reply.isNotEmpty() }
@@ -79,7 +84,7 @@ abstract class Command(
     val notAuthorized: String = "You are not authorized to run this command.",
     private val authorizedRoles: List<String>? = null,
 ) {
-    abstract fun runCommand(replyScope: ReplyScope, args: List<String>): CommandResponse
+    abstract suspend fun runCommand(replyScope: ReplyScope, args: List<String>): CommandResponse
 
     open fun help(name: String): String = "No help available for this command."
 
@@ -217,43 +222,39 @@ fun issueCommand(authorizedRoles: List<String>, discordApi: DiscordApi, chadConf
         if (message.type != MessageType.REPLY || target == null) {
             return@reply "Unable to create issue, I do not know what to base the issue off of"
         }
-        val staffHelpChannel =
-            discordApi.getServerTextChannelById(chadConfig.staffHelpChannelId).toNullable()
-                ?: return@reply "uhoh !"
+        val staffHelpChannel = discordApi.getServerTextChannelById(chadConfig.staffHelpChannelId)
+            .orElseThrow { NoSuchElementException("could not get staff-help channel") }
         val duration = when (discordServer.boostLevel) {
             BoostLevel.TIER_1 -> AutoArchiveDuration.THREE_DAYS
             BoostLevel.TIER_2 -> AutoArchiveDuration.ONE_WEEK
             else -> AutoArchiveDuration.ONE_DAY
         }
         if (message.channel.id == chadConfig.staffHelpChannelId) {
-            staffHelpChannel.createThreadForMessage(target, realTopic, duration)
-                .thenAccept { helpChannel ->
-                    message.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
-                    target.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
-                    message.delete()
-                }
+            val helpChannel = staffHelpChannel.createThreadForMessage(target, realTopic, duration).await()
+            arrayOf(message, target)
+                .mapNotNull { it.userAuthor.toNullable() }
+                .forEach { helpChannel.addThreadMember(it).await() }
+            message.delete().await()
         } else {
-            staffHelpChannel.createThread(ChannelType.SERVER_PUBLIC_THREAD, realTopic, duration, false)
-                .thenCompose { helpChannel ->
-                    message.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
-                    val reply = "Help topic created: ${channelUrl(chadConfig.serverId, helpChannel.id)}"
-                    if (!target.author.isBotUser) {
-                        target.userAuthor.ifPresent { helpChannel.addThreadMember(it) }
-                        target.reply(reply)
-                    } else {
-                        message.channel.sendMessage(reply)
-                    }
-                    helpChannel.sendMessage(
-                        "Originally referenced message: ${
-                            messageUrl(
-                                chadConfig.serverId,
-                                target.channel.id,
-                                target.id
-                            )
-                        }"
+            val helpChannel = staffHelpChannel.createThread(ChannelType.SERVER_PUBLIC_THREAD, realTopic, duration, false).await()
+            message.userAuthor.toNullable()?.let { helpChannel.addThreadMember(it).await() }
+            val reply = "Help topic created: ${channelUrl(chadConfig.serverId, helpChannel.id)}"
+            if (!target.author.isBotUser) {
+                target.userAuthor.toNullable()?.let { helpChannel.addThreadMember(it).await() }
+                target.reply(reply).await()
+            } else {
+                message.channel.sendMessage(reply).await()
+            }
+            helpChannel.sendMessage(
+                "Originally referenced message: ${
+                    messageUrl(
+                        chadConfig.serverId,
+                        target.channel.id,
+                        target.id
                     )
-                    message.delete()
-                }
+                }"
+            ).await()
+            message.delete().await()
         }
         ""
     }
@@ -268,43 +269,38 @@ fun deleteCommand(authorizedRoles: List<String>, discordApi: DiscordApi, chadCon
             return@reply "Unable to delete, I do not know what to delete"
         }
         val removedContentChannel =
-            discordApi.getTextChannelById(chadConfig.removedContentChannelId).toNullable()
-                ?: return@reply "uhoh !"
-        val server = discordApi.getServerById(chadConfig.serverId).toNullable() ?: return@reply "uhoh !"
-        target.reply("Message deleted by <@!${message.author.id}>: \"$realReason\"")
-            .thenCompose {
-                val displayName = target.userAuthor.toNullable()?.getNickname(server)?.toNullable()
-                val embed = EmbedBuilder().apply {
-                    setAuthor(
-                        "ORE Moderation Services",
-                        "https://youtu.be/dQw4w9WgXcQ",
-                        "https://openredstone.org/wp-content/uploads/2018/07/icon-mini.png"
-                    )
-                    addField("Staff Member", "<@!${message.author.id}>")
-                    if (displayName != null) {
-                        addInlineField("User", "<@!${target.author.id}>")
-                        addInlineField("Display Name", displayName)
-                    } else {
-                        addField("User", "<@!${target.author.id}>")
-                    }
-                    addField("Reason", realReason)
-                    addInlineField("Channel", "<#${it.channel.id}>")
-                    addInlineField(
-                        "Context",
-                        messageUrl(chadConfig.serverId, it.channel.id, it.id)
-                    )
-                    setColor(Color.RED)
-                    setFooter("FootORE")
-                    setThumbnail("https://cdn.discordapp.com/emojis/892499052942463027.webp")
-                }
-                MessageBuilder().copy(target).addEmbed(embed).send(removedContentChannel)
+            discordApi.getTextChannelById(chadConfig.removedContentChannelId)
+                .orElseThrow { NoSuchElementException("could not get removed content channel") }
+        val server = discordApi.getServerById(chadConfig.serverId)
+            .orElseThrow { NoSuchElementException("could not get server") }
+        val reply = target.reply("Message deleted by <@!${message.author.id}>: \"$realReason\"").await()
+        val displayName = target.userAuthor.toNullable()?.getNickname(server)?.toNullable()
+        val embed = EmbedBuilder().apply {
+            setAuthor(
+                "ORE Moderation Services",
+                "https://youtu.be/dQw4w9WgXcQ",
+                "https://openredstone.org/wp-content/uploads/2018/07/icon-mini.png"
+            )
+            addField("Staff Member", "<@!${message.author.id}>")
+            if (displayName != null) {
+                addInlineField("User", "<@!${target.author.id}>")
+                addInlineField("Display Name", displayName)
+            } else {
+                addField("User", "<@!${target.author.id}>")
             }
-            .thenCompose {
-                target.delete()
-            }
-            .thenCompose {
-                message.delete()
-            }
+            addField("Reason", realReason)
+            addInlineField("Channel", "<#${reply.channel.id}>")
+            addInlineField(
+                "Context",
+                messageUrl(chadConfig.serverId, reply.channel.id, reply.id)
+            )
+            setColor(Color.RED)
+            setFooter("FootORE")
+            setThumbnail("https://cdn.discordapp.com/emojis/892499052942463027.webp")
+        }
+        MessageBuilder().copy(target).addEmbed(embed).send(removedContentChannel).await()
+        target.delete().await()
+        message.delete().await()
         "" // totally a bad hack for now
     }
 }
@@ -316,13 +312,14 @@ fun piklCommand(authorizedRoles: List<String>, discordServer: Server, discordApi
     reply {
         val piklRole = gimmiePikl() ?: return@reply "No pikl rank :("
         val discordId = parseId() ?: return@reply "Invalid user."
-        val user = discordApi.getUserById(discordId).get()
+        val user = discordApi.getUserById(discordId).await()
         val roles = user.getRoles(discordServer)
         if (roles.none { role -> role.name == "pikl" }) {
-            user.addRole(piklRole)
+            user.addRole(piklRole).await()
         }
-        Timer().schedule(120000) {
-            user.removeRole(piklRole)
+        launch {
+            delay(120_000)
+            user.removeRole(piklRole).await()
         }
         "<@${discordId}> got pikl'd."
     }

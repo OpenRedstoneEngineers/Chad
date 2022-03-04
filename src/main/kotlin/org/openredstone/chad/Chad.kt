@@ -2,6 +2,8 @@ package org.openredstone.chad
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
 import org.javacord.api.entity.channel.AutoArchiveDuration
@@ -14,6 +16,7 @@ import org.openredstone.chad.commands.*
 import org.openredstone.chad.commands.dsl.command
 import java.awt.Color
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.concurrent.schedule
 import kotlin.system.exitProcess
 
@@ -25,7 +28,8 @@ val logger = KotlinLogging.logger("Chad")
 /**
  * The main function.
  */
-fun main(args: Array<String>) {
+fun main(args: Array<String>) = runBlocking {
+    val coroutineScope = this
     // argument parsing
     if (args.size != 1) {
         eprintln("Expected one argument, got ${args.size}")
@@ -58,10 +62,11 @@ fun main(args: Array<String>) {
         .setToken(chadConfig.botToken)
         .setAllIntents()
         .login()
-        .join()
+        .await()
         .apply { updateActivity(chadConfig.playingMessage) }
 
-    val discordServer = discordApi.getServerById(chadConfig.serverId).get()
+    val discordServer = discordApi.getServerById(chadConfig.serverId)
+        .orElseThrow { NoSuchElementException("Server not found") }
 
     val commands = concurrentMapOf<String, Command>()
 
@@ -135,6 +140,7 @@ fun main(args: Array<String>) {
         chadConfig.greetings,
         chadConfig.ingameBotRoleId,
         chadConfig.gameChatChannelId,
+        coroutineScope
     )
 
     if (chadConfig.enableNotificationRoles) NotificationManager(

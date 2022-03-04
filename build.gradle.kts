@@ -35,6 +35,8 @@ dependencies {
     implementation(group = "org.xerial", name = "sqlite-jdbc", version = "3.34.0")
     implementation(group = "com.uchuhimo", name = "konf", version = "1.1.2")
     implementation(group = "io.github.microutils", name = "kotlin-logging-jvm", version = "2.0.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
     runtimeOnly(group = "org.slf4j", name = "slf4j-simple", version = "1.7.30")
 
     testImplementation(kotlin("test-junit5"))
