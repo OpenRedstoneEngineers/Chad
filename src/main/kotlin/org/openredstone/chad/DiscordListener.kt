@@ -72,20 +72,28 @@ private fun startDiscordCommandListener(
             val sender = Sender(username, roles)
             response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope) ?: return
             if (response.privateReply) {
-                user.sendMessage(response.reply).await()
+                user.sendMessage(snipped(response.reply)).await()
             } else {
                 event.channel.sendMessage(snipped("$username: ${response.reply}")).await()
             }
         } else {
             val sender = Sender(event.messageAuthor.name, emptyList())
             response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope) ?: return
-            user.sendMessage(response.reply).await()
+            user.sendMessage(snipped(response.reply)).await()
         }
         for (reaction in response.reactions) {
             message.addReaction(reaction)
         }
     }
-    discordApi.addMessageCreateListener { event -> coroutineScope.launch { onDiscordCommand(event) } }
+    discordApi.addMessageCreateListener { event ->
+        coroutineScope.launch {
+            try {
+                onDiscordCommand(event)
+            } catch (e: Exception) {
+                logger.error(e) { "onDiscordCommand threw" }
+            }
+        }
+    }
 }
 
 private fun snipped(response: String) =
