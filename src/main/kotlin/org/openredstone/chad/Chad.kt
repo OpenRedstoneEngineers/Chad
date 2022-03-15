@@ -2,8 +2,8 @@ package org.openredstone.chad
 
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.yaml
+import kotlinx.coroutines.*
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
 import org.javacord.api.entity.channel.AutoArchiveDuration
@@ -29,7 +29,6 @@ val logger = KotlinLogging.logger("Chad")
  * The main function.
  */
 fun main(args: Array<String>) = runBlocking {
-    val coroutineScope = this
     // argument parsing
     if (args.size != 1) {
         eprintln("Expected one argument, got ${args.size}")
@@ -140,7 +139,7 @@ fun main(args: Array<String>) = runBlocking {
         chadConfig.greetings,
         chadConfig.ingameBotRoleId,
         chadConfig.gameChatChannelId,
-        coroutineScope
+        this,
     )
 
     if (chadConfig.enableNotificationRoles) NotificationManager(
@@ -150,4 +149,10 @@ fun main(args: Array<String>) = runBlocking {
     )
 
     logger.info("Done")
+
+    // since javacord does it's own thing, need to prevent this coroutine from exiting...
+    while (isActive) {
+        // just sleep
+        delay(1000)
+    }
 }
