@@ -20,6 +20,7 @@ import org.openredstone.chad.commands.dsl.command
 import org.openredstone.chad.messageUrl
 import org.openredstone.chad.toNullable
 import java.awt.Color
+import java.lang.NumberFormatException
 import java.net.URLEncoder
 import java.util.*
 import kotlin.NoSuchElementException
@@ -96,9 +97,15 @@ abstract class Command(
 // predefined commands
 
 private fun baseConvert(oldBase: Int, newBase: Int, num: String): String =
-    num.toLong(radix = oldBase).toString(radix = newBase)
+    try {
+        num.toLong(radix = oldBase).toString(radix = newBase)
+    } catch (e: NumberFormatException) {
+        e.message?.let { "Invalid number: $it" }
+            ?: "Invalid number"
+    }
 
 fun shortConvertCommand(old: Int, new: Int) = command {
+    check(old in 2..36 && new in 2..36)
     val num by required()
     reply {
         baseConvert(old, new, num)
@@ -115,7 +122,7 @@ val convertCommand = command {
         when {
             old !in 2..36 || new !in 2..36 -> "Invalid base(s); base 2 to base 36 are supported"
             // old, new never null, because range check
-            else -> baseConvert(old!!.toInt(), new!!.toInt(), num)
+            else -> baseConvert(old!!, new!!, num)
         }
     }
 }
