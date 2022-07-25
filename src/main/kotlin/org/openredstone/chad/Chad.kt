@@ -81,6 +81,13 @@ fun main(args: Array<String>) = runBlocking {
 
         commands.apply {
             clear()
+            put("conv", convertCommand)
+            val bases = listOf("b" to 2, "o" to 8, "d" to 10, "h" to 16)
+            bases.forEach { (oldName, oldBase) ->
+                bases.forEach { (newName, newBase) ->
+                    put("${oldName}2$newName", shortConvertCommand(oldBase, newBase))
+                }
+            }
             put("poll", pollCommand)
             put("roll", rollCommand)
             put("lmgtfy", lmgtfy)

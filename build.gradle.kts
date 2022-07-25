@@ -41,6 +41,7 @@ dependencies {
 
     testImplementation(kotlin("test-junit5"))
     testRuntimeOnly(group = "org.junit.jupiter", name = "junit-jupiter-engine", version = "5.7.1")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks {
@@ -64,4 +65,12 @@ tasks.withType<DokkaTask> {
             includes.from("packages.md")
         }
     }
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }

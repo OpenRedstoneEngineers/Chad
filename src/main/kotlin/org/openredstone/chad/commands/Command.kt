@@ -95,6 +95,31 @@ abstract class Command(
 
 // predefined commands
 
+private fun baseConvert(oldBase: Int, newBase: Int, num: String): String =
+    num.toLong(radix = oldBase).toString(radix = newBase)
+
+fun shortConvertCommand(old: Int, new: Int) = command {
+    val num by required()
+    reply {
+        baseConvert(old, new, num)
+    }
+}
+
+val convertCommand = command {
+    val oldBase by required()
+    val newBase by required()
+    val num by required()
+    reply {
+        val old = oldBase.toIntOrNull()
+        val new = newBase.toIntOrNull()
+        when {
+            old !in 2..36 || new !in 2..36 -> "Invalid base(s); base 2 to base 36 are supported"
+            // old, new never null, because range check
+            else -> baseConvert(old!!.toInt(), new!!.toInt(), num)
+        }
+    }
+}
+
 val applyCommand = command {
     help = "Instructions to apply."
     val arg by required()
