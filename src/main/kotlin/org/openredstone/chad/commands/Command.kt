@@ -293,17 +293,6 @@ fun issueCommand(authorizedRoles: List<String>, discordApi: DiscordApi, chadConf
     }
 }
 
-fun fractalCommand(authorizedRoles: List<String>) = command(authorizedRoles) {
-    val name by required()
-    reply {
-        val img: BufferedImage = fractal(name)
-        val embed = EmbedBuilder().apply {
-            setImage(img, "png")
-        }
-        MessageBuilder().addEmbed(embed).send(message.channel).await()
-        ""
-    }
-}
 fun deleteCommand(authorizedRoles: List<String>, discordApi: DiscordApi, chadConfig: ChadConfig) = command(authorizedRoles) {
     val reason by vararg()
     reply {
@@ -369,3 +358,14 @@ fun piklCommand(authorizedRoles: List<String>, discordServer: Server, discordApi
     }
 }
 
+fun fractalCommand(authorizedRoles: List<String>) = command(authorizedRoles) {
+    val name by required()
+    reply {
+        val img: BufferedImage = fractal(name)
+        val embed = EmbedBuilder().apply {
+            setImage(img, "png")
+        }
+        MessageBuilder().addEmbed(embed).send(message.channel).await()
+        ""
+    }
+}
