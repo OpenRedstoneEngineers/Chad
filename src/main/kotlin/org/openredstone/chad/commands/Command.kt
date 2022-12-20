@@ -20,6 +20,7 @@ import org.openredstone.chad.commands.dsl.command
 import org.openredstone.chad.messageUrl
 import org.openredstone.chad.toNullable
 import java.awt.Color
+import java.awt.image.BufferedImage
 import java.lang.NumberFormatException
 import java.net.URLEncoder
 import java.util.*
@@ -292,6 +293,17 @@ fun issueCommand(authorizedRoles: List<String>, discordApi: DiscordApi, chadConf
     }
 }
 
+fun fractalCommand(authorizedRoles: List<String>) = command(authorizedRoles) {
+    val name by required()
+    reply {
+        val img: BufferedImage = fractal(name)
+        val embed = EmbedBuilder().apply {
+            setImage(img, "png")
+        }
+        MessageBuilder().addEmbed(embed).send(message.channel).await()
+        ""
+    }
+}
 fun deleteCommand(authorizedRoles: List<String>, discordApi: DiscordApi, chadConfig: ChadConfig) = command(authorizedRoles) {
     val reason by vararg()
     reply {
