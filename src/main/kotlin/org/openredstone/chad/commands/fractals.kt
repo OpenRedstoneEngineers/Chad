@@ -99,30 +99,26 @@ private fun mandelPixel(coord: Complex, max_iterations: Int): Int {
 }
 
 // Hashing
-private fun String.sha256lowerLong(): Long {
-    return MessageDigest
-        .getInstance("SHA-256")
-        .digest(this.toByteArray())
-        .fold(0) { acc, byte -> acc.shl(8).or(byte.toLong().and(255)) }
-}
+private fun String.sha256lowerLong(): Long = MessageDigest
+    .getInstance("SHA-256")
+    .digest(this.toByteArray())
+    .fold(0) { acc, byte -> acc.shl(8).or(byte.toLong().and(255)) }
 
 // Complex numbers
 private data class Complex(val re: Double, val im: Double)
 
-private operator fun Complex.plus(c: Complex): Complex {
-    return Complex(this.re + c.re, this.im + c.im)
-}
+private operator fun Complex.plus(c: Complex): Complex =
+    Complex(this.re + c.re, this.im + c.im)
 
-private operator fun Complex.times(d: Double): Complex {
-    return Complex(this.re * d, this.im * d)
-}
+private operator fun Complex.times(d: Double): Complex =
+    Complex(this.re * d, this.im * d)
 
-private fun Complex.square(): Complex{
+private fun Complex.square(): Complex {
     val x = this.re
     val y = this.im
     return Complex(x * x - y * y, 2 * x * y)
 }
 
-private fun Complex.mag2(): Double {
-    return this.re * this.re + this.im * this.im
-}
+private fun Complex.mag2(): Double =
+    this.re * this.re + this.im * this.im
+
