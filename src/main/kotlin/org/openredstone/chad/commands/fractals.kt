@@ -52,15 +52,15 @@ private fun juliaPixel(coordinate: Complex, maxIterations: Int, c: Complex): Dou
         z = z.square() + c
         i += 1
     }
-    if (i < maxIterations) {
-        repeat(3) {
-            z = z.square() + c
-            i += 1
-        }
-        // actual magic
-        return i.toDouble() + 1.0 - ln(ln(sqrt(z.mag2()))) * 1.44269504089
+    if (i >= maxIterations) {
+        return i.toDouble()
     }
-    return i.toDouble()
+    repeat(3) {
+        z = z.square() + c
+        i += 1
+    }
+    // actual magic
+    return i.toDouble() + 1.0 - ln(ln(sqrt(z.mag2()))) * 1.44269504089
 }
 
 // room for improvement but works 99.9% of times (never crashes just gives up and returns a bad one)
