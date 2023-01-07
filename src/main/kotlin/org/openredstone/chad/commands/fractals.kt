@@ -38,14 +38,14 @@ fun fractal(seed: String): BufferedImage {
 }
 
 // Helper functions
-fun getColor(i: Double, a: Double, b: Double, c: Double): Int {
+private fun getColor(i: Double, a: Double, b: Double, c: Double): Int {
     val red = max(sin(i * a) * 255.0, 0.0).toInt()
     val green = max(sin(i * b) * 255.0, 0.0).toInt()
     val blue = max(sin(i * c) * 255.0, 0.0).toInt()
     return red + green.shl(8) + blue.shl(16)
 }
 
-fun juliaPixel(coordinate: Complex, maxIterations: Int, c: Complex): Double {
+private fun juliaPixel(coordinate: Complex, maxIterations: Int, c: Complex): Double {
     var z = coordinate
     var i = 0
     while (i < maxIterations && z.mag2() < 4.0) {
@@ -64,7 +64,7 @@ fun juliaPixel(coordinate: Complex, maxIterations: Int, c: Complex): Double {
 }
 
 // room for improvement but works 99.9% of times (never crashes just gives up and returns a bad one)
-fun findGoodJulia(angle: Double, messiness: Int): Complex {
+private fun findGoodJulia(angle: Double, messiness: Int): Complex {
     val x = cos(angle) * 2.0
     val y = sin(angle) * 2.0
     var coord = Complex(x, y)
@@ -88,7 +88,7 @@ fun findGoodJulia(angle: Double, messiness: Int): Complex {
     return Complex(16.0, 0.0)
 }
 
-fun mandelPixel(coord: Complex, max_iterations: Int): Int {
+private fun mandelPixel(coord: Complex, max_iterations: Int): Int {
     var z = Complex(0.0, 0.0)
     var i = 0
     while (i < max_iterations && z.mag2() <= 4.0) {
@@ -99,7 +99,7 @@ fun mandelPixel(coord: Complex, max_iterations: Int): Int {
 }
 
 // Hashing
-fun String.sha256lowerLong(): Long {
+private fun String.sha256lowerLong(): Long {
     return MessageDigest
         .getInstance("SHA-256")
         .digest(this.toByteArray())
@@ -107,22 +107,22 @@ fun String.sha256lowerLong(): Long {
 }
 
 // Complex numbers
-data class Complex(val re: Double, val im: Double)
+private data class Complex(val re: Double, val im: Double)
 
-operator fun Complex.plus(c: Complex): Complex {
+private operator fun Complex.plus(c: Complex): Complex {
     return Complex(this.re + c.re, this.im + c.im)
 }
 
-operator fun Complex.times(d: Double): Complex {
+private operator fun Complex.times(d: Double): Complex {
     return Complex(this.re * d, this.im * d)
 }
 
-fun Complex.square(): Complex{
+private fun Complex.square(): Complex{
     val x = this.re
     val y = this.im
     return Complex(x * x - y * y, 2 * x * y)
 }
 
-fun Complex.mag2(): Double {
+private fun Complex.mag2(): Double {
     return this.re * this.re + this.im * this.im
 }
