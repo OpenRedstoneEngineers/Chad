@@ -53,7 +53,7 @@ fun juliaPixel(coordinate: Complex, maxIterations: Int, c: Complex): Double {
         i += 1
     }
     if (i < maxIterations) {
-        for (whyCantINameItUnderscore in 0 until 3) {
+        repeat(3) {
             z = z.square() + c
             i += 1
         }
