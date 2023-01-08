@@ -113,11 +113,7 @@ private operator fun Complex.plus(c: Complex): Complex =
 private operator fun Complex.times(d: Double): Complex =
     Complex(this.re * d, this.im * d)
 
-private fun Complex.square(): Complex {
-    val x = this.re
-    val y = this.im
-    return Complex(x * x - y * y, 2 * x * y)
-}
+private fun Complex.square() = Complex(re * re - im * im, 2 * re * im)
 
 private fun Complex.mag2(): Double =
     this.re * this.re + this.im * this.im
