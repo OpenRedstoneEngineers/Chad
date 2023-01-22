@@ -68,6 +68,7 @@ fun main(args: Array<String>) = runBlocking {
         .orElseThrow { NoSuchElementException("Server not found") }
 
     val commands = concurrentMapOf<String, Command>()
+    val noTouchy = arrayOf<String>("conv", "poll", "lmgtfy", "apply", "insult", "add", "remove", "issue", "delete", "pikl", "authorized", "reload") 
 
     fun regenerateHelpCommand() {
         commands["help"] = helpCommand(commands)
@@ -97,14 +98,18 @@ fun main(args: Array<String>) = runBlocking {
                 val name by required()
                 val messages by vararg()
                 reply {
-                    val msg = messages.joinToString(separator = " ")
-                    val cmd = command {
-                        reply { msg }
+                    if (cmd in noTouchy) {
+                        "u no touchy my commandy"
+                    } else {
+                        val msg = messages.joinToString(separator = " ")
+                        val cmd = command {
+                            reply { msg }
+                        }
+                        database.insertCommand(name, msg)
+                        commands[name] = cmd
+                        regenerateHelpCommand()
+                        "Done!"
                     }
-                    database.insertCommand(name, msg)
-                    commands[name] = cmd
-                    regenerateHelpCommand()
-                    "Done!"
                 }
             })
             put("remove", command(authorizedRoles) {
