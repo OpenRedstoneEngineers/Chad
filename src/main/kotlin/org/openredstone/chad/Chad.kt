@@ -98,13 +98,13 @@ fun main(args: Array<String>) = runBlocking {
                 val name by required()
                 val messages by vararg()
                 reply {
+                    val cmd = command {
+                        reply { msg }
+                    }
                     if (cmd in noTouchy) {
                         "u no touchy my commandy"
                     } else {
                         val msg = messages.joinToString(separator = " ")
-                        val cmd = command {
-                            reply { msg }
-                        }
                         database.insertCommand(name, msg)
                         commands[name] = cmd
                         regenerateHelpCommand()
