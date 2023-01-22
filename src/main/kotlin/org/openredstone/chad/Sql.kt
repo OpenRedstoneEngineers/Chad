@@ -16,12 +16,10 @@ class Sql(file: String, driver: String = "org.sqlite.JDBC") {
     }
 
     fun insertCommand(key: String, response: String) = transaction(database) {
-        if (key != "pikl") { // todo check for other predefined commands
-            SqlCommand.deleteWhere { SqlCommand.key eq key }
-            SqlCommand.insert {
-                it[SqlCommand.key] = key
-                it[SqlCommand.response] = response
-            }
+        SqlCommand.deleteWhere { SqlCommand.key eq key }
+        SqlCommand.insert {
+            it[SqlCommand.key] = key
+            it[SqlCommand.response] = response
         }
     }
 
