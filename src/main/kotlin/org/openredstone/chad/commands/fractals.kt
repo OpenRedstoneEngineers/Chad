@@ -1,16 +1,17 @@
 package org.openredstone.chad.commands
 
+import org.openredstone.chad.FractalConfig
 import kotlin.math.*
 import kotlin.random.Random
 import java.awt.image.BufferedImage
 import java.security.MessageDigest
 
-fun fractal(seed: String): BufferedImage {
-    val width = 2048
-    val height = 2048
-    val maxIterations = 10_000  // don't worry it will average like 5 iterations per pixel
-    val messiness = 30          // unless you change this to something like 99
-    val zoom = 3.5
+fun fractal(seed: String, fractalConfig: FractalConfig): BufferedImage {
+    val width = fractalConfig.size
+    val height = fractalConfig.size
+    val maxIterations = fractalConfig.maxIterations  // don't worry it will average like 5 iterations per pixel
+    val messiness = fractalConfig.messiness          // unless you change this to something like 99
+    val zoom = fractalConfig.zoom
 
     val aspectRatio = width.toDouble() / height.toDouble()
     val rng = Random(seed.sha256lowerLong())

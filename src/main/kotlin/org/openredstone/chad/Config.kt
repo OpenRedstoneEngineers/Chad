@@ -18,6 +18,7 @@ data class ChadConfig(
     val commandChar: Char,
     val disableSpoilers: Boolean,
     val notifications: List<NotificationRoleConfig>,
+    val fractalDeets: FractalConfig,
     val authorizedDiscordRoles: List<String>,
     val logging: LoggingConfig,
     val greetings: List<String>,
@@ -27,6 +28,8 @@ data class ChadConfig(
 object ChadSpec : ConfigSpec("") {
     val chad by required<ChadConfig>()
 }
+
+data class FractalConfig(val size: Int, val maxIterations: Int, val messiness: Int, val zoom: Double)
 
 data class NotificationRoleConfig(val emoji: String, val name: String, val role: String, val description: String)
 

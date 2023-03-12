@@ -358,10 +358,10 @@ fun piklCommand(authorizedRoles: List<String>, discordServer: Server, discordApi
     }
 }
 
-fun fractalCommand(authorizedRoles: List<String>) = command(authorizedRoles) {
+fun fractalCommand(authorizedRoles: List<String>, chadConfig: ChadConfig) = command(authorizedRoles) {
     val seed by required()
     reply {
-        val img = fractal(seed)
+        val img = fractal(seed, chadConfig.fractalDeets)
         val embed = EmbedBuilder().apply {
             setImage(img, "png")
         }

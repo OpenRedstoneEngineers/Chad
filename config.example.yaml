@@ -25,6 +25,11 @@ chad:
       emoji: "🇺"
       name: "🇺pdates"
       description: "Network updates"
+  fractalDeets:
+    size: 2048
+    maxIterations: 10000
+    messiness: 30
+    zoom: 3.5
   authorizedDiscordRoles:
     - "Staff"
   logging:
