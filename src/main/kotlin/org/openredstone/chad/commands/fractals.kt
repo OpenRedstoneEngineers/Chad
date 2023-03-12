@@ -66,24 +66,15 @@ private fun juliaPixel(coordinate: Complex, maxIterations: Int, c: Complex): Dou
 
 // room for improvement but works 99.9% of times (never crashes just gives up and returns a bad one)
 private fun findGoodJulia(angle: Double, messiness: Int): Complex {
-    val x = cos(angle) * 2.0
-    val y = sin(angle) * 2.0
+    val x = cos(angle) * 0.4 - 0.3
+    val y = sin(angle) * 0.4
     var coord = Complex(x, y)
-    var step = coord * 0.5
-    var sign = -1.0
-    var count = 0
-    while (count < 10_000) {
-        count += 1
-        coord += step * sign
-        val i = mandelPixel(coord, messiness + 1)
-        sign = if (i < messiness) {
-            -1.0
-        } else if (i > messiness) {
-            1.0
-        } else {
+    val step = coord * 0.005
+    repeat(1000) {
+        coord += step
+        if (mandelPixel(coord, messiness + 1) <= messiness) {
             return coord
         }
-        step *= 0.51
     }
     // bad luck, will get an almost blank image
     return Complex(16.0, 0.0)
