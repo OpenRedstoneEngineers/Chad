@@ -128,6 +128,7 @@ fun main(args: Array<String>) = runBlocking {
                     "Done!"
                 }
             })
+            put("fractal", fractalCommand(authorizedRoles))
             putAll(database.getCommands().mapValues { staticCommand(it.value) })
             put("help", helpCommand(this))
         }

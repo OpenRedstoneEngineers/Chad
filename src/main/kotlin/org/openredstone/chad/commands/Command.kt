@@ -20,6 +20,7 @@ import org.openredstone.chad.commands.dsl.command
 import org.openredstone.chad.messageUrl
 import org.openredstone.chad.toNullable
 import java.awt.Color
+import java.awt.image.BufferedImage
 import java.lang.NumberFormatException
 import java.net.URLEncoder
 import java.util.*
@@ -357,3 +358,14 @@ fun piklCommand(authorizedRoles: List<String>, discordServer: Server, discordApi
     }
 }
 
+fun fractalCommand(authorizedRoles: List<String>) = command(authorizedRoles) {
+    val seed by required()
+    reply {
+        val img = fractal(seed)
+        val embed = EmbedBuilder().apply {
+            setImage(img, "png")
+        }
+        MessageBuilder().addEmbed(embed).send(message.channel).await()
+        ""
+    }
+}
