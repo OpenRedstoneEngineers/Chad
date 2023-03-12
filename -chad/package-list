@@ -42,6 +42,8 @@ $dokka.location:org.openredstone.chad.commands////PointingToDeclaration/-chad/o
 $dokka.location:org.openredstone.chad.commands//applyCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/apply-command.html
 $dokka.location:org.openredstone.chad.commands//convertCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/convert-command.html
 $dokka.location:org.openredstone.chad.commands//deleteCommand/#kotlin.collections.List[kotlin.String]#org.javacord.api.DiscordApi#org.openredstone.chad.ChadConfig/PointingToDeclaration/-chad/org.openredstone.chad.commands/delete-command.html
+$dokka.location:org.openredstone.chad.commands//fractal/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad.commands/fractal.html
+$dokka.location:org.openredstone.chad.commands//fractalCommand/#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.chad.commands/fractal-command.html
 $dokka.location:org.openredstone.chad.commands//helpCommand/#kotlin.collections.Map[kotlin.String,org.openredstone.chad.commands.Command]/PointingToDeclaration/-chad/org.openredstone.chad.commands/help-command.html
 $dokka.location:org.openredstone.chad.commands//insultCommand/#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.chad.commands/insult-command.html
 $dokka.location:org.openredstone.chad.commands//issueCommand/#kotlin.collections.List[kotlin.String]#org.javacord.api.DiscordApi#org.openredstone.chad.ChadConfig#org.javacord.api.entity.server.Server/PointingToDeclaration/-chad/org.openredstone.chad.commands/issue-command.html
