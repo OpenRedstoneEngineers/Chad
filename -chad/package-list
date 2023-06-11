@@ -53,6 +53,7 @@ $dokka.location:org.openredstone.chad.commands//pollCommand/#/PointingToDeclarat
 $dokka.location:org.openredstone.chad.commands//rollCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/roll-command.html
 $dokka.location:org.openredstone.chad.commands//shortConvertCommand/#kotlin.Int#kotlin.Int/PointingToDeclaration/-chad/org.openredstone.chad.commands/short-convert-command.html
 $dokka.location:org.openredstone.chad.commands//staticCommand/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad.commands/static-command.html
+$dokka.location:org.openredstone.chad.commands//uuidCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/uuid-command.html
 $dokka.location:org.openredstone.chad.commands/Command///PointingToDeclaration/-chad/org.openredstone.chad.commands/-command/index.html
 $dokka.location:org.openredstone.chad.commands/Command/Command/#kotlin.Boolean#kotlin.String#kotlin.collections.List[kotlin.String]?/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command/-command.html
 $dokka.location:org.openredstone.chad.commands/Command/help/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command/help.html
