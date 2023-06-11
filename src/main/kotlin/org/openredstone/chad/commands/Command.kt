@@ -141,6 +141,27 @@ val applyCommand = command {
     }
 }
 
+val uuidCommand = command {
+    help = "Please provide a username to query"
+    val arg by required()
+    reply {
+        val response = khttp.get("https://api.mojang.com/users/profiles/minecraft/${arg}")
+        if (response.statusCode != 200) {
+            "Invalid username provided"
+        } else {
+            val raw = response.jsonObject.get("id").toString()
+            val uuid = listOf(  // Standard UUIDs have dashes, Mojang returns it without the dashes
+                raw.substring(0, 8),
+                raw.substring(8, 12),
+                raw.substring(12, 16),
+                raw.substring(16, 20),
+                raw.substring(20, 32)
+            ).joinToString("-")
+            "`${uuid}`"
+        }
+    }
+}
+
 fun helpCommand(commands: Commands) = command {
     val command by optional()
     // this has to be lazy, so that `commands` can be modified after the help command was created

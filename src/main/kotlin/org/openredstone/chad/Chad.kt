@@ -92,6 +92,7 @@ fun main(args: Array<String>) = runBlocking {
             put("roll", rollCommand)
             put("lmgtfy", lmgtfy)
             put("apply", applyCommand)
+            put("uuid", uuidCommand)
             put("insult", insultCommand(chadConfig.insults))
             put("add", command(authorizedRoles) {
                 val name by required()
