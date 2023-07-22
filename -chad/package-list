@@ -79,8 +79,10 @@ $dokka.location:org.openredstone.chad.commands/Sender/Sender/#kotlin.String#kotl
 $dokka.location:org.openredstone.chad.commands/Sender/roles/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/-sender/roles.html
 $dokka.location:org.openredstone.chad.commands/Sender/username/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/-sender/username.html
 $dokka.location:org.openredstone.chad////PointingToDeclaration/-chad/org.openredstone.chad/index.html
+$dokka.location:org.openredstone.chad//deleteRecentMessagesByOthers/org.javacord.api.entity.channel.ServerTextChannel#/PointingToDeclaration/-chad/org.openredstone.chad/delete-recent-messages-by-others.html
 $dokka.location:org.openredstone.chad//logger/#/PointingToDeclaration/-chad/org.openredstone.chad/logger.html
 $dokka.location:org.openredstone.chad//main/#kotlin.Array[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.chad/main.html
+$dokka.location:org.openredstone.chad//recentMessages/org.javacord.api.entity.channel.ServerTextChannel#/PointingToDeclaration/-chad/org.openredstone.chad/recent-messages.html
 $dokka.location:org.openredstone.chad//spoilerLogger/#/PointingToDeclaration/-chad/org.openredstone.chad/spoiler-logger.html
 $dokka.location:org.openredstone.chad//startDiscordListeners/#org.javacord.api.DiscordApi#org.openredstone.chad.commands.CommandExecutor#kotlin.Boolean#kotlin.Long#kotlin.collections.List[kotlin.String]#kotlin.String#kotlin.Long#kotlinx.coroutines.CoroutineScope/PointingToDeclaration/-chad/org.openredstone.chad/start-discord-listeners.html
 $dokka.location:org.openredstone.chad/ChadConfig///PointingToDeclaration/-chad/org.openredstone.chad/-chad-config/index.html
@@ -121,9 +123,8 @@ $dokka.location:org.openredstone.chad/LoggingConfig/defaultLevel/#/PointingToDec
 $dokka.location:org.openredstone.chad/NotificationManager///PointingToDeclaration/-chad/org.openredstone.chad/-notification-manager/index.html
 $dokka.location:org.openredstone.chad/NotificationManager/NotificationManager/#org.javacord.api.DiscordApi#kotlin.Long#kotlin.collections.List[org.openredstone.chad.NotificationRoleConfig]/PointingToDeclaration/-chad/org.openredstone.chad/-notification-manager/-notification-manager.html
 $dokka.location:org.openredstone.chad/NotificationRoleConfig///PointingToDeclaration/-chad/org.openredstone.chad/-notification-role-config/index.html
-$dokka.location:org.openredstone.chad/NotificationRoleConfig/NotificationRoleConfig/#kotlin.String#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad/-notification-role-config/-notification-role-config.html
+$dokka.location:org.openredstone.chad/NotificationRoleConfig/NotificationRoleConfig/#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad/-notification-role-config/-notification-role-config.html
 $dokka.location:org.openredstone.chad/NotificationRoleConfig/description/#/PointingToDeclaration/-chad/org.openredstone.chad/-notification-role-config/description.html
-$dokka.location:org.openredstone.chad/NotificationRoleConfig/emoji/#/PointingToDeclaration/-chad/org.openredstone.chad/-notification-role-config/emoji.html
 $dokka.location:org.openredstone.chad/NotificationRoleConfig/name/#/PointingToDeclaration/-chad/org.openredstone.chad/-notification-role-config/name.html
 $dokka.location:org.openredstone.chad/NotificationRoleConfig/role/#/PointingToDeclaration/-chad/org.openredstone.chad/-notification-role-config/role.html
 $dokka.location:org.openredstone.chad/Sql///PointingToDeclaration/-chad/org.openredstone.chad/-sql/index.html
