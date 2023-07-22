@@ -154,6 +154,6 @@ private fun startSpoilerListener(discordApi: DiscordApi, coroutineScope: Corouti
         coroutineScope.launch { it.message.spoilerCheck() }
     }
     discordApi.addMessageEditListener {
-        coroutineScope.launch { it.message.toNullable()?.spoilerCheck() }
+        coroutineScope.launch { it.message.spoilerCheck() }
     }
 }

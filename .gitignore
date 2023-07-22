@@ -6,3 +6,5 @@ gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
 config.yaml
+config.ore.yaml
+data.db

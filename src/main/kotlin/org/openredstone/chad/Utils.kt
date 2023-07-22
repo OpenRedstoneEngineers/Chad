@@ -1,5 +1,7 @@
 package org.openredstone.chad
 
+import org.javacord.api.entity.channel.ServerTextChannel
+import org.javacord.api.entity.message.MessageSet
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -16,3 +18,11 @@ internal fun channelUrl(server: Long, channel: Long) =
 
 internal fun messageUrl(server: Long, channel: Long, message: Long) =
     "${channelUrl(server, channel)}/${message}"
+
+val ServerTextChannel.recentMessages: MessageSet
+    get() = getMessages(10).get()
+
+fun ServerTextChannel.deleteRecentMessagesByOthers() = recentMessages.forEach {
+    if (!it.userAuthor.get().isYourself)
+        it.delete()
+}

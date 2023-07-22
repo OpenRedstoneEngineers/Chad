@@ -31,6 +31,6 @@ object ChadSpec : ConfigSpec("") {
 
 data class FractalConfig(val size: Int, val maxIterations: Int, val messiness: Int, val zoom: Double)
 
-data class NotificationRoleConfig(val emoji: String, val name: String, val role: String, val description: String)
+data class NotificationRoleConfig(val name: String, val role: String, val description: String)
 
 data class LoggingConfig(val defaultLevel: String, val chadLevel: String, val dateTimeFormat: String)
