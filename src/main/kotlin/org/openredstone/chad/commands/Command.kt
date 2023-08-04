@@ -20,12 +20,10 @@ import org.openredstone.chad.commands.dsl.command
 import org.openredstone.chad.messageUrl
 import org.openredstone.chad.toNullable
 import java.awt.Color
-import java.awt.image.BufferedImage
 import java.lang.NumberFormatException
 import java.net.URLEncoder
-import java.util.*
 import kotlin.NoSuchElementException
-import kotlin.concurrent.schedule
+import kotlin.math.pow
 import kotlin.random.Random
 
 
@@ -99,14 +97,19 @@ abstract class Command(
 
 private fun baseConvert(oldBase: Int, newBase: Int, num: String): String =
     try {
-        num.toLong(radix = oldBase).toString(radix = newBase)
-    } catch (e: NumberFormatException) {
+        val binaryNum = num.toLong(radix = oldBase).toString(radix = newBase)
+        if(newBase == 2 && num.toLong() < 0)
+            (num.toLong(radix = oldBase) + 2.0.pow((binaryNum.length + 1).toDouble())).toLong().toString(radix = newBase)
+        else
+            binaryNum
+    }
+    catch (e: NumberFormatException) {
         e.message?.let { "Invalid number: $it" }
             ?: "Invalid number"
     }
 
 fun shortConvertCommand(old: Int, new: Int) = command {
-    check(old in 2..36 && new in 2..36)
+    check(old in 2..36 && new in 2..36) // is this check really needed?
     val num by required()
     reply {
         baseConvert(old, new, num)
