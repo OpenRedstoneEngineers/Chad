@@ -14,15 +14,10 @@ import org.javacord.api.entity.message.embed.EmbedBuilder
 import org.javacord.api.entity.server.BoostLevel
 import org.javacord.api.entity.server.Server
 import org.openredstone.chad.*
-import org.openredstone.chad.channelUrl
 import org.openredstone.chad.commands.dsl.ReplyScope
 import org.openredstone.chad.commands.dsl.command
-import org.openredstone.chad.messageUrl
-import org.openredstone.chad.toNullable
 import java.awt.Color
-import java.lang.NumberFormatException
 import java.net.URLEncoder
-import kotlin.NoSuchElementException
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -97,9 +92,13 @@ abstract class Command(
 
 private fun baseConvert(oldBase: Int, newBase: Int, num: String): String =
     try {
-        val binaryNum = num.toLong(radix = oldBase).toString(radix = newBase)
-        if(newBase == 2 && num.toLong() < 0)
-            (num.toLong(radix = oldBase) + 2.0.pow((binaryNum.length).toDouble())).toLong().toString(radix = newBase)
+        val longNum = num.toLong(radix = oldBase)
+        val binaryNum = longNum.toString(radix = newBase)
+        if(newBase == 2 && longNum < 0)
+            if(((-1 * longNum) and (-1 * longNum - 1)).toInt() == 0)
+                (longNum + 2.0.pow((binaryNum.length - 1).toDouble())).toLong().toString(radix = newBase)
+            else
+                (longNum + 2.0.pow((binaryNum.length).toDouble())).toLong().toString(radix = newBase)
         else
             binaryNum
     }
