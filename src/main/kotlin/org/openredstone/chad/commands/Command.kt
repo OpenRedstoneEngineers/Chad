@@ -99,7 +99,7 @@ private fun baseConvert(oldBase: Int, newBase: Int, num: String): String =
     try {
         val binaryNum = num.toLong(radix = oldBase).toString(radix = newBase)
         if(newBase == 2 && num.toLong() < 0)
-            (num.toLong(radix = oldBase) + 2.0.pow((binaryNum.length + 1).toDouble())).toLong().toString(radix = newBase)
+            (num.toLong(radix = oldBase) + 2.0.pow((binaryNum.length).toDouble())).toLong().toString(radix = newBase)
         else
             binaryNum
     }
