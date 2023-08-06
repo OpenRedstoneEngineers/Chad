@@ -96,9 +96,9 @@ private fun baseConvert(oldBase: Int, newBase: Int, num: String): String =
         val binaryNum = longNum.toString(radix = newBase)
         if(newBase == 2 && longNum < 0)
             if(((-1 * longNum) and (-1 * longNum - 1)).toInt() == 0)
-                (longNum + 2.0.pow((binaryNum.length - 1).toDouble())).toLong().toString(radix = newBase)
+                binaryNum + "[2's comp: " + (longNum + 2.0.pow((binaryNum.length - 1).toDouble())).toLong().toString(radix = newBase) + "]"
             else
-                (longNum + 2.0.pow((binaryNum.length).toDouble())).toLong().toString(radix = newBase)
+                binaryNum + "[2's comp: " + (longNum + 2.0.pow((binaryNum.length).toDouble())).toLong().toString(radix = newBase) + "]"
         else
             binaryNum
     }
