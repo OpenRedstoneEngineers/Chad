@@ -68,7 +68,7 @@ $dokka.location:org.openredstone.chad.commands/CommandExecutor.Companion/invalid
 $dokka.location:org.openredstone.chad.commands/CommandExecutor.Companion/nameRegex/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-executor/-companion/name-regex.html
 $dokka.location:org.openredstone.chad.commands/CommandExecutor///PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-executor/index.html
 $dokka.location:org.openredstone.chad.commands/CommandExecutor/CommandExecutor/#kotlin.Char#kotlin.collections.Map[kotlin.String,org.openredstone.chad.commands.Command]/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-executor/-command-executor.html
-$dokka.location:org.openredstone.chad.commands/CommandExecutor/tryExecute/#org.openredstone.chad.commands.Sender#org.javacord.api.entity.message.Message#kotlin.String#kotlinx.coroutines.CoroutineScope/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-executor/try-execute.html
+$dokka.location:org.openredstone.chad.commands/CommandExecutor/tryExecute/#org.openredstone.chad.commands.Sender#org.javacord.api.entity.message.Message#kotlin.String#kotlinx.coroutines.CoroutineScope#org.openredstone.chad.Sql/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-executor/try-execute.html
 $dokka.location:org.openredstone.chad.commands/CommandResponse///PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-response/index.html
 $dokka.location:org.openredstone.chad.commands/CommandResponse/CommandResponse/#kotlin.Boolean#kotlin.String#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-response/-command-response.html
 $dokka.location:org.openredstone.chad.commands/CommandResponse/privateReply/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/-command-response/private-reply.html
@@ -84,7 +84,7 @@ $dokka.location:org.openredstone.chad//logger/#/PointingToDeclaration/-chad/org
 $dokka.location:org.openredstone.chad//main/#kotlin.Array[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.chad/main.html
 $dokka.location:org.openredstone.chad//recentMessages/org.javacord.api.entity.channel.ServerTextChannel#/PointingToDeclaration/-chad/org.openredstone.chad/recent-messages.html
 $dokka.location:org.openredstone.chad//spoilerLogger/#/PointingToDeclaration/-chad/org.openredstone.chad/spoiler-logger.html
-$dokka.location:org.openredstone.chad//startDiscordListeners/#org.javacord.api.DiscordApi#org.openredstone.chad.commands.CommandExecutor#kotlin.Boolean#kotlin.Long#kotlin.collections.List[kotlin.String]#kotlin.String#kotlin.Long#kotlinx.coroutines.CoroutineScope/PointingToDeclaration/-chad/org.openredstone.chad/start-discord-listeners.html
+$dokka.location:org.openredstone.chad//startDiscordListeners/#org.javacord.api.DiscordApi#org.openredstone.chad.commands.CommandExecutor#kotlin.Boolean#kotlin.Long#kotlin.collections.List[kotlin.String]#kotlin.String#kotlin.Long#org.openredstone.chad.Sql#kotlinx.coroutines.CoroutineScope/PointingToDeclaration/-chad/org.openredstone.chad/start-discord-listeners.html
 $dokka.location:org.openredstone.chad/ChadConfig///PointingToDeclaration/-chad/org.openredstone.chad/-chad-config/index.html
 $dokka.location:org.openredstone.chad/ChadConfig/ChadConfig/#kotlin.String#kotlin.String#kotlin.Boolean#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.Long#kotlin.String#kotlin.String#kotlin.Char#kotlin.Boolean#kotlin.collections.List[org.openredstone.chad.NotificationRoleConfig]#org.openredstone.chad.FractalConfig#kotlin.collections.List[kotlin.String]#org.openredstone.chad.LoggingConfig#kotlin.collections.List[kotlin.String]#kotlin.collections.List[kotlin.String]/PointingToDeclaration/-chad/org.openredstone.chad/-chad-config/-chad-config.html
 $dokka.location:org.openredstone.chad/ChadConfig/authorizedDiscordRoles/#/PointingToDeclaration/-chad/org.openredstone.chad/-chad-config/authorized-discord-roles.html
@@ -132,10 +132,18 @@ $dokka.location:org.openredstone.chad/Sql/Sql/#kotlin.String#kotlin.String/Point
 $dokka.location:org.openredstone.chad/Sql/getCommands/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql/get-commands.html
 $dokka.location:org.openredstone.chad/Sql/initTables/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql/init-tables.html
 $dokka.location:org.openredstone.chad/Sql/insertCommand/#kotlin.String#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad/-sql/insert-command.html
+$dokka.location:org.openredstone.chad/Sql/insertHistory/#kotlin.String#kotlin.String#kotlin.String#kotlin.String#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad/-sql/insert-history.html
 $dokka.location:org.openredstone.chad/Sql/removeCommand/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad/-sql/remove-command.html
 $dokka.location:org.openredstone.chad/SqlCommand///PointingToDeclaration/-chad/org.openredstone.chad/-sql-command/index.html
 $dokka.location:org.openredstone.chad/SqlCommand/key/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-command/key.html
 $dokka.location:org.openredstone.chad/SqlCommand/response/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-command/response.html
+$dokka.location:org.openredstone.chad/SqlHistory///PointingToDeclaration/-chad/org.openredstone.chad/-sql-history/index.html
+$dokka.location:org.openredstone.chad/SqlHistory/args/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-history/args.html
+$dokka.location:org.openredstone.chad/SqlHistory/key/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-history/key.html
+$dokka.location:org.openredstone.chad/SqlHistory/response/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-history/response.html
+$dokka.location:org.openredstone.chad/SqlHistory/service/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-history/service.html
+$dokka.location:org.openredstone.chad/SqlHistory/time/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-history/time.html
+$dokka.location:org.openredstone.chad/SqlHistory/user/#/PointingToDeclaration/-chad/org.openredstone.chad/-sql-history/user.html
 org.openredstone.chad
 org.openredstone.chad.commands
 org.openredstone.chad.commands.dsl
