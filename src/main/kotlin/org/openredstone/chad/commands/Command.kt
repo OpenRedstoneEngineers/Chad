@@ -50,7 +50,13 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val invalidArg = CommandResponse(false, "Invalid argument", emptyList())
     }
 
-    suspend fun tryExecute(sender: Sender, discordMessage: Message, message: String, coroutineScope: CoroutineScope): CommandResponse? {
+    suspend fun tryExecute(
+        sender: Sender,
+        discordMessage: Message,
+        message: String,
+        coroutineScope: CoroutineScope,
+        sql: Sql
+    ): CommandResponse? {
         if (message.isEmpty() || message[0] != commandChar) {
             return null
         }
@@ -72,12 +78,35 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         val command = commands[name] ?: return invalidCommand
         val scope = ReplyScope(sender, discordMessage, coroutineScope)
 
-        return try {
+        val commandResponse = try {
             command.runCommand(scope, args).takeIf { it.reply.isNotEmpty() }
         } catch (e: Exception) {
             logger.error(e) { "caught exception while running command" }
             CommandResponse(command.privateReply, "An error occurred while running the command.")
         }
+        // Insert command history
+        val discordAuthor = discordMessage.userAuthor.get()
+        var senderToInsert = sender.username
+        val service = if (discordAuthor.isBot) {
+            discordAuthor.name
+        } else {
+            senderToInsert = discordAuthor.idAsString
+            if (discordMessage.isPrivateMessage) {
+                "directmessage"
+            } else {
+                "discord <#${discordMessage.channel.id}>"
+            }
+        }
+        if (commandResponse != null) {
+            sql.insertHistory(
+                name,
+                args.joinToString(", "),
+                commandResponse.reply,
+                service,
+                senderToInsert
+            )
+        }
+        return commandResponse
     }
 }
 

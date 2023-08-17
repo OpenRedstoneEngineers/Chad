@@ -23,9 +23,10 @@ fun startDiscordListeners(
     greetings: List<String>,
     ingameBotRole: String,
     gameChatChannelId: Long,
-    coroutineScope: CoroutineScope,
+    sql: Sql,
+    coroutineScope: CoroutineScope
 ) {
-    startDiscordCommandListener(discordApi, executor, ingameBotRole, gameChatChannelId, coroutineScope)
+    startDiscordCommandListener(discordApi, executor, ingameBotRole, gameChatChannelId, coroutineScope, sql)
     if (disableSpoilers) {
         startSpoilerListener(discordApi, coroutineScope)
     }
@@ -50,6 +51,7 @@ private fun startDiscordCommandListener(
     ingameBotRole: String,
     gameChatChannelId: Long,
     coroutineScope: CoroutineScope,
+    sql: Sql
 ) {
     suspend fun onDiscordCommand(event: MessageCreateEvent) {
         val server = event.server.toNullable()
@@ -60,7 +62,7 @@ private fun startDiscordCommandListener(
             discordApi.getRoleById(ingameBotRole).toNullable() in user.getRoles(server) &&
             !user.isYourself
         ) {
-            inGameListener(event, executor, coroutineScope)
+            inGameListener(event, executor, coroutineScope, sql)
         }
         if (user.isBot) {
             return
@@ -70,7 +72,7 @@ private fun startDiscordCommandListener(
             val roles = user.getRoles(server).map(Role::getName)
             val username = user.getDisplayName(server)
             val sender = Sender(username, roles)
-            response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope) ?: return
+            response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope, sql) ?: return
             if (response.privateReply) {
                 user.sendMessage(snipped(response.reply)).await()
             } else {
@@ -78,7 +80,7 @@ private fun startDiscordCommandListener(
             }
         } else {
             val sender = Sender(event.messageAuthor.name, emptyList())
-            response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope) ?: return
+            response = executor.tryExecute(sender, event.message, event.messageContent, coroutineScope, sql) ?: return
             user.sendMessage(snipped(response.reply)).await()
         }
         for (reaction in response.reactions) {
@@ -115,11 +117,16 @@ private fun snipped(response: String) =
 
 private val inGameRegex = Regex("""^`[A-Za-z]+` \*\*([A-Za-z0-9_\\]+)\*\*:  (.*)$""")
 
-private suspend fun inGameListener(event: MessageCreateEvent, executor: CommandExecutor, coroutineScope: CoroutineScope) {
+private suspend fun inGameListener(
+    event: MessageCreateEvent,
+    executor: CommandExecutor,
+    coroutineScope: CoroutineScope,
+    sql: Sql
+) {
     val rawMessage = event.message.content
     val (sender, message) = inGameRegex.matchEntire(rawMessage)?.destructured ?: return
     val commandSender = Sender(sender.replace("\\", ""), emptyList())
-    val response = executor.tryExecute(commandSender, event.message, message, coroutineScope) ?: return
+    val response = executor.tryExecute(commandSender, event.message, message, coroutineScope, sql) ?: return
     event.channel.sendMessage(
         if (response.privateReply) {
             "$sender: I can't private message to in-game yet!"

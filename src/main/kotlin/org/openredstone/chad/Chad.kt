@@ -148,7 +148,8 @@ fun main(args: Array<String>) = runBlocking {
         chadConfig.greetings,
         chadConfig.ingameBotRoleId,
         chadConfig.gameChatChannelId,
-        this,
+        database,
+        this
     )
 
     if (chadConfig.enableNotificationRoles) NotificationManager(
