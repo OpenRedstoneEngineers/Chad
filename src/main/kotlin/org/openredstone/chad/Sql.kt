@@ -17,6 +17,17 @@ object SqlHistory : Table("history") {
     val user = varchar("hist_user", 64)
 }
 
+data class HistoryItem(
+    val key: String,
+    val args: List<String>,
+    val response: String,
+    val time: Int,
+    val service: String,
+    val user: String
+)
+
+fun unixTime(): Int = (System.currentTimeMillis() / 1000).toInt()
+
 class Sql(file: String, driver: String = "org.sqlite.JDBC") {
     private val database = Database.connect("jdbc:sqlite:$file", driver)
 
@@ -26,18 +37,34 @@ class Sql(file: String, driver: String = "org.sqlite.JDBC") {
 
     fun insertHistory(
         key: String,
-        args: String,
+        args: List<String>,
         response: String,
         service: String,
         user: String
     ) = transaction(database) {
         SqlHistory.insert {
             it[SqlHistory.key] = key
-            it[SqlHistory.args] = args
-            it[SqlHistory.response] = response
-            it[SqlHistory.time] = (System.currentTimeMillis() / 1000).toInt()
+            it[SqlHistory.args] = args.joinToString(", ")
+            it[SqlHistory.response] = response.take(512)
+            it[SqlHistory.time] = unixTime()
             it[SqlHistory.service] = service
             it[SqlHistory.user] = user
+        }
+    }
+
+    fun getHistory(age: Int = 2592000): List<HistoryItem> = transaction(database) {
+        // Default 30 days
+        SqlHistory.select {
+            SqlHistory.time.greater(unixTime() - age)
+        }.orderBy(SqlHistory.time to SortOrder.ASC).map {
+            HistoryItem(
+                it[SqlHistory.key],
+                it[SqlHistory.args].split(", "),
+                it[SqlHistory.response],
+                it[SqlHistory.time],
+                it[SqlHistory.service],
+                it[SqlHistory.user]
+            )
         }
     }
 

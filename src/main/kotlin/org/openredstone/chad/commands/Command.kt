@@ -20,12 +20,13 @@ import org.openredstone.chad.commands.dsl.command
 import org.openredstone.chad.messageUrl
 import org.openredstone.chad.toNullable
 import java.awt.Color
-import java.awt.image.BufferedImage
 import java.lang.NumberFormatException
 import java.net.URLEncoder
-import java.util.*
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import kotlin.NoSuchElementException
-import kotlin.concurrent.schedule
 import kotlin.random.Random
 
 
@@ -405,6 +406,42 @@ fun piklCommand(authorizedRoles: List<String>, discordServer: Server, discordApi
             user.removeRole(piklRole).await()
         }
         "<@${discordId}> got pikl'd."
+    }
+}
+
+fun historyCommand(authorizedRoles: List<String>, sql: Sql) = command(authorizedRoles) {
+    fun timestampToString(timestamp: Int): String {
+        val instant = Instant.ofEpochSecond(timestamp.toLong())
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+        return dateTime.format(DateTimeFormatter.ISO_DATE_TIME)
+    }
+
+    data class HistoryContainer(val key: String, var count: Int, var lastRan: String)
+
+    val time by optional()
+    reply(isPrivate = true) {
+        val historyMap = mutableMapOf<String, HistoryContainer>()
+        sql.getHistory().forEach {
+            val timestamp = timestampToString(it.time)
+            if (it.key in historyMap) {
+                historyMap[it.key]!!.apply {
+                    this.count += 1
+                    this.lastRan = timestamp
+                }
+                // The sort order is time ASC,
+                // so newer runs will be later
+                // in the search result
+            } else {
+                historyMap[it.key] = HistoryContainer(it.key, 1, timestamp)
+            }
+        }
+        historyMap.values
+            .sortedWith(compareByDescending { it.count })
+            .take(10).joinToString(
+                prefix = "Query results less than $time seconds:\n", separator = "\n"
+            ) {
+                "${it.count}: ${it.key}, last ran ${it.lastRan}"
+            }
     }
 }
 
