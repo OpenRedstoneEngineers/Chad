@@ -142,9 +142,13 @@ fun main(args: Array<String>) = runBlocking {
     logger.info("Starting listeners...")
 
     startDiscordListeners(
+        logger,
         discordApi,
         CommandExecutor(chadConfig.commandChar, commands),
         chadConfig.disableSpoilers,
+        chadConfig.botAutomod.enableBotAutomod,
+        chadConfig.botAutomod.automodChannelId,
+        chadConfig.botAutomod.regexes,
         chadConfig.welcomeChannelId,
         chadConfig.greetings,
         chadConfig.ingameBotRoleId,

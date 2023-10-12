@@ -101,7 +101,7 @@ class CommandExecutor(private val commandChar: Char, private val commands: Comma
         if (commandResponse != null) {
             sql.insertHistory(
                 name,
-                args.joinToString(", "),
+                args,
                 commandResponse.reply,
                 service,
                 senderToInsert

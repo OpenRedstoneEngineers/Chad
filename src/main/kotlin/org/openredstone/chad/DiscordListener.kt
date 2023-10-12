@@ -4,9 +4,11 @@ import khttp.post
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
+import mu.KLogger
 import mu.KotlinLogging
 import org.javacord.api.DiscordApi
 import org.javacord.api.entity.message.Message
+import org.javacord.api.entity.message.embed.EmbedBuilder
 import org.javacord.api.entity.permission.Role
 import org.javacord.api.event.message.MessageCreateEvent
 import org.openredstone.chad.commands.CommandExecutor
@@ -15,10 +17,20 @@ import org.openredstone.chad.commands.Sender
 
 val spoilerLogger = KotlinLogging.logger("Spoiler listener")
 
+internal fun Message.getUrl(): String {
+    val server = this.server.toNullable()?.id ?: throw Exception("Oof")
+    val channel = this.channel.id
+    return "https://discord.com/channels/${server}/${channel}/${this.id}"
+}
+
 fun startDiscordListeners(
+    logger: KLogger,
     discordApi: DiscordApi,
     executor: CommandExecutor,
     disableSpoilers: Boolean,
+    botAutomod: Boolean,
+    automodChannelId: Long,
+    automodRegexes: List<String>,
     welcomeChannel: Long,
     greetings: List<String>,
     ingameBotRole: String,
@@ -29,6 +41,9 @@ fun startDiscordListeners(
     startDiscordCommandListener(discordApi, executor, ingameBotRole, gameChatChannelId, coroutineScope, sql)
     if (disableSpoilers) {
         startSpoilerListener(discordApi, coroutineScope)
+    }
+    if (botAutomod) {
+        startBotAutomod(logger, discordApi, automodChannelId, automodRegexes)
     }
     if (greetings.isNotEmpty()) {
         startJoinListener(discordApi, welcomeChannel, greetings, coroutineScope)
@@ -41,6 +56,42 @@ private fun startJoinListener(discordApi: DiscordApi, welcomeChannel: Long, gree
     discordApi.addServerMemberJoinListener {
         coroutineScope.launch {
             channel.sendMessage(greetings.random().replace("@USER", "<@${it.user.id}>")).await()
+        }
+    }
+}
+
+private fun startBotAutomod(
+    logger: KLogger,
+    discordApi: DiscordApi,
+    automodChannelId: Long,
+    automodRegexes: List<String>
+) {
+    val automodChannel =
+        discordApi.getChannelById(automodChannelId).toNullable()?.asServerTextChannel()?.toNullable() ?: run {
+            logger.error { "Could not locate AutoMod channel" }
+            return
+        }
+    val compiledRegexes = automodRegexes.map { Regex(it, RegexOption.IGNORE_CASE) }
+    fun onBotMessage(event: MessageCreateEvent) {
+        val user = event.messageAuthor.asUser().toNullable() ?: return
+        if (discordApi.clientId == user.id || !user.isBot) {
+            return
+        }
+        val body = event.message.content
+        val matches = compiledRegexes.filter { it.containsMatchIn(body) }
+        if (matches.isNotEmpty()) {
+            val messageUrl = event.message.getUrl()
+            logger.warn("Flagged message for bot AutoMod! (Matches ${matches}) $messageUrl")
+            val embed = EmbedBuilder().setDescription(body)
+            matches.forEach { embed.addField("Matches", it.pattern) }
+            automodChannel.sendMessage("Flagged a message $messageUrl", embed)
+        }
+    }
+    discordApi.addMessageCreateListener { event ->
+        try {
+            onBotMessage(event)
+        } catch (e: Exception) {
+            logger.error(e) { "onBotMessage error" }
         }
     }
 }

@@ -21,6 +21,7 @@ data class ChadConfig(
     val fractalDeets: FractalConfig,
     val authorizedDiscordRoles: List<String>,
     val logging: LoggingConfig,
+    val botAutomod: AutomodConfig,
     val greetings: List<String>,
     val insults: List<String>,
 )
@@ -28,6 +29,8 @@ data class ChadConfig(
 object ChadSpec : ConfigSpec("") {
     val chad by required<ChadConfig>()
 }
+
+data class AutomodConfig(val enableBotAutomod: Boolean, val automodChannelId: Long, val regexes: List<String>)
 
 data class FractalConfig(val size: Int, val maxIterations: Int, val messiness: Int, val zoom: Double)
 
