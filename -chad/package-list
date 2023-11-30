@@ -51,6 +51,7 @@ $dokka.location:org.openredstone.chad.commands//issueCommand/#kotlin.collections
 $dokka.location:org.openredstone.chad.commands//lmgtfy/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/lmgtfy.html
 $dokka.location:org.openredstone.chad.commands//piklCommand/#kotlin.collections.List[kotlin.String]#org.javacord.api.entity.server.Server#org.javacord.api.DiscordApi/PointingToDeclaration/-chad/org.openredstone.chad.commands/pikl-command.html
 $dokka.location:org.openredstone.chad.commands//pollCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/poll-command.html
+$dokka.location:org.openredstone.chad.commands//rngCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/rng-command.html
 $dokka.location:org.openredstone.chad.commands//rollCommand/#/PointingToDeclaration/-chad/org.openredstone.chad.commands/roll-command.html
 $dokka.location:org.openredstone.chad.commands//shortConvertCommand/#kotlin.Int#kotlin.Int/PointingToDeclaration/-chad/org.openredstone.chad.commands/short-convert-command.html
 $dokka.location:org.openredstone.chad.commands//staticCommand/#kotlin.String/PointingToDeclaration/-chad/org.openredstone.chad.commands/static-command.html
