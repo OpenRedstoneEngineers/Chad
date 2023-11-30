@@ -89,6 +89,7 @@ fun main(args: Array<String>) = runBlocking {
                 }
             }
             put("poll", pollCommand)
+            put("rng", rngCommand)
             put("roll", rollCommand)
             put("lmgtfy", lmgtfy)
             put("apply", applyCommand)

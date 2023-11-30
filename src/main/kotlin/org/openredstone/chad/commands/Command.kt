@@ -22,10 +22,6 @@ import org.openredstone.chad.toNullable
 import java.awt.Color
 import java.lang.NumberFormatException
 import java.net.URLEncoder
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import kotlin.NoSuchElementException
 import kotlin.random.Random
 
@@ -220,6 +216,23 @@ val lmgtfy = command {
             append(search.split("\\s+").joinToString("+") {
                 URLEncoder.encode(it, "utf-8")
             })
+        }
+    }
+}
+
+val rngCommand = command {
+    fun generateRandomBits(length: Int) = (1..length).joinToString("") { if (Random.nextBoolean()) "1" else "0" }
+    val bits by required()
+    reply {
+        try {
+            val parsedLength = bits.toInt()
+            if (parsedLength > 64) {
+                "That's probably too much"
+            } else {
+                generateRandomBits(parsedLength)
+            }
+        } catch (e: NumberFormatException) {
+            "Invalid bit length! I'm expecting an integer."
         }
     }
 }
