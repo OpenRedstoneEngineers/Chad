@@ -67,7 +67,7 @@ fun main(args: Array<String>) = runBlocking {
     val discordServer = discordApi.getServerById(chadConfig.serverId)
         .orElseThrow { NoSuchElementException("Server not found") }
 
-    val commands = concurrentMapOf<String, Command>()
+    val commands = concurrentMapOf<String, Command>() 
 
     fun regenerateHelpCommand() {
         commands["help"] = helpCommand(commands)
@@ -76,6 +76,7 @@ fun main(args: Array<String>) = runBlocking {
     fun reloadCommands() {
         chadConfig = config[ChadSpec.chad]
         val authorizedRoles = chadConfig.authorizedDiscordRoles
+        val noTouchy = arrayOf<String>("conv", "poll", "lmgtfy", "apply", "insult", "add", "remove", "issue", "delete", "pikl", "authorized", "reload")
 
         logger.info("(Re)loading commands...")
 
@@ -99,14 +100,19 @@ fun main(args: Array<String>) = runBlocking {
                 val name by required()
                 val messages by vararg()
                 reply {
-                    val msg = messages.joinToString(separator = " ")
-                    val cmd = command {
-                        reply { msg }
+                    if (name.toString() in noTouchy) {
+                        "u no touchy my commandy"
+                    } else {
+                        val msg = messages.joinToString(separator = " ")
+                        val cmd = command {
+                            reply { msg }
+                        }
+                        
+                        database.insertCommand(name, msg)
+                        commands[name] = cmd
+                        regenerateHelpCommand()
+                        "Done!"
                     }
-                    database.insertCommand(name, msg)
-                    commands[name] = cmd
-                    regenerateHelpCommand()
-                    "Done!"
                 }
             })
             put("remove", command(authorizedRoles) {
