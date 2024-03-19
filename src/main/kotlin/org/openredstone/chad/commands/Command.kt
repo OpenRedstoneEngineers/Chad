@@ -201,10 +201,8 @@ fun helpCommand(commands: Commands) = command {
 }
 
 fun insultCommand(insults: List<String>) = command {
-    val target by required()
     reply {
-        val targetName = if (target == "me") sender.username else target
-        insults.random().replace("%USER%", targetName)
+        insults.random().replace("%USER%", sender.username)
     }
 }
 
