@@ -210,7 +210,7 @@ val lmgtfy = command {
     val search by required()
     reply {
         buildString {
-            append("https://lmgtfy.com/?q=")
+            append("https://letmegooglethat.com/?q=")
             append(search.split("\\s+").joinToString("+") {
                 URLEncoder.encode(it, "utf-8")
             })
