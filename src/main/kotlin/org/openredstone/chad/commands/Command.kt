@@ -207,13 +207,18 @@ fun insultCommand(insults: List<String>) = command {
 }
 
 val lmgtfy = command {
-    val search by required()
+    val search by vararg()
     reply {
-        buildString {
-            append("https://letmegooglethat.com/?q=")
-            append(search.split("\\s+").joinToString("+") {
-                URLEncoder.encode(it, "utf-8")
-            })
+        if (search.isEmpty()) {
+            "No query provided!"
+        } else {
+            buildString {
+                append("<https://letmegoogleforyou.com/?q=")
+                append(search.joinToString("%20") {
+                    URLEncoder.encode(it, "utf-8")
+                })
+                append(">")
+            }
         }
     }
 }
