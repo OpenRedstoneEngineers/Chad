@@ -4,20 +4,16 @@ import org.jetbrains.dokka.gradle.*
 plugins {
     application
     java
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.9.22"
     id("org.jetbrains.dokka") version "1.6.10"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.openredstone"
 version = "1.0"
 
 application {
-    mainClassName = "org.openredstone.chad.ChadKt"
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    mainClass.set("org.openredstone.chad.ChadKt")
 }
 
 repositories {
@@ -27,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation(group = "com.github.jkcclemens", name = "khttp", version = "0.1.0")
+    implementation(group = "org.danilopianini", name = "khttp", version = "1.3.1")
     implementation(group = "org.jsoup", name = "jsoup", version = "1.13.1")
     implementation(group = "org.javacord", name = "javacord-core", version = "3.8.0")
     implementation(group = "org.jetbrains.exposed", name = "exposed-core", version = "0.31.1")
@@ -51,7 +47,7 @@ tasks {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "17"
     kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }
 
@@ -65,12 +61,4 @@ tasks.withType<DokkaTask> {
             includes.from("packages.md")
         }
     }
-}
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
 }
