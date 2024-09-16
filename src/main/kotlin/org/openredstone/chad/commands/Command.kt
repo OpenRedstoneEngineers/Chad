@@ -396,7 +396,7 @@ fun deleteCommand(authorizedRoles: List<String>, discordApi: DiscordApi, chadCon
             )
             setColor(Color.RED)
             setFooter("FootORE")
-            setThumbnail("https://cdn.discordapp.com/emojis/892499052942463027.webp")
+            setThumbnail("https://cdn.discordapp.com/emojis/892499052942463027.webp") // big bruh momnet
         }
         MessageBuilder().copy(target).addEmbed(embed).send(removedContentChannel).await()
         target.delete().await()
