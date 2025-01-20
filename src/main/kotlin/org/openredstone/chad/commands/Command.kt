@@ -425,6 +425,25 @@ fun piklCommand(authorizedRoles: List<String>, discordServer: Server, discordApi
     }
 }
 
+fun trustCommand(authorizedRoles: List<String>, discordServer: Server, discordApi: DiscordApi) = command(authorizedRoles) {
+    val name by required()
+    fun parseId() = Regex("""<@!?([0-9]{10,20})>""").find(name)?.groupValues?.last()
+    fun getTrustedRole() = discordServer.getRolesByName("Trusted")?.firstOrNull()
+    reply {
+        val trustedRole = getTrustedRole() ?: return@reply "No Trusted role :("
+        val discordId = parseId() ?: return@reply "Invalid user."
+        val user = discordApi.getUserById(discordId).await()
+        val roles = user.getRoles(discordServer)
+        if (roles.none { role -> role.name == "Trusted" }) {
+            user.addRole(trustedRole).await()
+            "<@${discordId}> is now Trusted"
+        } else {
+            user.removeRole(trustedRole).await()
+            "<@${discordId}> is no longer Trusted"
+        }
+    }
+}
+
 fun historyCommand(authorizedRoles: List<String>, sql: Sql) = command(authorizedRoles) {
     data class HistoryContainer(val key: String, var count: Int, var lastRan: Int)
 

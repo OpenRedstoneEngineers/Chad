@@ -6,18 +6,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.future.await
 import mu.KotlinLogging
 import org.javacord.api.DiscordApiBuilder
-import org.javacord.api.entity.channel.AutoArchiveDuration
-import org.javacord.api.entity.channel.ChannelType
-import org.javacord.api.entity.message.MessageBuilder
-import org.javacord.api.entity.message.MessageType
-import org.javacord.api.entity.message.embed.EmbedBuilder
-import org.javacord.api.entity.server.BoostLevel
 import org.openredstone.chad.commands.*
 import org.openredstone.chad.commands.dsl.command
-import java.awt.Color
-import java.util.*
 import kotlin.NoSuchElementException
-import kotlin.concurrent.schedule
 import kotlin.system.exitProcess
 
 /**
@@ -121,6 +112,7 @@ fun main(args: Array<String>) = runBlocking {
             put("issue", issueCommand(authorizedRoles, discordApi, chadConfig, discordServer))
             put("delete", deleteCommand(authorizedRoles, discordApi, chadConfig))
             put("pikl", piklCommand(authorizedRoles, discordServer, discordApi))
+            put("trust", trustCommand(authorizedRoles, discordServer, discordApi))
             put("authorized", command(authorizedRoles) {
                 reply { "authorized !" }
             })
