@@ -206,6 +206,12 @@ fun insultCommand(insults: List<String>) = command {
     }
 }
 
+fun protipCommand(protips: List<String>) = command {
+    reply {
+        "Pro Tip: ${protips.random()}"
+    }
+}
+
 val lmgtfy = command {
     val search by vararg()
     reply {

@@ -24,6 +24,7 @@ data class ChadConfig(
     val botAutomod: AutomodConfig,
     val greetings: List<String>,
     val insults: List<String>,
+    val protips: List<String>,
 )
 
 object ChadSpec : ConfigSpec("") {

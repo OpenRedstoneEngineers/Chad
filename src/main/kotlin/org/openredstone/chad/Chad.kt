@@ -86,6 +86,7 @@ fun main(args: Array<String>) = runBlocking {
             put("apply", applyCommand)
             put("uuid", uuidCommand)
             put("insult", insultCommand(chadConfig.insults))
+            put("protip", protipCommand(chadConfig.protips))
             put("add", command(authorizedRoles) {
                 val name by required()
                 val messages by vararg()
